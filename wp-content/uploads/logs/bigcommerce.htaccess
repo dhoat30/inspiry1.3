@@ -1,5 +1,0 @@
-# BigCommerce Plugin Rule  
-<FilesMatch ".*">
-    Order Allow,Deny
-    Deny from All
-</FilesMatch>
