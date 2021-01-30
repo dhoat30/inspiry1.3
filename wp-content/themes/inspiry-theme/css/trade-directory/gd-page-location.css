@@ -1,0 +1,116 @@
+.trade-directory{ 
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+.trade-directory>div:nth-child(1){ 
+    width: 20%;
+}
+.trade-directory>div:nth-child(2){ 
+    width: 70%;
+}
+
+.trade-directory>div{
+    margin: 50px 20px;
+}
+
+@media (max-width:1000px){ 
+    .trade-directory>div:nth-child(1){ 
+        width: 100%;
+    }
+    .trade-directory>div:nth-child(2){ 
+        width: 100%;
+    }
+}
+
+.trade-directory .main-cards .flex{ 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+.trade-directory .main-cards .flex .card{ 
+    width: 250px;
+    height: 300px;
+    margin: 0 30px 90px 0;
+    transition: 800ms;
+    transition-timing-function: ease-in-out;
+    position: relative;
+}
+.trade-directory .main-cards .flex .card:hover{ 
+    transform: translateY(-10px);
+}
+.trade-directory .main-cards .flex .logo{ 
+    background: #EFEAE5;
+    height: 300px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+@media (max-width: 350px){ 
+    .trade-directory .main-cards .flex .card{ 
+        width: 260px;
+    }
+    .trade-directory .main-cards .flex .logo{ 
+        height: 250px;
+      
+    }
+    
+}
+.trade-directory .main-cards .flex .card .link .website-link{ 
+    text-decoration: none;
+    padding: 5px 10px;
+    background-color: white;
+    border-radius: 20px;
+   position: relative;
+    top: -40px;
+    left: 10px;
+    opacity:0;
+    transition: 800ms;
+    transition-timing-function: ease-in-out;
+    cursor: pointer;
+}
+.trade-directory .main-cards .flex .card .link .website-link:hover{ 
+    text-decoration: underline;
+}
+
+.trade-directory .main-cards .flex .design-board-save-btn-container{ 
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: 800ms;
+    transition-timing-function: ease-in-out;
+}
+
+
+
+.trade-directory .main-cards .flex .title{ 
+   
+    cursor: pointer;
+}
+.trade-directory .main-cards .flex .title:hover{ 
+text-decoration: underline;
+}
+
+
+
+/*styling for index.php */ 
+.index-page .gd-badge-meta{ 
+    display: none;
+}
+.index-page .geodir-post-content-container { 
+    display: none;
+}
+.index-page .geodir-loop-actions-container { 
+    display: none;
+}
+.index-page .geodir-notifications { 
+    display:  none;
+}

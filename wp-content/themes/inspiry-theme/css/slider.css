@@ -1,0 +1,118 @@
+.slider {
+  position: relative;
+  overflow: hidden;
+  height: 80vh;
+  width: 100vw;
+}
+.hero-overlay{ 
+  background: rgba(0,0,0,0.4);
+  position: absolute;
+  top: 0; 
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.slide {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 80vh;
+  opacity: 0;
+  transition: opacity 0.4s ease-in-out;
+}
+
+.slide.current {
+  opacity: 1;
+}
+
+.slide .content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  width: 100%;
+  color: #333;
+  padding: 35px;
+  display: block;
+  z-index: 2;
+}
+
+.slide .content h1 {
+
+  color: white;
+  padding: 10px 0;
+  max-width: 900px;
+  margin: 0 auto 0px auto;
+  
+}
+.slide .content a {
+
+  color: white;
+  margin: 0 auto 10px auto;
+  text-align: center;
+  display: block;
+  
+}
+.slide .content a:hover {
+text-decoration: underline;
+  
+}
+.slide.current .content {
+  opacity: 1;
+  transition: all 0.7s ease-in-out 0.3s;
+}
+
+.slider-container .buttons button#next {
+  position: absolute;
+  top: 70%;
+  right: 15px;
+  z-index: 4;
+}
+
+.slider-container .buttons button#prev {
+  position: absolute;
+  top: 70%;
+  left: 15px;
+  z-index: 4;
+}
+
+.slider-container .buttons button {
+  border: 2px solid #fff;
+  background-color: transparent;
+  color: #fff;
+  cursor: pointer;
+  padding: 13px 15px;
+  border-radius: 50%;
+  outline: none;
+}
+.slider-container i{ 
+  color: white;
+}
+.slider-container i:hover{ 
+  color: #333;
+}
+.slider-container .buttons button:hover {
+  background-color: #fff;
+  color: #333;
+}
+
+@media (max-width: 600px) {
+  .buttons button#next {
+    position: absolute;
+    top: 80%;
+    right: 15px;
+    z-index: 4;
+  }
+  
+  .buttons button#prev {
+    position: absolute;
+    top: 80%;
+    left: 15px;
+    z-index: 4;
+  }
+}
+
+

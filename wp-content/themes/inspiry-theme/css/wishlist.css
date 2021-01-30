@@ -1,0 +1,55 @@
+.save-icons-container{ 
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 10px;
+}
+
+.wish-list-icon-container .column-s-font{ 
+    border-bottom: 1px solid #474747;
+    padding-bottom: 10px;
+}
+/*wishlist icons */ 
+.wish-list-icon-container .fa-heart{ 
+    color: #303030;
+    cursor: pointer;
+    font-size: 30px;
+    padding: 8px 8px 6px 8px ;
+    border-radius: 50%;
+    background: #efefef; 
+    margin-right: 10px;
+}
+.wish-list-icon-container i:hover{ 
+    background-color: #303030;
+    color: #efefef;
+}
+
+.bc-pdp-wish-lists {
+    position: fixed !important;
+    top: 50% !important;
+    left: 50%;
+    margin: 0;
+    transform: translate(-50%, -50%);
+    z-index: 10000;
+    padding: 16px;
+    width: 95%;
+    max-width: 400px;
+    height: 400px !important;
+    max-height: 400px !important;
+    opacity: 1 !important;
+    transition: all .15s ease-in-out;
+    overflow: scroll;
+    background-color: #fff;
+    border: 1px solid #e0e3e9;
+    border-top: 0;
+    visibility: visible !important;
+    display: none;
+}
+.bc-pdp-wish-lists i{ 
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 30px;
+    cursor: pointer;
+}
+

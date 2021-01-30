@@ -1,0 +1,117 @@
+2021-01-24T03:09:58+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T03:09:59+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T06:52:55+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T06:52:55+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T07:11:20+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T07:11:20+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T08:56:29+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T08:56:31+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T09:02:41+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T09:02:41+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T09:02:41+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T23:41:12+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+
+2021-01-24T23:41:14+00:00 CRITICAL Uncaught Bigcommerce\Api\NetworkError: Could not resolve host: api.bigcommerce.com in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php:280
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php(376): Bigcommerce\Api\Connection->handleResponse()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Client.php(261): Bigcommerce\Api\Connection->get('https://api.big...')
+#2 [internal function]: Bigcommerce\Api\Client::getCollection('/shipping/zones', 'ShippingZone')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/v2ApiAdapter.php(31): call_user_func_array(Array, Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/src/BigCommerce/Api/Shipping_Api.php(9): BigCommerce\Api\v2ApiAdapter->__call('getCollection', Array)
+#5 /Applicat in /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/bigcommerce/vendor/bigcommerce/api/src/Bigcommerce/Api/Connection.php on line 280
+

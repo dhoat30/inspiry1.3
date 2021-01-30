@@ -1,0 +1,141 @@
+2021-01-29T04:55:50+00:00 CRITICAL syntax error, unexpected ':', expecting ')' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 88
+
+2021-01-29T04:55:51+00:00 CRITICAL syntax error, unexpected ':', expecting ')' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 88
+
+2021-01-29T05:25:27+00:00 CRITICAL syntax error, unexpected 'remove_action' (T_STRING) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 93
+
+2021-01-29T05:25:30+00:00 CRITICAL syntax error, unexpected 'remove_action' (T_STRING) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 93
+
+2021-01-29T05:25:32+00:00 CRITICAL syntax error, unexpected 'remove_action' (T_STRING) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 93
+
+2021-01-29T05:25:37+00:00 CRITICAL syntax error, unexpected 'remove_action' (T_STRING) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 93
+
+2021-01-29T05:34:47+00:00 CRITICAL syntax error, unexpected 'echo' (T_ECHO) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 102
+
+2021-01-29T05:53:51+00:00 CRITICAL syntax error, unexpected '}', expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 70
+
+2021-01-29T06:12:17+00:00 CRITICAL syntax error, unexpected '}' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 113
+
+2021-01-29T06:12:17+00:00 CRITICAL syntax error, unexpected '}' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 113
+
+2021-01-29T06:14:00+00:00 CRITICAL Uncaught Error: Object of class WC_Breadcrumb could not be converted to string in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:14
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(289): add_container(Object(WC_Breadcrumb))
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters('', Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-template-functions.php(2242): do_action('woocommerce_bre...', Object(WC_Breadcrumb), Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(285): woocommerce_breadcrumb()
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#7 /Applications/MAMP/htdocs/inspiry in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 14
+
+2021-01-29T06:14:08+00:00 CRITICAL Uncaught Error: Object of class WC_Breadcrumb could not be converted to string in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:14
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(289): add_container(Object(WC_Breadcrumb))
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters('', Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-template-functions.php(2242): do_action('woocommerce_bre...', Object(WC_Breadcrumb), Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(285): woocommerce_breadcrumb()
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#7 /Applications/MAMP/htdocs/inspiry in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 14
+
+2021-01-29T06:14:32+00:00 CRITICAL Uncaught Error: Object of class WC_Breadcrumb could not be converted to string in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:14
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(289): add_container(Object(WC_Breadcrumb))
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters('', Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-template-functions.php(2242): do_action('woocommerce_bre...', Object(WC_Breadcrumb), Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(285): woocommerce_breadcrumb()
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#7 /Applications/MAMP/htdocs/inspiry in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 14
+
+2021-01-29T06:14:58+00:00 CRITICAL Uncaught Error: Object of class WC_Breadcrumb could not be converted to string in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:14
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(289): add_container(Object(WC_Breadcrumb))
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters('', Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-template-functions.php(2242): do_action('woocommerce_bre...', Object(WC_Breadcrumb), Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(285): woocommerce_breadcrumb()
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#7 /Applications/MAMP/htdocs/inspiry in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 14
+
+2021-01-29T06:15:38+00:00 CRITICAL Uncaught Error: Object of class WC_Breadcrumb could not be converted to string in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:15
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(289): add_container(Object(WC_Breadcrumb))
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters('', Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-template-functions.php(2242): do_action('woocommerce_bre...', Object(WC_Breadcrumb), Array)
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(285): woocommerce_breadcrumb()
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#7 /Applications/MAMP/htdocs/inspiry in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 15
+
+2021-01-29T09:36:43+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:121
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 121
+
+2021-01-29T09:36:43+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:121
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 121
+
+2021-01-29T09:37:03+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:121
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 121
+
+2021-01-29T09:40:06+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:122
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 122
+
+2021-01-29T09:40:13+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:122
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 122
+
+2021-01-29T09:41:21+00:00 CRITICAL Uncaught Error: Call to a member function get_price() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:125
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(60): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 125
+
+2021-01-29T18:35:20+00:00 CRITICAL syntax error, unexpected ';' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 77
+
+2021-01-29T18:35:20+00:00 CRITICAL syntax error, unexpected ';' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 77
+
+2021-01-29T18:35:20+00:00 CRITICAL syntax error, unexpected ';' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 77
+

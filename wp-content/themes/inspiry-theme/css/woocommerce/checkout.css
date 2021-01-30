@@ -1,0 +1,14 @@
+.woocommerce-info{
+    border-top-color: #303030 !important;
+}
+.woocommerce-info::before{
+        color: #303030 !important;
+    }
+
+/*form input*/ 
+.woocommerce-checkout input{
+    padding: 10px 5px;
+}
+.woocommerce-checkout select{
+    height: 20px;
+}

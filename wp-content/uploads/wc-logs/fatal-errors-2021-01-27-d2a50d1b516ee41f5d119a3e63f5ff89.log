@@ -1,0 +1,14 @@
+2021-01-27T00:05:17+00:00 CRITICAL syntax error, unexpected 'get_footer' (T_STRING), expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/archive-product.php on line 109
+
+2021-01-27T00:05:18+00:00 CRITICAL syntax error, unexpected 'get_footer' (T_STRING), expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/archive-product.php on line 109
+
+2021-01-27T23:14:30+00:00 CRITICAL Cannot redeclare add_container() (previously declared in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/functions.php:23) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 3
+
+2021-01-27T23:21:08+00:00 CRITICAL syntax error, unexpected '}', expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 11
+
+2021-01-27T23:21:08+00:00 CRITICAL syntax error, unexpected '}', expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 11
+
+2021-01-27T23:24:49+00:00 CRITICAL syntax error, unexpected 'facet' (T_STRING), expecting ']' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 12
+
+2021-01-27T23:35:06+00:00 CRITICAL Cannot redeclare add_container() (previously declared in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:4) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 7
+

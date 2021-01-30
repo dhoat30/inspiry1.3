@@ -1,0 +1,108 @@
+2021-01-28T02:39:24+00:00 CRITICAL syntax error, unexpected 'return' (T_RETURN) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 33
+
+2021-01-28T02:48:23+00:00 CRITICAL Uncaught ArgumentCountError: Too few arguments to function style_title(), 1 passed in /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php on line 287 and exactly 2 expected in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:30
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): style_title(true)
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(206): WP_Hook->apply_filters(true, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/archive-product.php(33): apply_filters('woocommerce_sho...', true)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template-loader.php(106): include('/Applications/M...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-blog-header.php(19): require_once('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/index.php(17): require('/Applications/M...')
+#6 {main}
+  thrown in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 30
+
+2021-01-28T02:49:26+00:00 CRITICAL Uncaught Error: Call to undefined function dump_var() in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:32
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): style_title(true)
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(206): WP_Hook->apply_filters(true, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/archive-product.php(33): apply_filters('woocommerce_sho...', true)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template-loader.php(106): include('/Applications/M...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-blog-header.php(19): require_once('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/index.php(17): require('/Applications/M...')
+#6 {main}
+  thrown in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 32
+
+2021-01-28T02:49:33+00:00 CRITICAL Uncaught Error: Call to undefined function dump_var() in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:32
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): style_title(true)
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(206): WP_Hook->apply_filters(true, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/archive-product.php(33): apply_filters('woocommerce_sho...', true)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template-loader.php(106): include('/Applications/M...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-blog-header.php(19): require_once('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/index.php(17): require('/Applications/M...')
+#6 {main}
+  thrown in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 32
+
+2021-01-28T02:50:18+00:00 CRITICAL syntax error, unexpected 'return' (T_RETURN), expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 33
+
+2021-01-28T04:52:49+00:00 CRITICAL syntax error, unexpected end of file in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 38
+
+2021-01-28T04:55:00+00:00 CRITICAL syntax error, unexpected 'return' (T_RETURN) in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 33
+
+2021-01-28T09:38:27+00:00 CRITICAL Uncaught Error: Call to a member function get_description() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:56
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): add_description('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(62): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'sing in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 56
+
+2021-01-28T09:38:30+00:00 CRITICAL Uncaught Error: Call to a member function get_description() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:56
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): add_description('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(62): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'sing in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 56
+
+2021-01-28T09:38:54+00:00 CRITICAL Uncaught Error: Call to a member function get_description() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:56
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): add_description('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(62): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'sing in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 56
+
+2021-01-28T09:40:56+00:00 CRITICAL Uncaught Error: Call to a member function get_description() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:56
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): add_description('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(62): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'sing in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 56
+
+2021-01-28T09:41:27+00:00 CRITICAL syntax error, unexpected '}', expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 57
+
+2021-01-28T09:41:29+00:00 CRITICAL syntax error, unexpected '}', expecting ';' or ',' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 57
+
+2021-01-28T22:29:44+00:00 CRITICAL Uncaught Error: Call to undefined function dump_var() in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php:65
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require()
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-product')
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template-loader.php(106): include('/Applications/M...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-blog-header.php(19): require_once('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/index.php(17): require('/Applications/M...')
+#6 {main}
+  thrown in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php on line 65
+
+2021-01-28T23:27:53+00:00 CRITICAL syntax error, unexpected ')' in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 60
+
+2021-01-28T23:28:49+00:00 CRITICAL Uncaught Error: Call to a member function get_description() on null in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php:61
+Stack trace:
+#0 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(287): {closure}('')
+#1 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/class-wp-hook.php(311): WP_Hook->apply_filters(NULL, Array)
+#2 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/plugin.php(478): WP_Hook->do_action(Array)
+#3 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/content-single-product.php(61): do_action('woocommerce_sin...')
+#4 /Applications/MAMP/htdocs/inspiry1.2/wp-includes/template.php(732): require('/Applications/M...')
+#5 /Applications/MAMP/htdocs/inspiry1.2/wp-content/plugins/woocommerce/includes/wc-core-functions.php(284): load_template('/Applications/M...', false)
+#6 /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/woocommerce/single-product.php(37): wc_get_template_part('content', 'single-pro in /Applications/MAMP/htdocs/inspiry1.2/wp-content/themes/inspiry-theme/inc/woocommerce.php on line 61
+

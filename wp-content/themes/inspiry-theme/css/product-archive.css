@@ -1,0 +1,203 @@
+/*product archive container*/ 
+.bc-product-archive{ 
+    max-width: 2000px !important;
+}
+
+
+.product-archive-container{ 
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.product-archive-container .sidebar{ 
+    width: 10%;
+}
+.product-archive-container .product-cards{ 
+    width: 85%;
+}
+@media(max-width: 1667px) and (min-width: 1480px){ 
+   
+        .product-archive-container .product-cards{ 
+            width: 74%;
+        }  
+        .product-archive-container .sidebar{ 
+            width: 15%;
+        }
+    
+}
+@media (max-width: 1480px){ 
+    .product-archive-container .product-cards{ 
+        width: 75%;
+    }  
+    .product-archive-container .sidebar{ 
+        width: 15%;
+    }
+}
+@media (max-width: 1200px){ 
+    .product-archive-container .product-cards{ 
+        width: 70%;
+    }  
+}
+@media (max-width: 1084px){ 
+    .product-archive-container .product-cards{ 
+        width: 100%;
+    }  
+    .product-archive-container .sidebar{ 
+        width: 100%;
+    }
+}
+.bc-product-archive__title { 
+    text-align: center;
+}
+/*styling text*/ 
+.bc-product-grid--archive .bc-product__title a{
+    font-size: 20px !important;
+    font-family: 'Playfair Display', serif !important;
+   
+}
+.bc-product-grid--archive .bc-product__title{ 
+    margin-bottom: 5px !important;
+   font-weight: 500;
+}
+
+.bc-product-grid--archive .bc-product__brand{ 
+    display: none;
+}
+.bc-product-grid--archive .bc-product__pricing p{ 
+    font-size: 15px !important;
+}
+.bc-product-grid--archive .bc-product__meta{ 
+    padding: 25px 0 0px;
+}
+.bc-product-grid--archive h4{ 
+    display: none;
+}
+.bc-product-grid--archive .bc-product__pricing--api.bc-product__pricing--visible{ 
+    margin-top: 0px;
+}
+
+/*quick view*/ 
+.bc-product-card--single .bc-product__brand, .bc-product-single .bc-product__brand {
+    font-weight: 400;
+}
+.pagination .screen-reader-text{ 
+    display: none;
+}
+.pagination .page-numbers{ 
+    color: #303030;
+    padding: 0 0 0  5px;
+}   
+.pagination .page-numbers:hover{ 
+    color: #525659;
+}   
+.pagination .nav-links{ 
+   display: flex;
+   flex-direction: row;
+   justify-content: flex-end;
+   letter-spacing: 1px;
+   margin-bottom: 50px;
+}
+
+
+/*facet wp*/ 
+.fs-label-wrap {
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #303030 !important;
+    color: #303030;
+    cursor: pointer !important;
+    transition-timing-function: ease-in-out;
+    transition-duration: 100ms;
+    /* height: 30px; */
+}
+
+
+.fs-label-wrap:hover{
+    border: 1px solid #525659 !important;
+   color: #525659 !important;
+}
+.fs-arrow{ 
+    border-top: 5px solid #303030 !important;
+}
+
+
+.facetwp-facet {
+    margin-bottom: 15px !important;
+   
+}
+.facetwp-type-slider{ 
+    margin-top: 20px;
+}
+.noUi-connect{ 
+    background: #303030 !important;
+}
+
+.facet-reset-btn{ 
+    border: 1px solid #303030;
+    padding: 5px 10px;
+    background: white;
+    color: #303030;
+    cursor: pointer;
+    font-size: 15px;
+    letter-spacing: 1px;
+    transition-timing-function: ease-in-out;
+    transition-duration: 300ms;
+  
+}
+.facet-reset-btn:hover{ 
+    background: #303030;
+    color: white;
+}
+.facetwp-slider-reset{ 
+    display: none !important;
+}
+.facetwp-type-slider{
+    width: 220px;
+}
+@media (max-width: 1084px){ 
+    .facetwp-facet {
+        margin-bottom: 15px !important;
+        width: 100% !important; 
+    }
+    .fs-wrap { 
+        width: 100% !important;
+    }
+    .bc-product-archive__refinery{ 
+        margin-bottom: 40px !important;
+    }
+    .fs-label-wrap{ 
+        width: 100% !important;
+    }
+}
+
+/*design board icon*/ 
+.bc-product-card{ 
+    position: relative;
+}
+.bc-product-card .design-board-save-btn-container{ 
+    position: absolute !important;
+    top: 10px !important;
+    right: 10px !important;
+    opacity: 0;
+    z-index: 1000 !important;
+}
+.bc-product-card .design-board-save-btn-container i{ 
+    font-size: 20px;
+}
+/*.bc-quickview-trigger--hover-label{ 
+    position: absolute;
+    background-color: red;
+    top: 100%;
+   
+}*/
+
+.bc-product-card button {
+    
+    border: none;
+}
+/*sale*/
+.bc-product-flag--sale{
+    background-color: #303030 !important;
+}
