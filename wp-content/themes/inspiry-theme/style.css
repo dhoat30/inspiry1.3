@@ -82,6 +82,16 @@
     color: #3F3F3F;
     font-family: 'Playfair Display', serif;
 }
+h3{
+    font-family: 'Roboto', sans-serif !important;
+}
+p{
+    font-family: 'Roboto', sans-serif !important;
+}
+textarea::placeholder{
+    font-family: 'Roboto', sans-serif !important;
+
+}
 /*flex container*/ 
 .flex-row{
     display: flex;

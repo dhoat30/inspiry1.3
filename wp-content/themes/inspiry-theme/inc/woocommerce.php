@@ -345,13 +345,10 @@ function add_laybuy_body(){
 
 
 
-//cart 
+//checkout 
 
-
+add_action('woocommerce_checkout_before_order_review_heading', function(){
+    echo '<div class="order-review-container">';
+});
+add_action('woocommerce_review_order_after_payment', 'add_container_closing_div');
 ?>
-
-
-
-
-
-
