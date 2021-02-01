@@ -63,13 +63,10 @@ if ( woocommerce_product_loop() ) {
 		while ( have_posts() ) {
 			the_post();
 			?>
-			<div class="wishlist-designer-board-container">
-				<h1>hello</h1>
-				<div class="design-board-save-btn-container" data-tracking-data='{"post_id":"<?php the_id();?>","name":"<?php echo get_the_title(get_the_id()); ?>"}' <?php echo $link_attributes; ?>>
-							<i class="fal fa-plus open-board-container" ></i>
-				  </div>
-				<?php echo do_shortcode('[yith_wcwl_add_to_wishlist]');?>
-			</div>
+
+			<!--add wishlist and design board here
+			
+			--> 
 			<?php
 			/**
 			 * Hook: woocommerce_shop_loop.

@@ -380,7 +380,7 @@
                     $('.project-detail-page .design-board-save-btn-container i').attr('data-exists', 'yes');
 
                     //fill heart
-                    $('.design-board-save-btn-container i').addClass('fas fa-heart');
+                  //  $('.design-board-save-btn-container i').addClass('fas fa-heart');
 
                 }
             }, 

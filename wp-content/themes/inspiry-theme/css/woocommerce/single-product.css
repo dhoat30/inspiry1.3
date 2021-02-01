@@ -263,9 +263,13 @@ font-weight: 300;
     margin-top: 20px;
 }
 .yith-wcwl-add-to-wishlist {
-    margin-top: 5px !important;
-
+    margin-top: 0 !important;
 }
-.yith-wcwl-wishlistexistsbrowse i{
+.yith-wcwl-add-button a{
+    padding: 0 !important;
+}
+.yith-wcwl-add-to-wishlist i{
+    margin-top: 5px !important;
     font-size: 25px !important;
+    font-weight: 300 !important;
 }
