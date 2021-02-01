@@ -6,6 +6,9 @@
   .woocommerce-cart-form{
       margin-top: 30px;
   }
+  .woocommerce-notices-wrapper{
+      width: 100%;
+  }
 /* The table containing the list of products and our custom elements */
 .woocommerce-cart .woocommerce-cart-form {
     flex: 1 0 60%; /* 100% at small screens; 70% on larger screens */

@@ -59,6 +59,17 @@ if ( post_password_required() ) {
 		 */
 		do_action( 'woocommerce_single_product_summary',  $price);
 		?>
+		<div class="wishlist-designer-board-container">
+			<div class="design-board-save-btn-container" data-tracking-data='{"post_id":"<?php the_id();?>","name":"<?php echo get_the_title(get_the_id()); ?>"}' <?php echo $link_attributes; ?>>
+						<i class="fal fa-plus open-board-container" ></i>
+			  </div>
+			<?php echo do_shortcode('[yith_wcwl_add_to_wishlist]');?>
+		</div>
+		
+		 <?php
+		 //add availabilty and share options
+		 do_action('add_availability_share'); 
+		?>
 	</div>
 
 	<?php

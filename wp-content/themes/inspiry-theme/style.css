@@ -164,7 +164,7 @@ textarea::placeholder{
 /*global margin*/
 
 .margin-elements {
-    margin: 20px auto;
+    margin: 20px auto !important;
 }
 
 .margin-row {
@@ -173,6 +173,9 @@ textarea::placeholder{
 
 .small-margin-bottom {
     margin-bottom: 10px;
+}
+.margin-top{
+    margin-top: 10px !important;
 }
 
 
@@ -273,7 +276,6 @@ textarea::placeholder{
 }
 
 .button {
-    
     letter-spacing: 0.2em;
     line-height: 1.3em;
     padding: 10px 25px 10px 25px !important;
@@ -290,16 +292,19 @@ textarea::placeholder{
     border: 1px solid #303030;
     cursor: pointer;
 }
-
+.btn-full-width{
+    width: 100%;
+    display: block;
+}
 .btn-dk-green-border {
-    background-color: white;
-    border: 1px solid #303030;
+    background-color: white !important;
+    border: 1px solid #303030 !important;
     color: #303030 !important;
 }
 
 .btn-dk-green-border:hover {
-    background-color: #303030;
-    border: 1px solid #303030;
+    background-color: #303030 !important;
+    border: 1px solid #303030 !important;
     color: white !important;
 }
 

@@ -132,10 +132,10 @@ remove_action('woocommerce_single_product_summary', 'woocommerce_template_single
 remove_action('woocommerce_after_single_product_summary', 'woocommerce_output_product_data_tabs', 10);
 
 //add availablity 
-add_action('woocommerce_single_product_summary', function(){
+add_action('add_availability_share', function(){
     echo '<p class="availability roboto-font regular-text">Availability: <span class="days">7 - 10 Days</span></p>';
     echo '<p class="share-section roboto-font regular-text">Share: '. do_shortcode( "[Sassy_Social_Share]" ).'</p>'; 
-}, 60);
+}, 100);
 
 
 //closing div for product container
@@ -163,7 +163,6 @@ add_action('woocommerce_single_product_summary', function($price){
     $postID = $wp_query->post->ID;
     $product = wc_get_product( $postID );
     $layBuyPrice = round($product->get_price()/6, 2);
-
     echo '<h4>  
     <span class="lay-buy roboto-font">or 6 weekly interest-free payments from $'.$layBuyPrice.'</span> 
     <span class="lay-buy lay-buy-open information-overlay"> <img src="https://inspiry.co.nz/wp-content/uploads/2020/08/ico-laybuy.png"> What&#39;s this?</span>
@@ -351,4 +350,60 @@ add_action('woocommerce_checkout_before_order_review_heading', function(){
     echo '<div class="order-review-container">';
 });
 add_action('woocommerce_review_order_after_payment', 'add_container_closing_div');
-?>
+
+
+
+
+
+//add sample functonality 
+
+add_action( 'woocommerce_single_product_summary', 'bbloomer_add_free_sample_add_cart', 35 );
+  
+function bbloomer_add_free_sample_add_cart() {
+   ?>
+      <form class="cart" method="post" enctype='multipart/form-data'>
+      <button type="submit" name="add-to-cart" value="14441" class="button btn-dk-green-border btn-full-width margin-top">ORDER FREE SAMPLE</button>
+      <input type="hidden" name="free_sample" value="<?php the_ID(); ?>">
+      </form>
+   <?php
+}
+  
+// -------------------------
+// 2. Add the custom field to $cart_item
+  
+add_filter( 'woocommerce_add_cart_item_data', 'bbloomer_store_free_sample_id', 9999, 2 );
+  
+function bbloomer_store_free_sample_id( $cart_item, $product_id ) {
+   if ( isset( $_POST['free_sample'] ) ) {
+         $cart_item['free_sample'] = $_POST['free_sample'];
+   }
+   return $cart_item; 
+}
+  
+// -------------------------
+// 3. Concatenate "Free Sample" with product name (CART & CHECKOUT)
+// Note: rename "Free Sample" to your free sample product name
+  
+add_filter( 'woocommerce_cart_item_name', 'bbloomer_alter_cart_item_name', 9999, 3 );
+  
+function bbloomer_alter_cart_item_name( $product_name, $cart_item, $cart_item_key ) {
+   if ( $product_name == "Free Sample" ) {
+      $product = wc_get_product( $cart_item["free_sample"] );
+      $product_name .=  " (" . $product->get_name() . ")";
+   }
+   return $product_name;
+}
+  
+// -------------------------
+// 4. Add "Free Sample" product name to order meta
+// Note: this will show on thank you page, emails and orders
+  
+add_action( 'woocommerce_add_order_item_meta', 'bbloomer_save_posted_field_into_order', 9999, 2 );
+  
+function bbloomer_save_posted_field_into_order( $itemID, $values ) {
+    if ( ! empty( $values['free_sample'] ) ) {
+      $product = wc_get_product( $values['free_sample'] );
+      $product_name = $product->get_name();
+      wc_add_order_item_meta( $itemID, 'Free sample for', $product_name );
+    }
+}

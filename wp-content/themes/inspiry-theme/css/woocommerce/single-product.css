@@ -246,3 +246,26 @@ font-weight: 300;
 .button{
     padding: 15px 20px !important;
 }
+
+.related .products{ 
+    justify-content: space-around !important;
+    flex-wrap: wrap;
+}
+.related .product{ 
+    margin: 0 0 20px 0 !important;
+}
+
+/*wishlist and design board*/ 
+.wishlist-designer-board-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+    margin-top: 20px;
+}
+.yith-wcwl-add-to-wishlist {
+    margin-top: 5px !important;
+
+}
+.yith-wcwl-wishlistexistsbrowse i{
+    font-size: 25px !important;
+}

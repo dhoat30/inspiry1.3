@@ -62,7 +62,15 @@ if ( woocommerce_product_loop() ) {
 	if ( wc_get_loop_prop( 'total' ) ) {
 		while ( have_posts() ) {
 			the_post();
-
+			?>
+			<div class="wishlist-designer-board-container">
+				<h1>hello</h1>
+				<div class="design-board-save-btn-container" data-tracking-data='{"post_id":"<?php the_id();?>","name":"<?php echo get_the_title(get_the_id()); ?>"}' <?php echo $link_attributes; ?>>
+							<i class="fal fa-plus open-board-container" ></i>
+				  </div>
+				<?php echo do_shortcode('[yith_wcwl_add_to_wishlist]');?>
+			</div>
+			<?php
 			/**
 			 * Hook: woocommerce_shop_loop.
 			 */
@@ -71,6 +79,9 @@ if ( woocommerce_product_loop() ) {
 			wc_get_template_part( 'content', 'product' );
 		}
 	}
+	?>
+	
+	<?php
 
 	woocommerce_product_loop_end();
 

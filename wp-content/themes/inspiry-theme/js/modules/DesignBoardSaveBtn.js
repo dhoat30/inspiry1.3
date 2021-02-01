@@ -328,11 +328,11 @@
     }
 
     //fill heart icon
-    fillHeartIcon(){
+   /* fillHeartIcon(){
         if($('.design-board-save-btn-container i').attr('data-exists') == 'yes'){ 
             $('.design-board-save-btn-container i').addClass('fas fa-heart');
         } 
-    }
+    }*/
 
     //show create boad form
     showForm(){ 
