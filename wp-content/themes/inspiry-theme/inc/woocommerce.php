@@ -119,6 +119,9 @@ function tutsplus_remove_product_long_desc( $tabs ) {
 
 add_filter( 'woocommerce_product_tabs', 'tutsplus_remove_product_long_desc', 98 );
 
+//remove dimensions in additional information 
+add_filter( 'wc_product_enable_dimensions_display', '__return_false' );
+
 //add label infront of quantity
 add_action('woocommerce_before_quantity_input_field', function(){
     echo '<h6 class="qty-text roboto-font regular">Quantity:</h6>';
