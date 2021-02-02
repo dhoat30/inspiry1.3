@@ -273,3 +273,26 @@ font-weight: 300;
     font-size: 25px !important;
     font-weight: 300 !important;
 }
+
+/*warrenty */ 
+.bc-single-product__warranty h1{
+    padding: 10px 0 !important;
+}
+.bc-single-product__warranty i{
+    padding: 0 20px !important;
+}
+.bc-single-product__warranty p, span{
+    color: rgb(63,63,63);
+    line-height: 1.5em;
+    font-size: 15px!important;
+}
+@media (max-width: 767px){
+.desktop-warranty {
+    display: none;
+}
+.mobile-warranty{
+    display: block;
+}
+}
+
+

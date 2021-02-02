@@ -84,6 +84,15 @@ add_action('double_closing_div', function(){
     echo '</section>';
 
 },1);
+add_action('add_availability_share', function(){
+    global $post, $wp_query;
+    $postID = $wp_query->post->ID;
+    $product = wc_get_product( $postID );
+    echo '<section class="bc-single-product__warranty mobile-warranty">' ; 
+    echo $product->get_short_description();
+    echo '</section>';
+
+},120);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
 //wrapping container for gallery and product summary 
 $class= 'img-summary-container'; 
@@ -313,25 +322,25 @@ function add_laybuy_body(){
         <h2 class="g-heading2 roboto-font regular">Receive your purchase now, spread the total cost over 6 weekly automatic payments. Interest free!</h2>
         <ul class="laybuySteps roboto-font">
             <li class="roboto-font">
-                <img src="<?php echo get_site_url(); ?>/wp-content/uploads/2020/09/laybuy-cart.png" alt="">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2020/09/laybuy-cart.png" alt="">
                 <div class="desc roboto-font" >
                     Simply select <strong>Laybuy</strong> as your payment method at checkout
                 </div>
             </li>
             <li>
-                <img src="<?php echo get_site_url(); ?>/wp-content/uploads/2020/09/laybuy-login.png" alt="">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2020/09/laybuy-login.png" alt="">
                 <div class="desc roboto-font">
                     Login or Register for Laybuy and complete your order in seconds
                 </div>
             </li>
             <li>
-                <img src="<?php echo get_site_url(); ?>/wp-content/uploads/2020/09/laybuy-mobile.png" alt="">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2020/09/laybuy-mobile.png" alt="">
                 <div class="desc roboto-font">
                     Complete your purchase using an existing debit or credit card
                 </div>
             </li>
             <li>
-                <img src="<?php echo get_site_url(); ?>/wp-content/uploads/2020/09/download.png" alt="">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2020/09/download.png" alt="">
                 <div class="desc roboto-font">
                     Pay over 6 weeks and receive your purchase now
                 </div>

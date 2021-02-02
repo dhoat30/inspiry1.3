@@ -14,7 +14,7 @@
     font-size: 20px;
 }
 .general-page-template p, span, .paragraph{ 
-    font-family: 'work sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     line-height: 1.5em;
 }
 .general-page-template p span{ 
@@ -29,7 +29,7 @@
 }
 
 .general-page-template .bold{ 
-    font-family: 'work sans', sans-serif;
+    font-family: 'Roboto', sans-serif;
     font-weight: 600;
 }
 
@@ -39,7 +39,7 @@
     
 }
 .general-page-template li{
-    font-family: "work-sans", sans-serif !important;    
+    font-family: "Roboto", sans-serif !important;    
     line-height: 1.5em;
     letter-spacing: 1px;
     margin: 0px 0 10px 20px;

@@ -57,6 +57,10 @@ define( 'SECURE_AUTH_SALT', '|s,Fy5`,$|H( Ya7hA0LqUcncbEsa/*7/voeZV,)rS&*cSD|s$n
 define( 'LOGGED_IN_SALT',   'p{fA9R1q-EW4LXS51K6:]H(JHv/oG>4{v8F/*+2*`lxTc.s>g~Yn<rcY<(G;^z[J' );
 define( 'NONCE_SALT',       'g;||mP%Twq[f;|b/4WoD-5n-=P*:)T$A@OgWdBbj)jN|DR`G}ry@27m}4tIP}0EF' );
 define('ALLOW_UNFILTERED_UPLOADS', true);
+/**
+* Change BuddyPress default Members landing tab.
+*/
+define('BP_DEFAULT_COMPONENT', 'profile' );
 /**#@-*/
 
 /**

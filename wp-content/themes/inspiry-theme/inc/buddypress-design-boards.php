@@ -1,4 +1,23 @@
 <?php
+function remove_blogs_nav() {
+    bp_core_remove_nav_item( 'activity' );
+    bp_core_remove_nav_item( 'notifications' );
+    bp_core_remove_nav_item( 'messages' );
+    bp_core_remove_nav_item( 'friends' );
+    bp_core_remove_nav_item( 'favorites' );
+    bp_core_remove_nav_item( 'reviews' );
+    bp_core_remove_nav_item( 'front' );
+    $user = wp_get_current_user();
+    if ( in_array( 'customer', (array) $user->roles ) ) {
+        bp_core_remove_nav_item( 'listings' );
+        bp_core_remove_nav_item( 'invoices' );
+    }
+    if (!get_current_user_id()) {
+        bp_core_remove_nav_item( 'listings' );
+        bp_core_remove_nav_item( 'profile' );
+     }
+    }
+    add_action( 'bp_setup_nav', 'remove_blogs_nav', 15 );
 
 //adding new page in buddypress
 
@@ -8,8 +27,8 @@ function bp_custom_user_nav_item() {
     //Design Board 
     $args = array(
             "name" => __("Design Board", "buddypress"),
-            "slug" => "design-board-2",
-            "default_subnav_slug" => "design-board-2",
+            "slug" => "boards",
+            "default_subnav_slug" => "boards",
             "position" => 50,
             "show_for_displayed_user" => false,
             "screen_function" => "bp_custom_user_nav_item_screen",
