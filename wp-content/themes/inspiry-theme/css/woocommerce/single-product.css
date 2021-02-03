@@ -44,16 +44,18 @@ font-weight: 300;
 }
 .single-product .woocommerce-Price-amount, bdi {
     margin: 0 !important;
+    font-family: 'Roboto', sans-serif;
 }
 .single-product del bdi{ 
     text-decoration: line-through !important;
     margin-right: 5px !important;
     color: #9f9f9f !important;
+    font-family: 'Roboto', sans-serif;
 }
 .single-product del bdi span{ 
     text-decoration: line-through !important;
     color: #9f9f9f !important;
-
+    font-family: 'Roboto', sans-serif;
 }
 
 .single-product .price bdi{ 
