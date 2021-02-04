@@ -12,6 +12,7 @@ class Warranty{
 
     showContent(e){ 
         $(e.target).closest('h1').next().slideToggle(300); 
+        $(e.target).closest('h1').siblings('ul').slideToggle(300); 
         $(e.target).find('i').toggleClass('fa-plus');
         $(e.target).find('i').toggleClass('fa-minus');
     }

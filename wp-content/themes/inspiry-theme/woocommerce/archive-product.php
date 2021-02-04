@@ -64,9 +64,8 @@ if ( woocommerce_product_loop() ) {
 			the_post();
 			?>
 
-			<!--add wishlist and design board here
 			
-			--> 
+			
 			<?php
 			/**
 			 * Hook: woocommerce_shop_loop.

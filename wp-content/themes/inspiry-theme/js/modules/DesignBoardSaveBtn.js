@@ -7,7 +7,7 @@
         this.boardListItems = $('.choose-board-container .board-list li'); 
         this.checkboxInput = $('.tgl input[type="checkbox"]');
        this.events(); 
-       this.fillHeartIcon();  
+         
     }
     //events
     events(){ 

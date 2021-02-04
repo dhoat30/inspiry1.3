@@ -35,6 +35,7 @@
     flex-wrap: wrap;
 }
  .archive .products .product{
+    position: relative !important;
     margin-top: 20px !important;
    justify-content: space-between !important;
    display: flex;
@@ -47,6 +48,7 @@
         -ms-flex-preferred-size: calc(24.995% - 22.5px);
         flex-basis: calc(24.995% - 22.5px);
         width: calc(24.995% - 22.5px);
+        
 }
 
 .archive .woocommerce-result-count{
@@ -153,3 +155,21 @@
         
     }
 }
+
+/*on sale*/ 
+.onsale{
+    background: #303030 !important;
+    letter-spacing: 1px;
+    padding: none !important;
+    padding: 0 !important;
+    padding-top: 0.202em;
+    padding-right: 0.202em;
+    padding-bottom: 0.202em;
+    padding-left: 0.202em;
+    font-weight: 400 !important;
+}
+
+.wishlist-design-board-container-archive{
+    position: absolute;
+}
+

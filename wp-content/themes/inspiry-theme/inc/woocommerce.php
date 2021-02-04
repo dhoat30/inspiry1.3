@@ -63,7 +63,10 @@ remove_action('woocommerce_sidebar', 'woocommerce_get_sidebar' );
 
 //add div container for breadcrumbs and image on single product
 //
-
+//gallery thumbnail size
+add_filter( 'woocommerce_gallery_thumbnail_size', function( $size ) {
+    return 'woocommerce_thumbnail';
+    } );
 add_action('breadcrumb_image_container', 'add_image_breadcrumb_container'); 
 function add_image_breadcrumb_container(){
     if(is_single()){
@@ -334,4 +337,14 @@ function bbloomer_save_posted_field_into_order( $itemID, $values ) {
       $product_name = $product->get_name();
       wc_add_order_item_meta( $itemID, 'Free sample for', $product_name );
     }
+}
+
+
+//attributes links
+
+add_filter('woocommerce_attribute_show_in_nav_menus', 'wc_reg_for_menus', 1, 2);
+
+function wc_reg_for_menus( $register, $name = '' ) {
+     if ( $name == 'pa_brand' ) $register = true;
+     return $register;
 }
