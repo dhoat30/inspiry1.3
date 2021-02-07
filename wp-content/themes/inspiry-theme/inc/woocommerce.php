@@ -287,18 +287,35 @@ add_action('woocommerce_review_order_after_payment', 'add_container_closing_div'
 
 
 //add sample functonality 
-
 add_action( 'woocommerce_single_product_summary', 'bbloomer_add_free_sample_add_cart', 35 );
   
 function bbloomer_add_free_sample_add_cart() {
+    global $post;
+    $terms = wp_get_post_terms( $post->ID, 'product_cat' );
+    foreach ( $terms as $term ) $categories[] = $term->slug;
+
+    if ( in_array( 'fabric', $categories ) || in_array( 'wallpaper', $categories )) {
    ?>
       <form class="cart" method="post" enctype='multipart/form-data'>
+      <?php 
+        if (strstr($_SERVER['SERVER_NAME'], 'localhost')) {
+      ?>
       <button type="submit" name="add-to-cart" value="14441" class="button btn-dk-green-border btn-full-width margin-top">ORDER FREE SAMPLE</button>
+      <?php
+        }
+
+        else{
+            ?>
+              <button type="submit" name="add-to-cart" value="421663" class="button btn-dk-green-border btn-full-width margin-top">ORDER FREE SAMPLE</button>
+
+            <?php
+        }
+      ?>
       <input type="hidden" name="free_sample" value="<?php the_ID(); ?>">
       </form>
    <?php
+    }
 }
-  
 // -------------------------
 // 2. Add the custom field to $cart_item
   

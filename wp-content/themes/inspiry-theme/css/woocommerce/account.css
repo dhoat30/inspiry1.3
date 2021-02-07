@@ -1,0 +1,58 @@
+.login-form-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.login-form-container>div {
+    width: 45%;
+    max-width: 500px;
+    margin: 20px;
+}
+.login-form-container form {
+    border: 1px solid rgba(0,0,0,0.3) !important;
+
+}
+.login-form-container form a {
+    display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: wrap;
+    justify-content: flex-start !important;
+}
+.login-form-container .login-section{
+    display: flex !important;
+    flex-direction: column !important;
+    flex-wrap: wrap;
+justify-content: flex-start !important;
+}
+.form-row{
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
+   
+
+}
+.form-row::before {
+content: none !important; 
+}
+.form-row::after {
+    content: none !important; 
+    }
+
+.login-form-container input{
+    width: 300px !important;
+    height: 30px !important;
+    display: block !important;
+}
+
+/*remember me*/
+.remember-me-label{
+    display: flex; 
+    flex-direction: row !important;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: flex-start !important;
+    height: 100px;
+    }
