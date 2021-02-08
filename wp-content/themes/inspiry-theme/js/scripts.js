@@ -19,11 +19,14 @@ import ShopFav from './modules/ShopFav';
 import ToolTip from './modules/ToolTip';
 import SingleDesignBoard from './modules/SingleDesignBoard';
 
+import WooAccount from './modules/WooAccount'; 
 //image upload 
 import ImageUpload from './modules/ImageUpload';
 
 
 window.onload = function() {
+    //account 
+    const wooAccount = new WooAccount(); 
 
     const imageUpload = new ImageUpload();
     const shopFav = new ShopFav();

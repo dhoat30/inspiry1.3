@@ -582,7 +582,7 @@ textarea::placeholder{
         color: #fff !important;
         font-family: sans-serif;
         width: 100% !important;
-        padding: 15px 20px !important;
+        padding: 10px 20px !important;
         border-radius: 0;
         font-weight: 600 !important;
         line-height: 1.6;
