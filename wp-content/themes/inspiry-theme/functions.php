@@ -31,8 +31,8 @@ require get_theme_file_path('/inc/nav-registeration.php');
     } else {
       //wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/undefined'),  array( 'jquery' ), '1.0', true);
 
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.5cb1a26a7823aaf9b4e5.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.5cb1a26a7823aaf9b4e5.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.14f366895e4ea1c614e5.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.14f366895e4ea1c614e5.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -232,3 +232,29 @@ EOT;
 }
 add_filter( 'style_loader_tag', 'add_rel_preload', 10, 4 );
 
+//redirect after login 
+/**
+* Redirect users to custom URL based on their role after login
+*
+* @param string $redirect
+* @param object $user
+* @return string
+*/
+function wc_custom_user_redirect( $redirect, $user ) {
+  // Get the first of all the roles assigned to the user
+  $role = $user->roles[0];
+  $dashboard = admin_url();
+  $myaccount = get_permalink( wc_get_page_id( 'shop' ) );
+  if( $role == 'administrator' ) {
+    //Redirect administrators to the dashboard
+    $redirect = '/';
+  }  elseif ( $role == 'customer' || $role == 'subscriber' ) {
+    //Redirect customers and subscribers to the "My Account" page
+    $redirect = '/';
+  } else {
+    //Redirect any other role to the previous visited page or, if not available, to the home
+    $redirect = wp_get_referer() ? wp_get_referer() : home_url();
+  }
+  return $redirect;
+}
+add_filter( 'woocommerce_login_redirect', 'wc_custom_user_redirect', 10, 2 );

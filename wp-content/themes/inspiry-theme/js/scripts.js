@@ -63,13 +63,13 @@ window.onload = function() {
                 console.log("click working");
                 if (user.includes('LOGIN / REGISTER')) {
                     console.log('Log In');
-                } else {
+                } 
+                else {
                     e.preventDefault();
                     $('.my-account-nav').slideToggle(200, function() {
                         $('.arrow-icon').toggleClass('fa-chevron-up');
                     });
                 }
-
             })
         }
     }

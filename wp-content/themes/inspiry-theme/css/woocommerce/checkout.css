@@ -6,6 +6,9 @@
     flex-wrap: wrap;
     justify-content: space-between;
 }
+.woocommerce-checkout .woocommerce-checkout .form-row span{
+    width: 100%;
+}
 .woocommerce-checkout .woocommerce-checkout #customer_details{
     width: 60% !important; 
 }
