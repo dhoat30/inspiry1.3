@@ -126,8 +126,9 @@ use BigCommerce\Post_Types\Product\Product;
                             
 
                            
-       
-		<p class="availability roboto-font regular-text">Availability: <span class="days">7 - 10 Days</span></p>
+    <!--    
+    <p class="availability roboto-font regular-text">Availability: <span class="days">7 - 10 Days</span></p>
+  --> 
     
     <p class="share-section roboto-font regular-text">Share: <?php echo do_shortcode( '[Sassy_Social_Share]' );?></p>
     

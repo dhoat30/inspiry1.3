@@ -31,8 +31,8 @@ require get_theme_file_path('/inc/nav-registeration.php');
     } else {
       //wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/undefined'),  array( 'jquery' ), '1.0', true);
 
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.14f366895e4ea1c614e5.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.14f366895e4ea1c614e5.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.77cb973301455ac1747a.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.77cb973301455ac1747a.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(

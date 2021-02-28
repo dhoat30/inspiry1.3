@@ -23,8 +23,12 @@ get_header(); ?>
 		</div><!-- .page-wrapper -->
 
 	</div><!-- #content -->
+
+	<div class="fabric-calculator-container">
+		<div>
+
+		</div>
+	</div>
 </div><!-- #primary -->
-
-
 
 <?php get_footer(); ?>

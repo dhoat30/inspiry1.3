@@ -1,5 +1,9 @@
 import '../style.css';
 let $ = jQuery;
+
+import 'owl.carousel/dist/assets/owl.carousel.css';
+import 'owl.carousel';
+
 import WishlistAjax from './modules/WishlistAjax';
 import Warranty from './modules/Warranty';
 import WallpaperCalc from './modules/WallpaperCalc';
@@ -23,6 +27,26 @@ import WooAccount from './modules/WooAccount';
 //image upload 
 import ImageUpload from './modules/ImageUpload';
 
+
+setTimeout(function(){
+    $('.flex-control-thumbs').addClass('owl-carousel');
+    $('.owl-carousel').owlCarousel({
+        loop:false,
+        margin:10,
+        nav:true,
+        responsive:{
+            0:{
+                items:3
+            },
+            600:{
+                items:3
+            },
+            1000:{
+                items:4
+            }
+        }
+    });
+  }, 300);
 
 window.onload = function() {
     //account 
