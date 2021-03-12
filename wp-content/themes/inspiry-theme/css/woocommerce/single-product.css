@@ -325,20 +325,20 @@ font-weight: 300;
     width: 100%;
     height: 100%;
     z-index: 1000;
-    }
+    pointer-events: none; }
 .flex-control-thumbs .owl-nav span{
     font-size: 40px !important;
 }
 .flex-control-thumbs .owl-nav .owl-prev {
     position:absolute; 
     left: 0;
-    
+    pointer-events: visibleFill;
 
 }
 .flex-control-thumbs .owl-nav .owl-next {
     position:absolute; 
     right: 0;
-    
+    pointer-events: visibleFill;
 }
 
 @media(max-width:340px){
