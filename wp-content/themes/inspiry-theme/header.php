@@ -73,7 +73,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <?php
                         }
                         else{
-                            ?><a href="<?php echo get_site_url(); ?>/login/" class="login-tag text-decoration-none dark-grey" data-root-url='<?php echo get_home_url()?>'>
+                            ?><a href="<?php echo get_site_url(); ?>/account-profile/" class="login-tag text-decoration-none dark-grey" data-root-url='<?php echo get_home_url()?>/account-profile'>
                                 <span class="dashicons dashicons-admin-users"></span> LOGIN / REGISTER
                         </a>
                             <?php

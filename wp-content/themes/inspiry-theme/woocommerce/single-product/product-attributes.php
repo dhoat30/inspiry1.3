@@ -41,16 +41,11 @@ if ( ! $product_attributes ) {
 	
 	
 	
-	array_reorder_keys($product_attributes, 'attribute_pa_brand,attribute_pa_collection,attribute_pa_design-name,attribute_pa_colour,attribute_pa_design-style,attribute_pa_pattern,attribute_pa_composition,attribute_pa_viscose,attribute_pa_match,attribute_pa_vertical-pattern-repeat,attribute_pa_horizontal-pattern-repeat,attribute_pa_width,attribute_pa_usage');
+	array_reorder_keys($product_attributes, 'attribute_pa_brands,attribute_pa_collection,attribute_pa_design-name,attribute_pa_color,attribute_pa_design-style,attribute_pa_pattern,attribute_pa_composition,attribute_pa_viscose,attribute_pa_match,attribute_pa_vertical-pattern-repeat,attribute_pa_horizontal-pattern-repeat,attribute_pa_width,attribute_pa_usage');
 
-		?>
-		<br><br><br><br><br><br>
-		<?php
-		print_r($product_attributes ); 
-		?>
-		<br><br><br><br><br><br>
-		<?php
-		echo $product_attributes; 
+		//print_r($product_attributes ); 
+		
+		//echo $product_attributes; 
 	foreach ( $product_attributes as $product_attribute_key => $product_attribute ) : 
 		
 		?>

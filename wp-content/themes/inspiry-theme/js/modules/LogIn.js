@@ -4,7 +4,7 @@ class LogIn{
         this.events(); 
     }
     events(){ 
-        $('.login-tag').on('click', this.showLogInForm); 
+      //  $('.login-tag').on('click', this.showLogInForm); 
     }
    
      

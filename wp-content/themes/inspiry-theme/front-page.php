@@ -155,7 +155,7 @@ get_header();
                     array(
                         'taxonomy' => 'category',
                         'field'    => 'slug',
-                        'terms'    => array( 'home-page-loving-section'),
+                        'terms'    => array( 'home-page-loving-section')
                     )
                     ), 
                     'orderby' => 'date', 
