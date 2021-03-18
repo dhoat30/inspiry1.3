@@ -30,9 +30,9 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.36fa1fefe7bdc43adea9.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.36fa1fefe7bdc43adea9.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.36fa1fefe7bdc43adea9.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.1d68370b68e799224876.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.1d68370b68e799224876.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.1d68370b68e799224876.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -310,16 +310,16 @@ function woocommerce_ajax_add_to_cart() {
        /**
  * Show cart contents / total Ajax
  */
-add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
+// add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
 
-function woocommerce_header_add_to_cart_fragment( $fragments ) {
-	global $woocommerce;
+// function woocommerce_header_add_to_cart_fragment( $fragments ) {
+// 	global $woocommerce;
 
-	ob_start();
+// 	ob_start();
 
-	?>
-	<a class="cart-customlocation" href="<?php echo esc_url(wc_get_cart_url()); ?>" title="<?php _e('View your shopping cart', 'woothemes'); ?>"><?php echo sprintf(_n('%d item', '%d items', $woocommerce->cart->cart_contents_count, 'woothemes'), $woocommerce->cart->cart_contents_count);?> – <?php echo $woocommerce->cart->get_cart_total(); ?></a>
+// 	?>
+ 
 	<?php
-	$fragments['a.cart-customlocation'] = ob_get_clean();
-	return $fragments;
-}
+// 	$fragments['.product-card'] = ob_get_clean();
+// 	return $fragments;
+// }

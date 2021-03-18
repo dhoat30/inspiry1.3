@@ -161,32 +161,31 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     }
 
-    $items_count = WC()->cart->get_cart_contents_count(); 
     ?>
-        <div id="mini-cart-count"><?php echo $items_count ? $items_count : '&nbsp;'; ?></div>
-        <div class="cart-popup-container box-shadow">
+       <?php 
+        for ($x = 1; $x <= 1; $x++){
+
+      
+       ?>
+        <div class="cart-popup-container">
 			<div class="flex-card">
 
 			
-		<?php
+                <?php
 
-		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-			$product = $cart_item['data'];
-			$product_id = $cart_item['product_id'];
-			$quantity = $cart_item['quantity'];
-			$price = WC()->cart->get_product_price( $product );
-			$subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
-			$link = $product->get_permalink( $cart_item );
-			// Anything related to $product, check $product tutorial
-			$meta = wc_get_formatted_cart_item_data( $cart_item );
-			// echo $product->image_id;
-			// echo $product_id;
-			// echo $product->name;
-			// echo $quantity;
-			?>
+                foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                    $product = $cart_item['data'];
+                    $product_id = $cart_item['product_id'];
+                    $quantity = $cart_item['quantity'];
+                    $price = WC()->cart->get_product_price( $product );
+                    $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+                    $link = $product->get_permalink( $cart_item );
+                    // Anything related to $product, check $product tutorial
+                    $meta = wc_get_formatted_cart_item_data( $cart_item );
+                    ?>
 			
 				<div class="product-card">
-					<a href="<?php $link?>" class="rm-txt-dec">
+					<a href="<?php echo $link?>" class="rm-txt-dec">
 						<div class="img-container">
 							<img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
 						</div>
@@ -196,24 +195,24 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 						</div>
 						
 						<div class="price-container">
-							<h6 class="font-s-regular roboto-font bold">$<?php echo $product->price; ?></h6>
+                        <h6 class="font-s-regular roboto-font bold"><?php echo $subtotal; ?></h6>
 						</div>
-						<div>
-							
-						</div>
+						
 					</a>
 				</div>
-			
-			<?php
-			
-		}
-		?>
+               
+			    <?php
+                
+                }
+                
+                ?>
 			</div>
+            <div>
+                hello
+                <?php echo WC()->cart->total;?>
+            </div>
 		</div>
-       
-
-<a class="cart-customlocation" href="<?php echo wc_get_cart_url(); ?>" title="<?php _e( 'View your shopping cart' ); ?>"><?php echo sprintf ( _n( '%d item', '%d items', WC()->cart->get_cart_contents_count() ), WC()->cart->get_cart_contents_count() ); ?> – <?php echo WC()->cart->get_cart_total(); ?></a>
 
     <?php
-    
+      }
 ?>
