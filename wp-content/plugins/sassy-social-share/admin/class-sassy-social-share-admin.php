@@ -206,12 +206,12 @@ class Sassy_Social_Share_Admin {
 		?>
 		<p>
 			<label for="heateor_sss_sharing">
-				<input type="checkbox" name="_heateor_sss_meta[sharing]" id="heateor_sss_sharing" value="1" <?php checked( '1', @$sharing_meta['sharing'] ); ?> />
+				<input type="checkbox" name="_heateor_sss_meta[sharing]" id="heateor_sss_sharing" value="1" <?php echo is_array( $sharing_meta ) && isset( $sharing_meta['sharing'] ) && $sharing_meta['sharing'] == '1' ? 'checked' : ''; ?> />
 				<?php _e( 'Disable Standard Sharing interface on this ' . $postType, 'sassy-social-share' ) ?>
 			</label>
 			<br/>
 			<label for="heateor_sss_vertical_sharing">
-				<input type="checkbox" name="_heateor_sss_meta[vertical_sharing]" id="heateor_sss_vertical_sharing" value="1" <?php checked( '1', @$sharing_meta['vertical_sharing'] ); ?> />
+				<input type="checkbox" name="_heateor_sss_meta[vertical_sharing]" id="heateor_sss_vertical_sharing" value="1" <?php echo is_array( $sharing_meta ) && isset( $sharing_meta['vertical_sharing'] ) && $sharing_meta['vertical_sharing'] == '1' ? 'checked' : ''; ?> />
 				<?php _e( 'Disable Floating Sharing interface on this ' . $postType, 'sassy-social-share' ) ?>
 			</label>
 			<?php
@@ -226,7 +226,7 @@ class Sassy_Social_Share_Admin {
 					<br/>
 					<label for="heateor_sss_<?php echo $network ?>_horizontal_sharing_count">
 						<span style="width: 242px; float:left"><?php _e( 'Starting share count for ' . ucfirst( str_replace ( '_', ' ', $network ) ), 'sassy-social-share' ) ?></span>
-						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_horizontal_count]" id="heateor_sss_<?php echo $network ?>_horizontal_sharing_count" value="<?php echo isset( $sharing_meta[$network . '_horizontal_count'] ) ? $sharing_meta[$network . '_horizontal_count'] : '' ?>" />
+						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_horizontal_count]" id="heateor_sss_<?php echo $network ?>_horizontal_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_horizontal_count'] ) ? $sharing_meta[$network . '_horizontal_count'] : '' ?>" />
 					</label>
 					<?php
 				}
@@ -245,7 +245,7 @@ class Sassy_Social_Share_Admin {
 					<br/>
 					<label for="heateor_sss_<?php echo $network ?>_vertical_sharing_count">
 						<span style="width: 242px; float:left"><?php _e( 'Starting share count for ' . ucfirst( str_replace ( '_', ' ', $network ) ), 'sassy-social-share' ) ?></span>
-						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_vertical_count]" id="heateor_sss_<?php echo $network ?>_vertical_sharing_count" value="<?php echo isset( $sharing_meta[$network . '_vertical_count'] ) ? $sharing_meta[$network . '_vertical_count'] : '' ?>" />
+						<input type="text" name="_heateor_sss_meta[<?php echo $network ?>_vertical_count]" id="heateor_sss_<?php echo $network ?>_vertical_sharing_count" value="<?php echo is_array( $sharing_meta ) && isset( $sharing_meta[$network . '_vertical_count'] ) ? $sharing_meta[$network . '_vertical_count'] : '' ?>" />
 					</label>
 					<?php
 				}

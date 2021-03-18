@@ -12,7 +12,7 @@
  * @author     hossain88 <muhin.cse.diu@gmail.com> 
  */
 
-class Woo_Free_Product_Sample_Helper {
+class Woo_Free_Product_Sample_Helper { 
 
 /**
 	 * The option of this plugin.
@@ -143,10 +143,10 @@ class Woo_Free_Product_Sample_Helper {
         $button  = '';
         switch ( self::wfps_product_type() ) {
             case "simple":
-                $button = '<button type="submit" name="simple-add-to-cart" value="'.get_the_ID().'" id="woo-free-sample-button" class="woo-free-sample-button single_add_to_cart_button">'.self::wfps_button_text().'</button>';
+                $button = '<button type="submit" name="simple-add-to-cart" value="'.get_the_ID().'" id="woo-free-sample-button" class="woo-free-sample-button">'.sprintf( esc_html__( '%s', 'woo-free-product-sample' ), self::wfps_button_text() ).'</button>';
                 break;
             case "variable":
-                $button = '<button type="submit" name="variable-add-to-cart" value="'.get_the_ID().'" id="woo-free-sample-button" class="woo-free-sample-button single_add_to_cart_button">'.self::wfps_button_text().'</button>';
+                $button = '<button type="submit" name="variable-add-to-cart" value="'.get_the_ID().'" id="woo-free-sample-button" class="woo-free-sample-button">'.sprintf( esc_html__( '%s', 'woo-free-product-sample' ), self::wfps_button_text() ).'</button>';
                 break;			
             default:
                 $button = '';
@@ -182,7 +182,7 @@ class Woo_Free_Product_Sample_Helper {
 	 * @param    none
      * @return   void
 	 */		
-	public static function wfps_sample_qty() {
+	public static function wfps_sample_qty() { 
 
 		if ( class_exists( 'SPQ_Smart_Product_Quantity' ) ) {
 			return empty( $_REQUEST['quantity'] ) ? 1 : wc_stock_amount( wp_unslash( $_REQUEST['quantity'] ) ); 

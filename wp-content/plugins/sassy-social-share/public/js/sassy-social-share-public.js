@@ -28,6 +28,11 @@ function heateorSssMoreSharingPopup(elem, postUrl, postTitle, twitterTitle){
 		locale: "en-US",
 		redirect_url: "https://parler.com/new-post?message=" + postTitle + "&url=" + postUrl
 	  },
+	  gab: {
+		title: "Gab",
+		locale: "en-US",
+		redirect_url: "https://gab.com/compose?text=" + postTitle + "&url=" + postUrl
+	  },
 	  pinterest: {
 		title: "Pinterest",
 		locale: "en-US",

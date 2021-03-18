@@ -10,7 +10,7 @@ class Calculate_Srcset extends Base_Filter
     public function listen()
     {
         add_filter( 'wp_calculate_image_srcset', [ $this, 'remove_full_size' ], 99, 5 );
-        add_filter( 'wp_get_attachment_metadata', [ $this, 'removeOrphanSizesMeta' ] );
+        add_filter( 'wp_get_attachment_metadata', [ $this, 'removeOrphanSizesMeta' ],PHP_INT_MAX );
         add_filter( 'wp_update_attachment_metadata', [ $this, 'removeOrphanSizesMeta' ], PHP_INT_MAX);
         add_filter( 'wp_calculate_image_srcset', [ $this, 'addCacheBustingToSrcset' ], PHP_INT_MAX, 3 );
         add_filter( 'wp_get_attachment_image_src', [ $this, 'addCacheBustingToSrc' ], PHP_INT_MAX, 4 );

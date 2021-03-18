@@ -72,8 +72,6 @@ class Recanvas_Filter implements FilterInterface
 
     public function applyFilter( Image $image )
     {
-        // Using a canvas to prevent black background
-        // with transparent images.
 
         $canvas = $this->manager->canvas(
             $this->size[ 'width' ],

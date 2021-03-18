@@ -97,6 +97,8 @@ function geodir_cfi_input_output($cf){
 
     // required
     $required = !empty($cf['is_required']) ? ' <span class="text-danger">*</span>' : '';
+    $required_msg = $required && $cf['required_msg'] != '' ? __( $cf['required_msg'] , 'geodirectory') : '';
+    $validation_msg = $title != '' ? __( $title , 'geodirectory') : $required_msg;
 
     // admin only
     $admin_only = geodir_cfi_admin_only($cf);
@@ -111,6 +113,8 @@ function geodir_cfi_input_output($cf){
             'label_type'       => !empty($geodir_label_type) ? $geodir_label_type : 'horizontal',
             'type'              => $type,
             'title'             =>  $title,
+            'validation_text'   => $validation_msg,
+            'validation_pattern' => ! empty( $cf['validation_pattern'] ) ? $cf['validation_pattern'] : '',
             'placeholder'       => esc_html__( $cf['placeholder_value'], 'geodirectory'),
             'class'             => '',
             'value'             => $value, // esc_attr(stripslashes($value))
@@ -315,6 +319,8 @@ function geodir_cfi_radio($html,$cf){
         // admin only
         $admin_only = geodir_cfi_admin_only($cf);
 
+        // Help text
+        $help_text = $cf['desc'] != '' ? __( $cf['desc'], 'geodirectory' ) : '';
 
         $value = geodir_get_cf_value($cf);
         $html = aui()->radio(
@@ -324,7 +330,8 @@ function geodir_cfi_radio($html,$cf){
                 'type'              => "radio",
                 'title'             => esc_attr__($cf['frontend_title'], 'geodirectory'),
                 'label'             => esc_attr__($cf['frontend_title'], 'geodirectory').$admin_only.$required,
-                'label_type'       => !empty($geodir_label_type) ? $geodir_label_type : 'horizontal',
+                'label_type'        => !empty($geodir_label_type) ? $geodir_label_type : 'horizontal',
+                'help_text'         => $help_text,
                 'class'             => '',
                 'value'             => $value,
                 'options'           => $option_values
@@ -373,12 +380,12 @@ function geodir_cfi_checkbox($html,$cf){
 
         $title = '';
         $value = geodir_get_cf_value( $cf );
-        if ( empty( $value ) && $cf['default'] ) {
+        // Set default checked.
+        if ( $value === '' && $cf['default'] ) {
             $value = '1';
         }
         $checked          = $value == '1' ? true : false;
         $extra_attributes = array();
-
 
         //validation
         if ( isset( $cf['validation_pattern'] ) && $cf['validation_pattern'] ) {
@@ -487,6 +494,9 @@ function geodir_cfi_textarea($html,$cf){
         // wysiwyg
         $wysiwyg = apply_filters( 'geodir_custom_field_allow_html_editor', $html_editor, $cf );
 
+        // Allow html tags
+        $allow_tags = apply_filters( 'geodir_custom_field_textarea_allow_tags', ( $wysiwyg || $cf['name'] == 'video' ), $cf );
+
         // field type (used for validation)
         $extra_attributes['field_type'] =  $wysiwyg ? 'editor' :  $cf['type'];
 
@@ -498,7 +508,6 @@ function geodir_cfi_textarea($html,$cf){
 
         // help text
         $help_text = __( $cf['desc'], 'geodirectory' );
-
 
         $html = aui()->textarea(array(
             'name'       => $cf['name'],
@@ -515,11 +524,10 @@ function geodir_cfi_textarea($html,$cf){
             'no_wrap'    => false,
             'rows'      => 8,
             'wysiwyg'   => $wysiwyg ? array('quicktags' => true) : false,
+            'allow_tags' => $allow_tags,
             'help_text'        => $help_text,
-            'extra_attributes' => $extra_attributes,
+            'extra_attributes' => $extra_attributes
         ));
-
-
     }
 
     return $html;
@@ -822,8 +830,10 @@ function geodir_cfi_multiselect( $html, $cf ) {
 				}
 			}
 
+			$description = $help_text != '' && class_exists( "AUI_Component_Helper" ) ? AUI_Component_Helper::help_text( $help_text ) : '';
+
 			if ( $horizontal ) {
-				echo "</div></div>";
+				echo "</div>" . $description . "</div>";
 			}
 
 			echo "</div>";
@@ -1761,7 +1771,7 @@ function geodir_cfi_categories($html,$cf){
         $html = ob_get_clean();
 
         // Default category select
-        if ( $cat_display == 'multiselect' ) {
+        if ( $cat_display == 'multiselect' || $cat_display == 'checkbox' ) {
             // required
             $required = ! empty( $cf['is_required'] ) ? ' <span class="text-danger">*</span>' : '';
 
@@ -1782,7 +1792,7 @@ function geodir_cfi_categories($html,$cf){
             ) );
         } else {
             // leaving this out should set the default as the main cat anyway
-            // $html .= '<input type="hidden" id="default_category" name="default_category" value="' . esc_attr( geodir_get_cf_default_category_value() ) . '">';
+            $html .= '<input type="hidden" id="default_category" name="default_category" value="' . esc_attr( geodir_get_cf_default_category_value() ) . '">';
         }
     }
 
@@ -1873,17 +1883,21 @@ function geodir_cfi_tags( $html, $cf ) {
         $post_type = isset( $_REQUEST['listing_type'] ) ? geodir_clean_slug( $_REQUEST['listing_type'] ) : '';
         $term_array = array();
         $options = array();
-
         if ( $post_type ) {
-            $terms = get_terms( array(
-                'taxonomy' => $post_type . "_tags",
+            $extra_fields = maybe_unserialize( $cf['extra_fields'] );
+            $tag_no       = 10;
+            if ( is_array( $extra_fields ) && ! empty( $extra_fields['no_of_tag'] ) ) {
+                $tag_no = absint( $extra_fields['no_of_tag'] );
+            }
+            $tag_filter = array(
+                'taxonomy'   => $post_type . '_tags',
                 'hide_empty' => false,
-                'orderby' => 'count',
-                'order' => 'DESC',
-                'number' => 10
-            ) );
-
-
+                'orderby'    => 'count',
+                'order'      => 'DESC',
+                'number'     => $tag_no,
+            );
+            $tag_args   = apply_filters( 'geodir_custom_field_input_tag_args', $tag_filter );
+            $terms      = get_terms( $tag_args );
             if ( ! empty( $terms ) ) {
                 foreach( $terms as $term ) {
                     $term_array[] = $term->name;

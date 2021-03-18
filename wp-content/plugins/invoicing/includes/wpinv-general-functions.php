@@ -16,7 +16,8 @@ function wpinv_is_checkout() {
 
     $is_object_set    = isset( $wp_query->queried_object );
     $is_object_id_set = isset( $wp_query->queried_object_id );
-    $is_checkout      = is_page( wpinv_get_option( 'checkout_page' ) );
+    $checkout_page    = wpinv_get_option( 'checkout_page' );
+    $is_checkout      = ! empty( $checkout_page ) && is_page( $checkout_page );
 
     if ( !$is_object_set ) {
         unset( $wp_query->queried_object );
@@ -42,16 +43,22 @@ function wpinv_get_success_page_uri() {
 	return apply_filters( 'wpinv_get_success_page_uri', get_permalink( $page_id ) );
 }
 
-function wpinv_get_history_page_uri() {
-	$page_id = wpinv_get_option( 'invoice_history_page', 0 );
-	$page_id = absint( $page_id );
-
-	return apply_filters( 'wpinv_get_history_page_uri', get_permalink( $page_id ) );
+/**
+ * Retrieves the invoice/quote history page URL.
+ * 
+ * @param string $post_type The post type or invoice type.
+ * @return string The history page URL.
+ */
+function wpinv_get_history_page_uri( $post_type = 'wpi_invoice' ) {
+    $post_type = sanitize_key( str_replace( 'wpi_', '', $post_type ) );
+	$page_id   = wpinv_get_option( "{$post_type}_history_page", 0 );
+	$page_id   = absint( $page_id );
+	return apply_filters( 'wpinv_get_history_page_uri', get_permalink( $page_id ), $post_type );
 }
 
 function wpinv_is_success_page() {
 	$is_success_page = wpinv_get_option( 'success_page', false );
-	$is_success_page = isset( $is_success_page ) ? is_page( $is_success_page ) : false;
+	$is_success_page = ! empty( $is_success_page ) ? is_page( $is_success_page ) : false;
 
 	return apply_filters( 'wpinv_is_success_page', $is_success_page );
 }
@@ -68,22 +75,18 @@ function wpinv_is_subscriptions_history_page() {
     return apply_filters( 'wpinv_is_subscriptions_history_page', $ret );
 }
 
-function wpinv_send_to_success_page( $args = null ) {
-	$redirect = wpinv_get_success_page_uri();
-    
-    if ( !empty( $args ) ) {
-        // Check for backward compatibility
-        if ( is_string( $args ) )
-            $args = str_replace( '?', '', $args );
+/**
+ * Redirects a user the success page.
+ */
+function wpinv_send_to_success_page( $args = array() ) {
 
-        $args = wp_parse_args( $args );
+    $redirect = add_query_arg(
+        wp_parse_args( $args ),
+        wpinv_get_success_page_uri()
+    );
 
-        $redirect = add_query_arg( $args, $redirect );
-    }
+    $redirect = apply_filters( 'wpinv_send_to_success_page_url', $redirect, $args );
 
-    $gateway = isset( $_REQUEST['wpi-gateway'] ) ? $_REQUEST['wpi-gateway'] : '';
-    
-    $redirect = apply_filters( 'wpinv_success_page_redirect', $redirect, $gateway, $args );
     wp_redirect( $redirect );
     exit;
 }
@@ -131,23 +134,6 @@ function wpinv_get_checkout_uri( $args = array() ) {
 	}
 
 	return apply_filters( 'wpinv_get_checkout_uri', $uri );
-}
-
-function wpinv_send_back_to_checkout( $args = array() ) {
-	$redirect = wpinv_get_checkout_uri();
-
-	if ( ! empty( $args ) ) {
-		// Check for backward compatibility
-		if ( is_string( $args ) )
-			$args = str_replace( '?', '', $args );
-
-		$args = wp_parse_args( $args );
-
-		$redirect = add_query_arg( $args, $redirect );
-	}
-
-	wp_redirect( apply_filters( 'wpinv_send_back_to_checkout', $redirect, $args ) );
-	exit;
 }
 
 function wpinv_get_success_page_url( $query_string = null ) {
@@ -201,81 +187,6 @@ function wpinv_transaction_query( $type = 'start' ) {
     }
 }
 
-function wpinv_create_invoice( $args = array(), $data = array(), $wp_error = false ) {
-    $default_args = array(
-        'status'        => '',
-        'user_id'       => null,
-        'user_note'     => null,
-        'invoice_id'    => 0,
-        'created_via'   => '',
-        'parent'        => 0,
-        'post_type'     => 'wpi_invoice'
-    );
-
-    $args           = wp_parse_args( $args, $default_args );
-    $invoice_data   = array();
-
-    if ( $args['invoice_id'] > 0 ) {
-        $updating           = true;
-        $invoice_data['post_type']  = $args['post_type'];
-        $invoice_data['ID']         = $args['invoice_id'];
-    } else {
-        $updating                       = false;
-        $invoice_data['post_type']      = $args['post_type'];
-        $invoice_data['post_status']    = apply_filters( 'wpinv_default_invoice_status', 'wpi-pending' );
-        $invoice_data['ping_status']    = 'closed';
-        $invoice_data['post_author']    = !empty( $args['user_id'] ) ? $args['user_id'] : get_current_user_id();
-        $invoice_data['post_title']     = wpinv_format_invoice_number( '0' );
-        $invoice_data['post_parent']    = absint( $args['parent'] );
-        if ( !empty( $args['created_date'] ) ) {
-            $invoice_data['post_date']      = $args['created_date'];
-            $invoice_data['post_date_gmt']  = get_gmt_from_date( $args['created_date'] );
-        }
-    }
-
-    if ( $args['status'] ) {
-        if ( ! in_array( $args['status'], array_keys( wpinv_get_invoice_statuses() ) ) && 'wpi_invoice' === $invoice_data['post_type'] ) {
-            return new WP_Error( 'wpinv_invalid_invoice_status', wp_sprintf( __( 'Invalid invoice status: %s', 'invoicing' ), $args['status'] ) );
-        }
-        $invoice_data['post_status']    = $args['status'];
-    }
-
-    if ( ! is_null( $args['user_note'] ) ) {
-        $invoice_data['post_excerpt']   = $args['user_note'];
-    }
-
-    if ( $updating ) {
-        $invoice_id = wp_update_post( $invoice_data, true );
-    } else {
-        $invoice_id = wp_insert_post( apply_filters( 'wpinv_new_invoice_data', $invoice_data ), true );
-    }
-
-    if ( is_wp_error( $invoice_id ) ) {
-        return $wp_error ? $invoice_id : 0;
-    }
-    
-    $invoice = wpinv_get_invoice( $invoice_id );
-
-    if ( !$updating ) {
-        update_post_meta( $invoice_id, '_wpinv_key', apply_filters( 'wpinv_generate_invoice_key', uniqid( 'wpinv_' ) ) );
-        update_post_meta( $invoice_id, '_wpinv_currency', wpinv_get_currency() );
-        update_post_meta( $invoice_id, '_wpinv_include_tax', get_option( 'wpinv_prices_include_tax' ) );
-        update_post_meta( $invoice_id, '_wpinv_user_ip', wpinv_get_ip() );
-        update_post_meta( $invoice_id, '_wpinv_user_agent', wpinv_get_user_agent() );
-        update_post_meta( $invoice_id, '_wpinv_created_via', sanitize_text_field( $args['created_via'] ) );
-        
-        // Add invoice note
-        if ( ! $invoice->is_quote() ) {
-            $invoice->add_note( wp_sprintf( __( 'Invoice is created with status %s.', 'invoicing' ), wpinv_status_nicename( $invoice->status ) ) );
-        }
-        
-    }
-
-    update_post_meta( $invoice_id, '_wpinv_version', WPINV_VERSION );
-
-    return $invoice;
-}
-
 function wpinv_get_prefix() {
     $invoice_prefix = 'INV-';
     
@@ -288,8 +199,13 @@ function wpinv_get_business_logo() {
 }
 
 function wpinv_get_business_name() {
-    $business_name = wpinv_get_option('store_name');
-    return apply_filters( 'wpinv_get_business_name', $business_name );
+    $name = wpinv_get_option( 'store_name', wpinv_get_blogname() );
+
+    if ( empty( $name ) ) {
+        $name = wpinv_get_blogname();
+    }
+
+    return apply_filters( 'wpinv_get_business_name', $name );
 }
 
 function wpinv_get_blogname() {
@@ -364,54 +280,10 @@ function wpinv_is_ssl_enforced() {
     return (bool) apply_filters( 'wpinv_is_ssl_enforced', $ssl_enforced );
 }
 
-function wpinv_user_can_view_invoice( $post ) {
-    $allow = false;
-
-    $post = get_post( $post );
-
-    if ( empty( $post->ID ) ) {
-        return $allow;
-    }
-
-    $invoice = wpinv_get_invoice( $post->ID );
-    if ( empty( $invoice->ID ) ) {
-        return $allow;
-    }
-
-    // Don't allow trash, draft status
-    if ( $invoice->has_status( array_keys( wpinv_get_invoice_statuses() ) ) ) {
-        if ( wpinv_current_user_can_manage_invoicing() || current_user_can( 'view_invoices', $invoice->ID ) ) { // Admin user
-            $allow = true;
-        } else {
-            if ( is_user_logged_in() ) {
-                if ( (int)$invoice->get_user_id() === (int)get_current_user_id() ) {
-                    $allow = true;
-                } else if ( !wpinv_require_login_to_checkout() && isset( $_GET['invoice_key'] ) && $_GET['invoice_key'] === $invoice->get_key() ) {
-                    $allow = true;
-                }
-            } else {
-                if ( !wpinv_require_login_to_checkout() && isset( $_GET['invoice_key'] ) && $_GET['invoice_key'] === $invoice->get_key() ) {
-                    $allow = true;
-                }
-            }
-        }
-    }
-    
-    return apply_filters( 'wpinv_can_print_invoice', $allow, $post, $invoice );
-}
-
-function wpinv_schedule_events() {
-    // hourly, daily and twicedaily
-    if ( !wp_next_scheduled( 'wpinv_register_schedule_event_twicedaily' ) ) {
-        wp_schedule_event( current_time( 'timestamp' ), 'twicedaily', 'wpinv_register_schedule_event_twicedaily' );
-    }
-}
-add_action( 'wp', 'wpinv_schedule_events' );
-
 function wpinv_schedule_event_twicedaily() {
     wpinv_email_payment_reminders();
 }
-add_action( 'wpinv_register_schedule_event_twicedaily', 'wpinv_schedule_event_twicedaily' );
+add_action( 'wpinv_register_schedule_event_daily', 'wpinv_schedule_event_twicedaily' );
 
 function wpinv_require_login_to_checkout() {
     $return = wpinv_get_option( 'login_to_checkout', false );
@@ -459,4 +331,68 @@ function wpinv_restore_locale() {
 
         do_action( 'wpinv_restore_locale' );
     }
+}
+
+/**
+ * Returns the default form's id.
+ */
+function wpinv_get_default_payment_form() {
+    $form = get_option( 'wpinv_default_payment_form' );
+
+    if ( empty( $form ) || 'publish' != get_post_status( $form ) ) {
+        $form = wp_insert_post(
+            array(
+                'post_type'   => 'wpi_payment_form',
+                'post_title'  => __( 'Checkout (default)', 'invoicing' ),
+                'post_status' => 'publish',
+                'meta_input'  => array(
+                    'wpinv_form_elements' => wpinv_get_data( 'default-payment-form' ),
+                    'wpinv_form_items'    => array(),
+                )
+            )
+        );
+
+        update_option( 'wpinv_default_payment_form', $form );
+    }
+
+    // WPML support.
+    $form = apply_filters( 'wpml_object_id', $form, 'wpi_payment_form', TRUE  );
+    return $form;
+}
+
+/**
+ * Retrieves a given payment form's elements.
+ * 
+ * @param int $payment_form
+ */
+function getpaid_get_payment_form_elements( $payment_form ) {
+
+    if ( empty( $payment_form ) ) {
+        return wpinv_get_data( 'sample-payment-form' );
+    }
+
+    $form_elements = get_post_meta( $payment_form, 'wpinv_form_elements', true );
+
+    if ( is_array( $form_elements ) ) {
+        return $form_elements;
+    }
+
+    return wpinv_get_data( 'sample-payment-form' );
+
+}
+
+/**
+ * Returns an array of items for the given form.
+ * 
+ * @param int $payment_form
+ */
+function gepaid_get_form_items( $id ) {
+    $form = new GetPaid_Payment_Form( $id );
+
+    // Is this a default form?
+    if ( $form->is_default() ) {
+        return array();
+    }
+
+    return $form->get_items( 'view', 'arrays' );
 }

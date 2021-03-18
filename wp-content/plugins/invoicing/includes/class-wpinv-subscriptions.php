@@ -1,178 +1,104 @@
 <?php
-// Exit if accessed directly.
-if (!defined( 'ABSPATH' ) ) exit;
-
-function wpinv_subscription_init() {
-    return WPInv_Subscriptions::instance();
-}
-add_action( 'plugins_loaded', 'wpinv_subscription_init', 100 );
-
 /**
- * WPInv_Subscriptions Class.
+ * Main Subscriptions class.
  *
- * @since 1.0.0
+ */
+
+defined( 'ABSPATH' ) || exit;
+/**
+ * Main Subscriptions class.
+ *
  */
 class WPInv_Subscriptions {
 
-    private static $instance;
+    /**
+	 * Class constructor.
+	 */
+    public function __construct(){
+
+        // Fire gateway specific hooks when a subscription changes.
+        add_action( 'getpaid_subscription_status_changed', array( $this, 'process_subscription_status_change' ), 10, 3 );
+
+        // De-activate a subscription whenever the invoice changes payment statuses.
+        add_action( 'getpaid_invoice_status_wpi-refunded', array( $this, 'maybe_deactivate_invoice_subscription' ), 20 );
+        add_action( 'getpaid_invoice_status_wpi-failed', array( $this, 'maybe_deactivate_invoice_subscription' ), 20 );
+        add_action( 'getpaid_invoice_status_wpi-cancelled', array( $this, 'maybe_deactivate_invoice_subscription' ), 20 );
+        add_action( 'getpaid_invoice_status_wpi-pending', array( $this, 'maybe_deactivate_invoice_subscription' ), 20 );
+
+        // Handles subscription cancelations.
+        add_action( 'getpaid_authenticated_action_subscription_cancel', array( $this, 'user_cancel_single_subscription' ) );
+
+        // Create a subscription whenever an invoice is created, (and update it when it is updated).
+        add_action( 'getpaid_new_invoice', array( $this, 'maybe_create_invoice_subscription' ) );
+        add_action( 'getpaid_update_invoice', array( $this, 'maybe_update_invoice_subscription' ) );
+
+        // Handles admin subscription update actions.
+        add_action( 'getpaid_authenticated_admin_action_update_single_subscription', array( $this, 'admin_update_single_subscription' ) );
+        add_action( 'getpaid_authenticated_admin_action_subscription_manual_renew', array( $this, 'admin_renew_single_subscription' ) );
+        add_action( 'getpaid_authenticated_admin_action_subscription_manual_delete', array( $this, 'admin_delete_single_subscription' ) );
+    
+        // Filter invoice item row actions.
+        add_action( 'getpaid-invoice-page-line-item-actions', array( $this, 'filter_invoice_line_item_actions' ), 10, 3 );
+    }
 
     /**
-     * Main WPInv_Subscriptions Instance
+     * Returns an invoice's subscription.
+     *
+     * @param WPInv_Invoice $invoice
+     * @return WPInv_Subscription|bool
      */
-    public static function instance() {
-        if ( ! isset( self::$instance ) ) {
-            self::$instance = new WPInv_Subscriptions;
+    public function get_invoice_subscription( $invoice ) {
+        $subscription_id = $invoice->get_subscription_id();
 
-            self::$instance->init();
+        // Fallback to the parent invoice if the child invoice has no subscription id.
+        if ( empty( $subscription_id && $invoice->is_renewal() ) ) {
+            $subscription_id = $invoice->get_parent_payment()->get_subscription_id();
         }
 
-        return self::$instance;
+        // Fetch the subscription.
+        $subscription = new WPInv_Subscription( $subscription_id );
+
+        // Return subscription or use a fallback for backwards compatibility.
+        return $subscription->get_id() ? $subscription : wpinv_get_subscription( $invoice );
     }
 
     /**
-     * Constructor -- prevent new instances
-     *
-     * @since 1.0.0
+     * Deactivates the invoice subscription whenever an invoice status changes.
+     * 
+     * @param WPInv_Invoice $invoice
      */
-    private function __construct(){
+    public function maybe_deactivate_invoice_subscription( $invoice ) {
 
-    }
+        $subscription = $this->get_invoice_subscription( $invoice );
 
-    /**
-     * Get things started
-     *
-     * Sets up inits actions and filters
-     *
-     * @since 1.0.0
-     */
-    function init() {
-
-        self::setup_constants();
-        self::actions();
-        self::filters();
-
-    }
-
-    /**
-     * Setup plugin constants.
-     *
-     * @access private
-     * @since 1.0.0
-     * @return void
-     */
-    private function setup_constants() {
-
-        // Make sure CAL_GREGORIAN is defined.
-        if ( ! defined( 'CAL_GREGORIAN' ) ) {
-            define( 'CAL_GREGORIAN', 1 );
-        }
-    }
-
-    /**
-     * Add our actions
-     *
-     * @since  1.0.0
-     * @return void
-     */
-    private function actions() {
-
-        add_action( 'admin_menu', array( $this, 'wpinv_subscriptions_list' ), 10 );
-        add_action( 'admin_notices', array( $this, 'notices' ) );
-        add_action( 'init', array( $this, 'wpinv_post_actions' ) );
-        add_action( 'init', array( $this, 'wpinv_get_actions' ) );
-        add_action( 'wpinv_cancel_subscription', array( $this, 'wpinv_process_cancellation' ) );
-        add_action( 'wpinv_checkout_before_send_to_gateway', array( $this, 'wpinv_checkout_add_subscription' ), -999, 2 );
-        add_action( 'wpinv_subscriptions_front_notices', array( $this, 'notices' ) );
-    }
-
-    /**
-     * Add our filters
-     *
-     * @since  1.0
-     * @return void
-     */
-    private function filters() {
-
-    }
-
-    /**
-     * Register our Subscriptions submenu
-     *
-     * @since  2.4
-     * @return void
-     */
-    public function wpinv_subscriptions_list() {
-        add_submenu_page(
-            'wpinv',
-            __( 'Subscriptions', 'invoicing' ),
-            __( 'Subscriptions', 'invoicing' ),
-            wpinv_get_capability(),
-            'wpinv-subscriptions',
-            'wpinv_subscriptions_page'
-        );
-    }
-
-    public function notices() {
-
-        if( empty( $_GET['wpinv-message'] ) ) {
+        // Abort if the subscription is missing or not active.
+        if ( empty( $subscription ) || ! $subscription->is_active() ) {
             return;
         }
 
-        $type    = 'updated';
-        $message = '';
-
-        switch( strtolower( $_GET['wpinv-message'] ) ) {
-
-            case 'updated' :
-
-                $message = __( 'Subscription updated successfully.', 'invoicing' );
-
-                break;
-
-            case 'deleted' :
-
-                $message = __( 'Subscription deleted successfully.', 'invoicing' );
-
-                break;
-
-            case 'cancelled' :
-
-                $message = __( 'Subscription cancelled successfully.', 'invoicing' );
-
-                break;
-
-        }
-
-        if ( ! empty( $message ) ) {
-            echo '<div class="' . esc_attr( $type ) . '"><p>' . $message . '</p></div>';
-        }
+        $subscription->set_status( 'pending' );
+        $subscription->save();
 
     }
 
     /**
-     * Every wpinv_action present in $_GET is called using WordPress's do_action function.
-     * These functions are called on init.
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    function wpinv_get_actions() {
-        if ( isset( $_GET['wpinv_action'] ) ) {
-            do_action( 'wpinv_' . $_GET['wpinv_action'], $_GET );
-        }
-    }
+	 * Processes subscription status changes.
+     * 
+     * @param WPInv_Subscription $subscription
+     * @param string $from
+     * @param string $to
+	 */
+    public function process_subscription_status_change( $subscription, $from, $to ) {
 
-    /**
-     * Every wpinv_action present in $_POST is called using WordPress's do_action function.
-     * These functions are called on init.
-     *
-     * @since 1.0.0
-     * @return void
-     */
-    function wpinv_post_actions() {
-        if ( isset( $_POST['wpinv_action'] ) ) {
-            do_action( 'wpinv_' . $_POST['wpinv_action'], $_POST );
+        $gateway = $subscription->get_gateway();
+
+        if ( ! empty( $gateway ) ) {
+            $gateway = sanitize_key( $gateway );
+            $from    = sanitize_key( $from );
+            $to      = sanitize_key( $to );
+            do_action( "getpaid_{$gateway}_subscription_$to", $subscription, $from );
         }
+
     }
 
     /**
@@ -180,31 +106,11 @@ class WPInv_Subscriptions {
      *
      * @param $period
      * @param int $frequency_count The frequency of the period.
+     * @deprecated
      * @return mixed|string|void
      */
-    public static function wpinv_get_pretty_subscription_frequency( $period, $frequency_count = 1) {
-        $frequency = '';
-        //Format period details
-        switch ( $period ) {
-            case 'day' :
-                $frequency = sprintf( _n('%d Day', '%d Days', $frequency_count, 'invoicing'), $frequency_count);
-                break;
-            case 'week' :
-                $frequency = sprintf( _n('%d Week', '%d Weeks', $frequency_count, 'invoicing'), $frequency_count);
-                break;
-            case 'month' :
-                $frequency = sprintf( _n('%d Month', '%d Months', $frequency_count, 'invoicing'), $frequency_count);
-                break;
-            case 'year' :
-                $frequency = sprintf( _n('%d Year', '%d Years', $frequency_count, 'invoicing'), $frequency_count);
-                break;
-            default :
-                $frequency = apply_filters( 'wpinv_recurring_subscription_frequency', $frequency, $period, $frequency_count );
-                break;
-        }
-
-        return $frequency;
-
+    public static function wpinv_get_pretty_subscription_frequency( $period, $frequency_count = 1 ) {
+        return getpaid_get_subscription_period_label( $period, $frequency_count );
     }
 
     /**
@@ -214,121 +120,292 @@ class WPInv_Subscriptions {
      * @since       1.0.0
      * @return      void
      */
-    public function wpinv_process_cancellation( $data ) {
+    public function user_cancel_single_subscription( $data ) {
 
-
-        if( empty( $data['sub_id'] ) ) {
+        // Ensure there is a subscription to cancel.
+        if ( empty( $data['subscription'] ) ) {
             return;
         }
 
-        if( ! is_user_logged_in() ) {
-            return;
-        }
+        $subscription = new WPInv_Subscription( (int) $data['subscription'] );
 
-        if( ! wp_verify_nonce( $data['_wpnonce'], 'wpinv-recurring-cancel' ) ) {
-            wp_die( __( 'Error', 'invoicing' ), __( 'Nonce verification failed', 'invoicing' ), array( 'response' => 403 ) );
-        }
+        // Ensure that it exists and that it belongs to the current user.
+        if ( ! $subscription->get_id() || $subscription->get_customer_id() != get_current_user_id() ) {
+            wpinv_set_error( 'invalid_subscription', __( 'You do not have permission to cancel this subscription', 'invoicing' ) );
 
-        $data['sub_id'] = absint( $data['sub_id'] );
-        $subscription   = new WPInv_Subscription( $data['sub_id'] );
+        // Can it be cancelled.
+        } else if ( ! $subscription->can_cancel() ) {
+            wpinv_set_error( 'cannot_cancel', __( 'This subscription cannot be cancelled as it is not active.', 'invoicing' ) );
 
-        if( ! $subscription->can_cancel() ) {
-            wp_die( __( 'Error', 'invoicing' ), __( 'This subscription cannot be cancelled', 'invoicing' ), array( 'response' => 403 ) );
-        }
 
-        try {
-
-            do_action( 'wpinv_recurring_cancel_' . $subscription->gateway . '_subscription', $subscription, true );
+        // Cancel it.
+        } else {
 
             $subscription->cancel();
+            wpinv_set_error( 'cancelled', __( 'This subscription has been cancelled.', 'invoicing' ), 'info' );
+        }
 
-            if( is_admin() ) {
+        $redirect = remove_query_arg( array( 'getpaid-action', 'getpaid-nonce' ) );
 
-                wp_redirect( admin_url( 'admin.php?page=wpinv-subscriptions&wpinv-message=cancelled&id=' . $subscription->id ) );
-                exit;
+        wp_safe_redirect( $redirect );
+        exit;
 
-            } else {
+    }
 
-                $redirect = remove_query_arg( array( '_wpnonce', 'wpinv_action', 'sub_id' ), add_query_arg( array( 'wpinv-message' => 'cancelled' ) ) );
-                $redirect = apply_filters( 'wpinv_recurring_cancellation_redirect', $redirect, $subscription );
-                wp_safe_redirect( $redirect );
-                exit;
+    /**
+     * Creates a subscription for an invoice.
+     *
+     * @access      public
+     * @param       WPInv_Invoice $invoice
+     * @since       1.0.0
+     */
+    public function maybe_create_invoice_subscription( $invoice ) {
 
-            }
+        // Abort if it is not recurring.
+        if ( $invoice->is_free() || ! $invoice->is_recurring() || $invoice->is_renewal() ) {
+            return;
+        }
 
-        } catch ( Exception $e ) {
-            wp_die( __( 'Error', 'invoicing' ), $e->getMessage(), array( 'response' => 403 ) );
+        $subscription = new WPInv_Subscription();
+        return $this->update_invoice_subscription( $subscription, $invoice );
+
+    }
+
+    /**
+     * (Maybe) Updates a subscription for an invoice.
+     *
+     * @access      public
+     * @param       WPInv_Invoice $invoice
+     * @since       1.0.19
+     */
+    public function maybe_update_invoice_subscription( $invoice ) {
+
+        // Do not process renewals.
+        if ( $invoice->is_renewal() ) {
+            return;
+        }
+
+        // Delete existing subscription if available and the invoice is not recurring.
+        if ( ! $invoice->is_recurring() ) {
+            $subscription = new WPInv_Subscription( $invoice->get_subscription_id() );
+            $subscription->delete( true );
+            return;
+        }
+
+        // (Maybe) create a new subscription.
+        $subscription = $this->get_invoice_subscription( $invoice );
+        if ( empty( $subscription ) ) {
+            return $this->maybe_create_invoice_subscription( $invoice );
+        }
+
+        // Abort if an invoice is paid and already has a subscription.
+        if ( $invoice->is_paid() || $invoice->is_refunded() ) {
+            return;
+        }
+
+        return $this->update_invoice_subscription( $subscription, $invoice );
+
+    }
+
+    /**
+     * Updates a subscription for an invoice.
+     *
+     * @access      public
+     * @param       WPInv_Subscription $subscription
+     * @param       WPInv_Invoice $invoice
+     * @since       1.0.19
+     */
+    public function update_invoice_subscription( $subscription, $invoice ) {
+
+        // Delete the subscription if an invoice is free or nolonger recurring.
+        if ( ! $invoice->is_type( 'invoice' ) || $invoice->is_free() || ! $invoice->is_recurring() ) {
+            return $subscription->delete();
+        }
+
+        $subscription->set_customer_id( $invoice->get_customer_id() );
+        $subscription->set_parent_invoice_id( $invoice->get_id() );
+        $subscription->set_initial_amount( $invoice->get_initial_total() );
+        $subscription->set_recurring_amount( $invoice->get_recurring_total() );
+        $subscription->set_date_created( current_time( 'mysql' ) );
+        $subscription->set_status( $invoice->is_paid() ? 'active' : 'pending' );
+
+        // Get the recurring item and abort if it does not exist.
+        $subscription_item = $invoice->get_recurring( true );
+        if ( ! $subscription_item->get_id() ) {
+            $invoice->set_subscription_id(0);
+            $invoice->save();
+            return $subscription->delete();
+        }
+
+        $subscription->set_product_id( $subscription_item->get_id() );
+        $subscription->set_period( $subscription_item->get_recurring_period( true ) );
+        $subscription->set_frequency( $subscription_item->get_recurring_interval() );
+        $subscription->set_bill_times( $subscription_item->get_recurring_limit() );
+
+        // Calculate the next renewal date.
+        $period       = $subscription_item->get_recurring_period( true );
+        $interval     = $subscription_item->get_recurring_interval();
+
+        // If the subscription item has a trial period...
+        if ( $subscription_item->has_free_trial() ) {
+            $period   = $subscription_item->get_trial_period( true );
+            $interval = $subscription_item->get_trial_interval();
+            $subscription->set_trial_period( $interval . ' ' . $period );
+            $subscription->set_status( 'trialling' );
+        }
+
+        // If initial amount is free, treat it as a free trial even if the subscription item does not have a free trial.
+        if ( $invoice->has_free_trial() ) {
+            $subscription->set_trial_period( $interval . ' ' . $period );
+            $subscription->set_status( 'trialling' );
+        }
+
+        // Calculate the next renewal date.
+        $expiration = date( 'Y-m-d H:i:s', strtotime( "+$interval $period", strtotime( $subscription->get_date_created() ) ) );
+
+        $subscription->set_next_renewal_date( $expiration );
+        $subscription->save();
+        $invoice->set_subscription_id( $subscription->get_id() );
+        return $subscription->get_id();
+
+    }
+
+    /**
+     * Fired when an admin updates a subscription via the single subscription single page.
+     *
+     * @param       array $data
+     * @since       1.0.19
+     */
+    public function admin_update_single_subscription( $args ) {
+
+        // Ensure the subscription exists and that a status has been given.
+        if ( empty( $args['subscription_id'] ) || empty( $args['subscription_status'] ) ) {
+            return;
+        }
+
+        // Retrieve the subscriptions.
+        $subscription = new WPInv_Subscription( $args['subscription_id'] );
+
+        if ( $subscription->get_id() ) {
+
+            $subscription->set_status( $args['subscription_status'] );
+            $subscription->save();
+            getpaid_admin()->show_info( __( 'Your changes have been saved', 'invoicing' ) );
+
         }
 
     }
 
     /**
-     * Create subscription on checkout
+     * Fired when an admin manually renews a subscription.
      *
-     * @access      public
-     * @param       WPInv_Invoice $invoice
-     * @since       1.0.0
-     * @return      void
+     * @param       array $data
+     * @since       1.0.19
      */
-    public function wpinv_checkout_add_subscription( $invoice, $invoice_data ) {
-        if ( ! ( ! empty( $invoice->ID ) && $invoice->is_recurring() ) ) {
+    public function admin_renew_single_subscription( $args ) {
+
+        // Ensure the subscription exists and that a status has been given.
+        if ( empty( $args['id'] ) ) {
             return;
         }
 
-        // Should we create a subscription for the invoice?
-        if ( apply_filters( 'wpinv_skip_invoice_subscription_creation', false, $invoice ) ) {
+        // Retrieve the subscriptions.
+        $subscription = new WPInv_Subscription( $args['id'] );
+
+        if ( $subscription->get_id() ) {
+
+            do_action( 'getpaid_admin_renew_subscription', $subscription );
+
+            $args = array( 'transaction_id', $subscription->get_parent_invoice()->generate_key( 'renewal_' ) );
+
+            if ( ! $subscription->add_payment( $args ) ) {
+                getpaid_admin()->show_error( __( 'We are unable to renew this subscription as the parent invoice does not exist.', 'invoicing' ) );
+            } else {
+                $subscription->renew();
+                getpaid_admin()->show_info( __( 'This subscription has been renewed and extended.', 'invoicing' ) );
+            } 
+
+            wp_safe_redirect(
+                add_query_arg(
+                    array(
+                        'getpaid-admin-action' => false,
+                        'getpaid-nonce'        => false,
+                    )
+                )
+            );
+            exit;
+
+        }
+
+    }
+
+    /**
+     * Fired when an admin manually deletes a subscription.
+     *
+     * @param       array $data
+     * @since       1.0.19
+     */
+    public function admin_delete_single_subscription( $args ) {
+
+        // Ensure the subscription exists and that a status has been given.
+        if ( empty( $args['id'] ) ) {
             return;
         }
 
-        $item               = $invoice->get_recurring( true );
-        if ( empty( $item ) ) {
-            return;
+        // Retrieve the subscriptions.
+        $subscription = new WPInv_Subscription( $args['id'] );
+
+        if ( $subscription->delete() ) {
+            getpaid_admin()->show_info( __( 'This subscription has been deleted.', 'invoicing' ) );
+        } else {
+            getpaid_admin()->show_error( __( 'We are unable to delete this subscription. Please try again.', 'invoicing' ) );
         }
-
-        $invoice_date       = $invoice->get_invoice_date( false );
-        $status             = 'pending';
-
-        $period             = $item->get_recurring_period( true );
-        $interval           = $item->get_recurring_interval();
-        $bill_times         = (int)$item->get_recurring_limit();
-        $add_period         = $interval . ' ' . $period;
-        $trial_period       = '';
-
-        if ( $invoice->is_free_trial() ) {
-            $status         = 'trialling';
-            $trial_period   = $item->get_trial_period( true );
-            $free_interval  = $item->get_trial_interval();
-            $trial_period   = $free_interval . ' ' . $trial_period;
-
-            $add_period     = $trial_period;
-        }
-
-        $expiration         = date_i18n( 'Y-m-d H:i:s', strtotime( '+' . $add_period  . ' 23:59:59', strtotime( $invoice_date ) ) );
-
-        $args = array(
-            'product_id'        => $item->ID,
-            'customer_id'       => $invoice->user_id,
-            'parent_payment_id' => $invoice->ID,
-            'status'            => $status,
-            'frequency'         => $interval,
-            'period'            => $period,
-            'initial_amount'    => $invoice->get_total(),
-            'recurring_amount'  => $invoice->get_recurring_details( 'total' ),
-            'bill_times'        => $bill_times,
-            'created'           => $invoice_date,
-            'expiration'        => $expiration,
-            'trial_period'      => $trial_period,
-            'profile_id'        => '',
-            'transaction_id'    => '',
+    
+        $redirected = wp_safe_redirect(
+            add_query_arg(
+                array(
+                    'getpaid-admin-action' => false,
+                    'getpaid-nonce'        => false,
+                    'id'                   => false,
+                )
+            )
         );
 
-        $subscription = wpinv_get_subscription( $invoice );
-
-        if ( empty( $subscription ) ) {
-            $subscription = new WPInv_Subscription();
-            $subscription->create( $args );
+        if ( $redirected ) {
+            exit;
         }
-        
-        return $subscription;
+
     }
+
+    /**
+     * Filters the invoice line items actions.
+     *
+     * @param array actions
+     * @param WPInv_Item $item
+     * @param WPInv_Invoice $invoice
+     */
+    public function filter_invoice_line_item_actions( $actions, $item, $invoice ) {
+
+        // Fetch item subscription.
+        $args  = array(
+            'invoice_in'  => $invoice->is_parent() ? $invoice->get_id() : $invoice->get_parent_id(),
+            'product_in'  => $item->get_id(),
+            'number'      => 1,
+            'count_total' => false,
+            'fields'      => 'id',
+        );
+
+        $subscription = new GetPaid_Subscriptions_Query( $args );
+        $subscription = $subscription->get_results();
+
+        // In case we found a match...
+        if ( ! empty( $subscription ) ) {
+            $url                     = esc_url( add_query_arg( 'subscription', (int) $subscription[0], get_permalink( (int) wpinv_get_option( 'invoice_subscription_page' ) ) ) );
+            $actions['subscription'] = "<a href='$url' class='text-decoration-none'>" . __( 'Manage Subscription', 'invoicing' ) . '</a>';
+        }
+
+        return $actions;
+
+    }
+
 }

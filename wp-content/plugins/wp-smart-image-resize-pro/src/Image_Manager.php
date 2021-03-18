@@ -42,7 +42,7 @@ class Image_Manager extends ImageManager
      */
     private function checkDriver( $size )
     {
-        if ( Env::gd_loaded() && $this->isLargeImage( $size ) && ! wp_sir_get_settings()[ 'enable_trim' ] ) {
+        if ( Env::gd_loaded() && $this->is_image_large( $size ) && ! wp_sir_get_settings()[ 'enable_trim' ] ) {
             return 'gd';
         }
 
@@ -65,7 +65,7 @@ class Image_Manager extends ImageManager
         return false;
     }
 
-    private function isLargeImage( $size )
+    private function is_image_large( $size )
     {
         return $size[ 0 ] > 1500 || $size[ 1 ] > 1500;
     }

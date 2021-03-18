@@ -80,6 +80,11 @@ class FacetWP_Renderer
             $facet = FWP()->helper->get_facet_by_name( $name );
             if ( $facet ) {
 
+                // Default to "OR" mode
+                if ( ! isset( $facet['operator'] ) ) {
+                    $facet['operator'] = 'or';
+                }
+
                 // Support the "facetwp_preload_url_vars" hook
                 if ( $first_load && empty( $f['selected_values'] ) && ! empty( $this->http_params['url_vars'][ $name ] ) ) {
                     $f['selected_values'] = $this->http_params['url_vars'][ $name ];
@@ -443,8 +448,7 @@ class FacetWP_Renderer
             // Force array
             $matches = (array) $matches;
 
-            // Store post IDs per facet
-            // Required for dropdowns and checkboxes in "or" mode
+            // Store post IDs per facet (needed for "OR" mode)
             FWP()->or_values[ $facet_name ] = $matches;
 
             if ( 'search' == $facet_type ) {
@@ -677,6 +681,7 @@ class FacetWP_Renderer
             'sql'           => $this->query->request,
             'facets'        => $this->facets,
             'template'      => $this->template,
+            'settings'      => FWP()->helper->settings['settings'],
             'last_indexed'  => $last_indexed,
             'row_counts'    => FWP()->helper->get_row_counts(),
             'hooks_used'    => $this->get_hooks_used()

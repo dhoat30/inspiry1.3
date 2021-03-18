@@ -1,2240 +1,3877 @@
 <?php
 /**
- * Contains functions related to Invoicing plugin.
+ * Contains the invoice class.
  *
- * @since 1.0.0
+ * @since 1.0.19
  * @package Invoicing
  */
- 
-// MUST have WordPress.
-if ( !defined( 'WPINC' ) ) {
-    exit( 'Do NOT access this file directly: ' . basename( __FILE__ ) );
-}
 
-final class WPInv_Invoice {
-    public $ID  = 0;
-    public $title;
-    public $post_type;
-    
-    public $pending;
-    public $items = array();
-    public $user_info = array();
-    public $payment_meta = array();
-    
-    public $new = false;
-    public $number = '';
-    public $mode = 'live';
-    public $key = '';
-    public $total = 0.00;
-    public $subtotal = 0;
-    public $tax = 0;
-    public $fees = array();
-    public $fees_total = 0;
-    public $discounts = '';
-    public $discount = 0;
-    public $discount_code = 0;
-    public $date = '';
-    public $due_date = '';
-    public $completed_date = '';
-    public $status      = 'wpi-pending';
-    public $post_status = 'wpi-pending';
-    public $old_status = '';
-    public $status_nicename = '';
-    public $user_id = 0;
-    public $first_name = '';
-    public $last_name = '';
-    public $email = '';
-    public $phone = '';
-    public $address = '';
-    public $city = '';
-    public $country = '';
-    public $state = '';
-    public $zip = '';
-    public $transaction_id = '';
-    public $ip = '';
-    public $gateway = '';
-    public $gateway_title = '';
-    public $currency = '';
-    public $cart_details = array();
-    
-    public $company = '';
-    public $vat_number = '';
-    public $vat_rate = '';
-    public $adddress_confirmed = '';
-    
-    public $full_name = '';
-    public $parent_invoice = 0;
-    
-    public function __construct( $invoice_id = false ) {
-        if( empty( $invoice_id ) ) {
-            return false;
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Invoice class.
+ */
+class WPInv_Invoice extends GetPaid_Data {
+
+    /**
+	 * Which data store to load.
+	 *
+	 * @var string
+	 */
+    protected $data_store_name = 'invoice';
+
+    /**
+	 * This is the name of this object type.
+	 *
+	 * @var string
+	 */
+    protected $object_type = 'invoice';
+
+    /**
+	 * Item Data array. This is the core item data exposed in APIs.
+	 *
+	 * @since 1.0.19
+	 * @var array
+	 */
+	protected $data = array(
+		'parent_id'            => 0,
+		'status'               => 'wpi-pending',
+		'version'              => '',
+		'date_created'         => null,
+        'date_modified'        => null,
+        'due_date'             => null,
+        'completed_date'       => null,
+        'number'               => '',
+        'title'                => '',
+        'path'                 => '',
+        'key'                  => '',
+        'description'          => '',
+        'author'               => 1,
+        'type'                 => 'invoice',
+        'post_type'            => 'wpi_invoice',
+        'mode'                 => 'live',
+        'user_ip'              => null,
+        'first_name'           => null,
+        'last_name'            => null,
+        'phone'                => null,
+        'email'                => null,
+        'country'              => null,
+        'city'                 => null,
+        'state'                => null,
+        'zip'                  => null,
+        'company'              => null,
+        'vat_number'           => null,
+        'vat_rate'             => null,
+        'address'              => null,
+        'address_confirmed'    => false,
+        'subtotal'             => 0,
+        'total_discount'       => 0,
+        'total_tax'            => 0,
+		'total_fees'           => 0,
+		'total'                => 0,
+        'fees'                 => array(),
+        'discounts'            => array(),
+        'taxes'                => array(),
+        'items'                => array(),
+        'payment_form'         => 1,
+        'submission_id'        => null,
+        'discount_code'        => null,
+        'gateway'              => 'none',
+        'transaction_id'       => '',
+        'currency'             => '',
+        'disable_taxes'        => false,
+		'subscription_id'      => null,
+		'remote_subscription_id' => null,
+		'is_viewed'            => false,
+		'email_cc'             => '',
+		'template'             => 'quantity', // hours, amount only
+		'created_via'          => null,
+    );
+
+    /**
+	 * Stores meta in cache for future reads.
+	 *
+	 * A group must be set to to enable caching.
+	 *
+	 * @var string
+	 */
+	protected $cache_group = 'getpaid_invoices';
+
+    /**
+     * Stores a reference to the original WP_Post object
+     *
+     * @var WP_Post
+     */
+    protected $post = null;
+
+    /**
+     * Stores a reference to the recurring item id instead of looping through the items.
+     *
+     * @var int
+     */
+	protected $recurring_item = null;
+
+	/**
+     * Stores an array of item totals.
+	 *
+	 * e.g $totals['discount'] = array(
+	 * 		'initial'   => 10,
+	 * 		'recurring' => 10,
+	 * )
+     *
+     * @var array
+     */
+	protected $totals = array();
+
+	/**
+	 * Stores the status transition information.
+	 *
+	 * @since 1.0.19
+	 * @var bool|array
+	 */
+	protected $status_transition = false;
+
+    /**
+	 * Get the invoice if ID is passed, otherwise the invoice is new and empty.
+	 *
+	 * @param  int|string|object|WPInv_Invoice|WPInv_Legacy_Invoice|WP_Post $invoice Invoice id, key, transaction id, number or object to read.
+	 */
+    public function __construct( $invoice = 0 ) {
+
+        parent::__construct( $invoice );
+
+		if ( ! empty( $invoice ) && is_numeric( $invoice ) && getpaid_is_invoice_post_type( get_post_type( (int) $invoice ) ) ) {
+			$this->set_id( (int) $invoice );
+		} elseif ( $invoice instanceof self ) {
+			$this->set_id( $invoice->get_id() );
+		} elseif ( ! empty( $invoice->ID ) ) {
+			$this->set_id( $invoice->ID );
+		} elseif ( is_array( $invoice ) ) {
+			$this->set_props( $invoice );
+
+			if ( isset( $invoice['ID'] ) ) {
+				$this->set_id( $invoice['ID'] );
+			}
+
+		} elseif ( is_string( $invoice ) && $invoice_id = self::get_invoice_id_by_field( $invoice, 'key' ) ) {
+			$this->set_id( $invoice_id );
+		} elseif ( is_string( $invoice ) && $invoice_id = self::get_invoice_id_by_field( $invoice, 'number' ) ) {
+			$this->set_id( $invoice_id );
+		} elseif ( is_string( $invoice ) && $invoice_id = self::get_invoice_id_by_field( $invoice, 'transaction_id' ) ) {
+			$this->set_id( $invoice_id );
+		}else {
+			$this->set_object_read( true );
+		}
+
+        // Load the datastore.
+		$this->data_store = GetPaid_Data_Store::load( $this->data_store_name );
+
+		if ( $this->get_id() > 0 ) {
+            $this->post = get_post( $this->get_id() );
+            $this->ID   = $this->get_id();
+			$this->data_store->read( $this );
         }
 
-        $this->setup_invoice( $invoice_id );
     }
 
-    public function get( $key ) {
-        if ( method_exists( $this, 'get_' . $key ) ) {
-            $value = call_user_func( array( $this, 'get_' . $key ) );
-        } else {
-            $value = $this->$key;
-        }
-
-        return $value;
-    }
-
-    public function set( $key, $value ) {
-        $ignore = array( 'items', 'cart_details', 'fees', '_ID' );
-
-        if ( $key === 'status' ) {
-            $this->old_status = $this->status;
-        }
-
-        if ( ! in_array( $key, $ignore ) ) {
-            $this->pending[ $key ] = $value;
-        }
-
-        if( '_ID' !== $key ) {
-            $this->$key = $value;
-        }
-    }
-
-    public function _isset( $name ) {
-        if ( property_exists( $this, $name) ) {
-            return false === empty( $this->$name );
-        } else {
-            return null;
-        }
-    }
-
-    private function setup_invoice( $invoice_id ) {
-        $this->pending = array();
-
-        if ( empty( $invoice_id ) ) {
-            return false;
-        }
-
-        $invoice = get_post( $invoice_id );
-
-        if( !$invoice || is_wp_error( $invoice ) ) {
-            return false;
-        }
-
-        if( !('wpi_invoice' == $invoice->post_type OR 'wpi_quote' == $invoice->post_type) ) {
-            return false;
-        }
-
-        do_action( 'wpinv_pre_setup_invoice', $this, $invoice_id );
-        
-        // Primary Identifier
-        $this->ID              = absint( $invoice_id );
-        $this->post_type       = $invoice->post_type;
-        
-        // We have a payment, get the generic payment_meta item to reduce calls to it
-        $this->payment_meta    = $this->get_meta();
-        $this->date            = $invoice->post_date;
-        $this->due_date        = $this->setup_due_date();
-        $this->completed_date  = $this->setup_completed_date();
-        $this->status          = $invoice->post_status;
-        $this->post_status     = $this->status;
-        $this->mode            = $this->setup_mode();
-        $this->parent_invoice  = $invoice->post_parent;
-        $this->post_name       = $this->setup_post_name( $invoice );
-        $this->status_nicename = $this->setup_status_nicename($invoice->post_status);
-
-        // Items
-        $this->fees            = $this->setup_fees();
-        $this->cart_details    = $this->setup_cart_details();
-        $this->items           = $this->setup_items();
-
-        // Currency Based
-        $this->total           = $this->setup_total();
-        $this->tax             = $this->setup_tax();
-        $this->fees_total      = $this->get_fees_total();
-        $this->subtotal        = $this->setup_subtotal();
-        $this->currency        = $this->setup_currency();
-        
-        // Gateway based
-        $this->gateway         = $this->setup_gateway();
-        $this->gateway_title   = $this->setup_gateway_title();
-        $this->transaction_id  = $this->setup_transaction_id();
-        
-        // User based
-        $this->ip              = $this->setup_ip();
-        $this->user_id         = !empty( $invoice->post_author ) ? $invoice->post_author : get_current_user_id();///$this->setup_user_id();
-        $this->email           = get_the_author_meta( 'email', $this->user_id );
-        
-        $this->user_info       = $this->setup_user_info();
-                
-        $this->first_name      = $this->user_info['first_name'];
-        $this->last_name       = $this->user_info['last_name'];
-        $this->company         = $this->user_info['company'];
-        $this->vat_number      = $this->user_info['vat_number'];
-        $this->vat_rate        = $this->user_info['vat_rate'];
-        $this->adddress_confirmed  = $this->user_info['adddress_confirmed'];
-        $this->address         = $this->user_info['address'];
-        $this->city            = $this->user_info['city'];
-        $this->country         = $this->user_info['country'];
-        $this->state           = $this->user_info['state'];
-        $this->zip             = $this->user_info['zip'];
-        $this->phone           = $this->user_info['phone'];
-        
-        $this->discounts       = $this->user_info['discount'];
-            $this->discount        = $this->setup_discount();
-            $this->discount_code   = $this->setup_discount_code();
-
-        // Other Identifiers
-        $this->key             = $this->setup_invoice_key();
-        $this->number          = $this->setup_invoice_number();
-        $this->title           = !empty( $invoice->post_title ) ? $invoice->post_title : $this->number;
-        
-        $this->full_name       = trim( $this->first_name . ' '. $this->last_name );
-        
-        // Allow extensions to add items to this object via hook
-        do_action( 'wpinv_setup_invoice', $this, $invoice_id );
-
-        return true;
-    }
-    
-    private function setup_status_nicename( $status ) {
-        $all_invoice_statuses  = wpinv_get_invoice_statuses( true, true, $this );
-
-        if ( $this->is_quote() && class_exists( 'Wpinv_Quotes_Shared' ) ) {
-            $all_invoice_statuses  = Wpinv_Quotes_Shared::wpinv_get_quote_statuses();
-        }
-        $status   = isset( $all_invoice_statuses[$status] ) ? $all_invoice_statuses[$status] : __( $status, 'invoicing' );
-
-        return apply_filters( 'setup_status_nicename', $status );
-    }
-    
-    private function setup_post_name( $post = NULL ) {
+    /**
+	 * Given an invoice key/number, it returns its id.
+	 *
+	 *
+	 * @static
+	 * @param string $value The invoice key or number
+	 * @param string $field Either key, transaction_id or number.
+	 * @since 1.0.15
+	 * @return int
+	 */
+	public static function get_invoice_id_by_field( $value, $field = 'key' ) {
         global $wpdb;
-        
-        $post_name = '';
-        
-        if ( !empty( $post ) ) {
-            if( !empty( $post->post_name ) ) {
-                $post_name = $post->post_name;
-            } else if ( !empty( $post->ID ) ) {
-                $post_name = wpinv_generate_post_name( $post->ID );
 
-                $wpdb->update( $wpdb->posts, array( 'post_name' => $post_name ), array( 'ID' => $post->ID ) );
-            }
+		// Trim the value.
+		$value = trim( $value );
+
+		if ( empty( $value ) ) {
+			return 0;
+		}
+
+        // Valid fields.
+        $fields = array( 'key', 'number', 'transaction_id' );
+
+		// Ensure a field has been passed.
+		if ( empty( $field ) || ! in_array( $field, $fields ) ) {
+			return 0;
+		}
+
+		// Maybe retrieve from the cache.
+		$invoice_id   = wp_cache_get( $value, "getpaid_invoice_{$field}s_to_invoice_ids" );
+		if ( false !== $invoice_id ) {
+			return $invoice_id;
+		}
+
+        // Fetch from the db.
+        $table       = $wpdb->prefix . 'getpaid_invoices';
+        $invoice_id  = (int) $wpdb->get_var(
+            $wpdb->prepare( "SELECT `post_id` FROM $table WHERE `$field`=%s LIMIT 1", $value )
+        );
+
+		// Update the cache with our data
+		wp_cache_set( $value, $invoice_id, "getpaid_invoice_{$field}s_to_invoice_ids" );
+
+		return $invoice_id;
+    }
+
+    /**
+     * Checks if an invoice key is set.
+     */
+    public function _isset( $key ) {
+        return isset( $this->data[$key] ) || method_exists( $this, "get_$key" );
+    }
+
+    /*
+	|--------------------------------------------------------------------------
+	| CRUD methods
+	|--------------------------------------------------------------------------
+	|
+	| Methods which create, read, update and delete items from the database.
+	|
+    */
+
+    /*
+	|--------------------------------------------------------------------------
+	| Getters
+	|--------------------------------------------------------------------------
+    */
+
+    /**
+	 * Get parent invoice ID.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+	public function get_parent_id( $context = 'view' ) {
+		return (int) $this->get_prop( 'parent_id', $context );
+    }
+
+    /**
+	 * Get parent invoice.
+	 *
+	 * @since 1.0.19
+	 * @return WPInv_Invoice
+	 */
+    public function get_parent_payment() {
+        return new WPInv_Invoice( $this->get_parent_id() );
+    }
+
+    /**
+	 * Alias for self::get_parent_payment().
+	 *
+	 * @since 1.0.19
+	 * @return WPInv_Invoice
+	 */
+    public function get_parent() {
+        return $this->get_parent_payment();
+    }
+
+    /**
+	 * Get invoice status.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_status( $context = 'view' ) {
+		return $this->get_prop( 'status', $context );
+	}
+	
+	/**
+	 * Retrieves an array of possible invoice statuses.
+	 *
+	 * @since 1.0.19
+	 * @return array
+	 */
+	public function get_all_statuses() {
+		return wpinv_get_invoice_statuses( true, true, $this );
+    }
+
+    /**
+	 * Get invoice status nice name.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+    public function get_status_nicename() {
+		$statuses = $this->get_all_statuses();
+
+        $status = isset( $statuses[ $this->get_status() ] ) ? $statuses[ $this->get_status() ] : $this->get_status();
+
+        return apply_filters( 'wpinv_get_invoice_status_nicename', $status, $this );
+    }
+
+	/**
+	 * Retrieves the invoice status class
+	 *
+	 * @since  1.0.19
+	 * @return string
+	 */
+	public function get_status_class() {
+		$statuses = getpaid_get_invoice_status_classes();
+		return isset( $statuses[ $this->get_status() ] ) ? $statuses[ $this->get_status() ] : 'badge-dark';
+	}
+
+	/**
+     * Retrieves the invoice status label html
+     *
+     * @since  1.0.0
+     * @return string
+     */
+    public function get_status_label_html() {
+
+		$status_label = sanitize_text_field( $this->get_status_nicename() );
+		$status       = sanitize_html_class( $this->get_status() );
+		$class        = esc_attr( $this->get_status_class() );
+
+		return "<span class='bsui'><span class='badge $class $status'>$status_label</span></span>";
+	}
+
+    /**
+	 * Get plugin version when the invoice was created.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_version( $context = 'view' ) {
+		return $this->get_prop( 'version', $context );
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public function get_invoice_date( $format = true ) {
+		$date      = getpaid_format_date( $this->get_date_completed() );
+		$date      = empty( $date ) ? $this->get_date_created() : $this->get_date_completed();
+		$formatted = getpaid_format_date( $date );
+
+		if ( $format ) {
+			return $formatted;
+		}
+
+		return empty( $formatted ) ? '' : $date;
+
+    }
+
+    /**
+	 * Get date when the invoice was created.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_created( $context = 'view' ) {
+		return $this->get_prop( 'date_created', $context );
+	}
+	
+	/**
+	 * Alias for self::get_date_created().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_created_date( $context = 'view' ) {
+		return $this->get_date_created( $context );
+    }
+
+    /**
+	 * Get GMT date when the invoice was created.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_created_gmt( $context = 'view' ) {
+        $date = $this->get_date_created( $context );
+
+        if ( $date ) {
+            $date = get_gmt_from_date( $date );
+        }
+		return $date;
+    }
+
+    /**
+	 * Get date when the invoice was last modified.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_modified( $context = 'view' ) {
+		return $this->get_prop( 'date_modified', $context );
+	}
+
+	/**
+	 * Alias for self::get_date_modified().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_modified_date( $context = 'view' ) {
+		return $this->get_date_modified( $context );
+    }
+
+    /**
+	 * Get GMT date when the invoice was last modified.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_modified_gmt( $context = 'view' ) {
+        $date = $this->get_date_modified( $context );
+
+        if ( $date ) {
+            $date = get_gmt_from_date( $date );
+        }
+		return $date;
+    }
+
+    /**
+	 * Get the invoice due date.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_due_date( $context = 'view' ) {
+		return $this->get_prop( 'due_date', $context );
+    }
+
+    /**
+	 * Alias for self::get_due_date().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_due( $context = 'view' ) {
+		return $this->get_due_date( $context );
+    }
+
+    /**
+	 * Get the invoice GMT due date.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_due_date_gmt( $context = 'view' ) {
+        $date = $this->get_due_date( $context );
+
+        if ( $date ) {
+            $date = get_gmt_from_date( $date );
+        }
+		return $date;
+    }
+
+    /**
+	 * Alias for self::get_due_date_gmt().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_gmt_date_due( $context = 'view' ) {
+		return $this->get_due_date_gmt( $context );
+    }
+
+    /**
+	 * Get date when the invoice was completed.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_completed_date( $context = 'view' ) {
+		return $this->get_prop( 'completed_date', $context );
+    }
+
+    /**
+	 * Alias for self::get_completed_date().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_date_completed( $context = 'view' ) {
+		return $this->get_completed_date( $context );
+    }
+
+    /**
+	 * Get GMT date when the invoice was was completed.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_completed_date_gmt( $context = 'view' ) {
+        $date = $this->get_completed_date( $context );
+
+        if ( $date ) {
+            $date = get_gmt_from_date( $date );
+        }
+		return $date;
+    }
+
+    /**
+	 * Alias for self::get_completed_date_gmt().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_gmt_completed_date( $context = 'view' ) {
+		return $this->get_completed_date_gmt( $context );
+    }
+
+    /**
+	 * Get the invoice number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_number( $context = 'view' ) {
+		$number = $this->get_prop( 'number', $context );
+
+		if ( empty( $number ) ) {
+			$number = $this->generate_number();
+			$this->set_number( $this->generate_number() );
+		}
+
+		return $number;
+    }
+
+	/**
+	 * Set the invoice number.
+	 *
+	 * @since 1.0.19
+	 */
+	public function maybe_set_number() {
+        $number = $this->get_number();
+
+        if ( empty( $number ) || $this->get_id() == $number ) {
+			$this->set_number( $this->generate_number() );
         }
 
-        $this->post_name = $post_name;
-    }
-    
-    private function setup_due_date() {
-        $due_date = $this->get_meta( '_wpinv_due_date' );
-        
-        if ( empty( $due_date ) ) {
-            $overdue_time = strtotime( $this->date ) + ( DAY_IN_SECONDS * absint( wpinv_get_option( 'overdue_days' ) ) );
-            $due_date = date_i18n( 'Y-m-d', $overdue_time );
-        } else if ( $due_date == 'none' ) {
-            $due_date = '';
-        }
-        
-        return $due_date;
-    }
-    
-    private function setup_completed_date() {
-        $invoice = get_post( $this->ID );
+	}
 
-        if ( 'wpi-pending' == $invoice->post_status || 'preapproved' == $invoice->post_status ) {
-            return false; // This invoice was never paid
+    /**
+	 * Get the invoice key.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_key( $context = 'view' ) {
+        return $this->get_prop( 'key', $context );
+	}
+
+	/**
+	 * Set the invoice key.
+	 *
+	 * @since 1.0.19
+	 */
+	public function maybe_set_key() {
+        $key = $this->get_key();
+
+        if ( empty( $key ) ) {
+            $key = $this->generate_key( $this->get_type() . '_' );
+            $this->set_key( $key );
         }
 
-        $date = ( $date = $this->get_meta( '_wpinv_completed_date', true ) ) ? $date : $invoice->modified_date;
+    }
 
-        return $date;
-    }
-    
-    private function setup_cart_details() {
-        $cart_details = isset( $this->payment_meta['cart_details'] ) ? maybe_unserialize( $this->payment_meta['cart_details'] ) : array();
-        return $cart_details;
-    }
-    
-    public function array_convert() {
-        return get_object_vars( $this );
-    }
-    
-    private function setup_items() {
-        $items = isset( $this->payment_meta['items'] ) ? maybe_unserialize( $this->payment_meta['items'] ) : array();
-        return $items;
-    }
-    
-    private function setup_fees() {
-        $payment_fees = isset( $this->payment_meta['fees'] ) ? $this->payment_meta['fees'] : array();
-        return $payment_fees;
-    }
-        
-    private function setup_currency() {
-        $currency = isset( $this->payment_meta['currency'] ) ? $this->payment_meta['currency'] : apply_filters( 'wpinv_currency_default', wpinv_get_currency(), $this );
-        return $currency;
-    }
-    
-    private function setup_discount() {
-        //$discount = $this->get_meta( '_wpinv_discount', true );
-        $discount = (float)$this->subtotal - ( (float)$this->total - (float)$this->tax - (float)$this->fees_total );
-        if ( $discount < 0 ) {
-            $discount = 0;
-        }
-        $discount = wpinv_round_amount( $discount );
-        
-        return $discount;
-    }
-    
-    private function setup_discount_code() {
-        $discount_code = !empty( $this->discounts ) ? $this->discounts : $this->get_meta( '_wpinv_discount_code', true );
-        return $discount_code;
-    }
-    
-    private function setup_tax() {
-        $tax = $this->get_meta( '_wpinv_tax', true );
+    /**
+	 * Get the invoice type.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_type( $context = 'view' ) {
+        return $this->get_prop( 'type', $context );
+	}
 
-        // We don't have tax as it's own meta and no meta was passed
-        if ( '' === $tax ) {            
-            $tax = isset( $this->payment_meta['tax'] ) ? $this->payment_meta['tax'] : 0;
+	/**
+	 * Returns the post type name.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_invoice_quote_type() {
+        return getpaid_get_post_type_label( $this->get_post_type(), false );
+    }
+
+    /**
+	 * Get the invoice post type label.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_label( $context = 'view' ) {
+        return getpaid_get_post_type_label( $this->get_post_type( $context ), false );
+	}
+
+	/**
+	 * Get the invoice post type.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_post_type( $context = 'view' ) {
+        return $this->get_prop( 'post_type', $context );
+    }
+
+    /**
+	 * Get the invoice mode.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_mode( $context = 'view' ) {
+        return $this->get_prop( 'mode', $context );
+    }
+
+    /**
+	 * Get the invoice path.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_path( $context = 'view' ) {
+        $path   = $this->get_prop( 'path', $context );
+		$prefix = $this->get_type();
+
+		if ( 0 !== strpos( $path, $prefix ) ) {
+			$path = sanitize_title(  $prefix . '-' . $this->get_id()  );
+			$this->set_path( $path );
+		}
+
+		return $path;
+    }
+
+    /**
+	 * Get the invoice name/title.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_name( $context = 'view' ) {
+        return $this->get_prop( 'title', $context );
+    }
+
+    /**
+	 * Alias of self::get_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_title( $context = 'view' ) {
+		return $this->get_name( $context );
+    }
+
+    /**
+	 * Get the invoice description.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_description( $context = 'view' ) {
+		return $this->get_prop( 'description', $context );
+    }
+
+    /**
+	 * Alias of self::get_description().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_excerpt( $context = 'view' ) {
+		return $this->get_description( $context );
+    }
+
+    /**
+	 * Alias of self::get_description().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_summary( $context = 'view' ) {
+		return $this->get_description( $context );
+    }
+
+    /**
+	 * Returns the user info.
+	 *
+	 * @since 1.0.19
+     * @param  string $context View or edit context.
+	 * @return array
+	 */
+    public function get_user_info( $context = 'view' ) {
+
+        $user_info = array(
+            'user_id'    => $this->get_user_id( $context ),
+            'email'      => $this->get_email( $context ),
+            'first_name' => $this->get_first_name( $context ),
+            'last_name'  => $this->get_last_name( $context ),
+            'address'    => $this->get_address( $context ),
+            'phone'      => $this->get_phone( $context ),
+            'city'       => $this->get_city( $context ),
+            'country'    => $this->get_country( $context ),
+            'state'      => $this->get_state( $context ),
+            'zip'        => $this->get_zip( $context ),
+            'company'    => $this->get_company( $context ),
+            'vat_number' => $this->get_vat_number( $context ),
+            'discount'   => $this->get_discount_code( $context ),
+		);
+
+		return apply_filters( 'wpinv_user_info', $user_info, $this->get_id(), $this );
+
+    }
+
+    /**
+	 * Get the customer id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+	public function get_author( $context = 'view' ) {
+		return (int) $this->get_prop( 'author', $context );
+    }
+
+    /**
+	 * Alias of self::get_author().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+	public function get_user_id( $context = 'view' ) {
+		return $this->get_author( $context );
+    }
+
+     /**
+	 * Alias of self::get_author().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+	public function get_customer_id( $context = 'view' ) {
+		return $this->get_author( $context );
+    }
+
+    /**
+	 * Get the customer's ip.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_ip( $context = 'view' ) {
+		return $this->get_prop( 'user_ip', $context );
+    }
+
+    /**
+	 * Alias of self::get_ip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_ip( $context = 'view' ) {
+		return $this->get_ip( $context );
+    }
+
+     /**
+	 * Alias of self::get_ip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_ip( $context = 'view' ) {
+		return $this->get_ip( $context );
+    }
+
+    /**
+	 * Get the customer's first name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_first_name( $context = 'view' ) {
+		return $this->get_prop( 'first_name', $context );
+    }
+
+    /**
+	 * Alias of self::get_first_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_first_name( $context = 'view' ) {
+		return $this->get_first_name( $context );
+    }
+
+     /**
+	 * Alias of self::get_first_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_first_name( $context = 'view' ) {
+		return $this->get_first_name( $context );
+    }
+
+    /**
+	 * Get the customer's last name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_last_name( $context = 'view' ) {
+		return $this->get_prop( 'last_name', $context );
+    }
+
+    /**
+	 * Alias of self::get_last_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_last_name( $context = 'view' ) {
+		return $this->get_last_name( $context );
+    }
+
+    /**
+	 * Alias of self::get_last_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_last_name( $context = 'view' ) {
+		return $this->get_last_name( $context );
+    }
+
+    /**
+	 * Get the customer's full name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_full_name( $context = 'view' ) {
+		return trim( $this->get_first_name( $context ) . ' ' . $this->get_last_name( $context ) );
+    }
+
+    /**
+	 * Alias of self::get_full_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_full_name( $context = 'view' ) {
+		return $this->get_full_name( $context );
+    }
+
+    /**
+	 * Alias of self::get_full_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_full_name( $context = 'view' ) {
+		return $this->get_full_name( $context );
+    }
+
+    /**
+	 * Get the customer's phone number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_phone( $context = 'view' ) {
+		return $this->get_prop( 'phone', $context );
+    }
+
+    /**
+	 * Alias of self::get_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_phone_number( $context = 'view' ) {
+		return $this->get_phone( $context );
+    }
+
+    /**
+	 * Alias of self::get_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_phone( $context = 'view' ) {
+		return $this->get_phone( $context );
+    }
+
+    /**
+	 * Alias of self::get_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_phone( $context = 'view' ) {
+		return $this->get_phone( $context );
+    }
+
+    /**
+	 * Get the customer's email address.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_email( $context = 'view' ) {
+		return $this->get_prop( 'email', $context );
+    }
+
+    /**
+	 * Alias of self::get_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_email_address( $context = 'view' ) {
+		return $this->get_email( $context );
+    }
+
+    /**
+	 * Alias of self::get_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_email( $context = 'view' ) {
+		return $this->get_email( $context );
+    }
+
+    /**
+	 * Alias of self::get_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_email( $context = 'view' ) {
+		return $this->get_email( $context );
+    }
+
+    /**
+	 * Get the customer's country.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_country( $context = 'view' ) {
+		$country = $this->get_prop( 'country', $context );
+		return empty( $country ) ? wpinv_get_default_country() : $country;
+    }
+
+    /**
+	 * Alias of self::get_country().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_country( $context = 'view' ) {
+		return $this->get_country( $context );
+    }
+
+    /**
+	 * Alias of self::get_country().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_country( $context = 'view' ) {
+		return $this->get_country( $context );
+    }
+
+    /**
+	 * Get the customer's state.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_state( $context = 'view' ) {
+		$state = $this->get_prop( 'state', $context );
+		return empty( $state ) ? wpinv_get_default_state() : $state;
+    }
+
+    /**
+	 * Alias of self::get_state().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_state( $context = 'view' ) {
+		return $this->get_state( $context );
+    }
+
+    /**
+	 * Alias of self::get_state().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_state( $context = 'view' ) {
+		return $this->get_state( $context );
+    }
+
+    /**
+	 * Get the customer's city.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_city( $context = 'view' ) {
+		return $this->get_prop( 'city', $context );
+    }
+
+    /**
+	 * Alias of self::get_city().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_city( $context = 'view' ) {
+		return $this->get_city( $context );
+    }
+
+    /**
+	 * Alias of self::get_city().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_city( $context = 'view' ) {
+		return $this->get_city( $context );
+    }
+
+    /**
+	 * Get the customer's zip.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_zip( $context = 'view' ) {
+		return $this->get_prop( 'zip', $context );
+    }
+
+    /**
+	 * Alias of self::get_zip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_zip( $context = 'view' ) {
+		return $this->get_zip( $context );
+    }
+
+    /**
+	 * Alias of self::get_zip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_zip( $context = 'view' ) {
+		return $this->get_zip( $context );
+    }
+
+    /**
+	 * Get the customer's company.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_company( $context = 'view' ) {
+		return $this->get_prop( 'company', $context );
+    }
+
+    /**
+	 * Alias of self::get_company().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_company( $context = 'view' ) {
+		return $this->get_company( $context );
+    }
+
+    /**
+	 * Alias of self::get_company().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_company( $context = 'view' ) {
+		return $this->get_company( $context );
+    }
+
+    /**
+	 * Get the customer's vat number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_vat_number( $context = 'view' ) {
+		return $this->get_prop( 'vat_number', $context );
+    }
+
+    /**
+	 * Alias of self::get_vat_number().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_vat_number( $context = 'view' ) {
+		return $this->get_vat_number( $context );
+    }
+
+    /**
+	 * Alias of self::get_vat_number().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_vat_number( $context = 'view' ) {
+		return $this->get_vat_number( $context );
+    }
+
+    /**
+	 * Get the customer's vat rate.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_vat_rate( $context = 'view' ) {
+		return $this->get_prop( 'vat_rate', $context );
+    }
+
+    /**
+	 * Alias of self::get_vat_rate().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_vat_rate( $context = 'view' ) {
+		return $this->get_vat_rate( $context );
+    }
+
+    /**
+	 * Alias of self::get_vat_rate().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_vat_rate( $context = 'view' ) {
+		return $this->get_vat_rate( $context );
+    }
+
+    /**
+	 * Get the customer's address.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_address( $context = 'view' ) {
+		return $this->get_prop( 'address', $context );
+    }
+
+    /**
+	 * Alias of self::get_address().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_user_address( $context = 'view' ) {
+		return $this->get_address( $context );
+    }
+
+    /**
+	 * Alias of self::get_address().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_customer_address( $context = 'view' ) {
+		return $this->get_address( $context );
+    }
+
+    /**
+	 * Get whether the customer has viewed the invoice or not.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_is_viewed( $context = 'view' ) {
+		return (bool) $this->get_prop( 'is_viewed', $context );
+	}
+
+	/**
+	 * Get other recipients for invoice communications.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_email_cc( $context = 'view' ) {
+		return $this->get_prop( 'email_cc', $context );
+	}
+
+	/**
+	 * Get invoice template.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_template( $context = 'view' ) {
+		return $this->get_prop( 'template', $context );
+	}
+
+	/**
+	 * Get invoice source.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_created_via( $context = 'view' ) {
+		return $this->get_prop( 'created_via', $context );
+	}
+
+	/**
+	 * Get whether the customer has confirmed their address.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_address_confirmed( $context = 'view' ) {
+		return (bool) $this->get_prop( 'address_confirmed', $context );
+    }
+
+    /**
+	 * Alias of self::get_address_confirmed().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_user_address_confirmed( $context = 'view' ) {
+		return $this->get_address_confirmed( $context );
+    }
+
+    /**
+	 * Alias of self::get_address().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_customer_address_confirmed( $context = 'view' ) {
+		return $this->get_address_confirmed( $context );
+    }
+
+    /**
+	 * Get the invoice subtotal.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return float
+	 */
+	public function get_subtotal( $context = 'view' ) {
+        $subtotal = (float) $this->get_prop( 'subtotal', $context );
+
+        // Backwards compatibility.
+        if ( is_bool( $context ) && $context ) {
+            return wpinv_price( $subtotal, $this->get_currency() );
         }
-        
-        if ( $tax < 0 ) {
-            $tax = 0;
+
+        return $subtotal;
+    }
+
+    /**
+	 * Get the invoice discount total.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return float
+	 */
+	public function get_total_discount( $context = 'view' ) {
+		return wpinv_round_amount( wpinv_sanitize_amount( $this->get_prop( 'total_discount', $context ) ) );
+    }
+
+    /**
+	 * Get the invoice tax total.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return float
+	 */
+	public function get_total_tax( $context = 'view' ) {
+		return wpinv_round_amount( wpinv_sanitize_amount( $this->get_prop( 'total_tax', $context ) ) );
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public function get_final_tax( $currency = false ) {
+		$tax = $this->get_total_tax();
+
+        if ( $currency ) {
+			return wpinv_price( $tax, $this->get_currency() );
         }
 
         return $tax;
     }
 
-    private function setup_subtotal() {
-        $subtotal     = 0;
-        $cart_details = $this->cart_details;
-
-        if ( is_array( $cart_details ) ) {
-            foreach ( $cart_details as $item ) {
-                if ( isset( $item['subtotal'] ) ) {
-                    $subtotal += $item['subtotal'];
-                }
-            }
-        } else {
-            $subtotal  = $this->total;
-            $tax       = wpinv_use_taxes() ? $this->tax : 0;
-            $subtotal -= $tax;
-        }
-
-        return $subtotal;
-    }
-    
-    private function setup_discounts() {
-        $discounts = ! empty( $this->payment_meta['user_info']['discount'] ) ? $this->payment_meta['user_info']['discount'] : array();
-        return $discounts;
-    }
-    
-    private function setup_total() {
-        $amount = $this->get_meta( '_wpinv_total', true );
-
-        if ( empty( $amount ) && '0.00' != $amount ) {
-            $meta   = $this->get_meta( '_wpinv_payment_meta', true );
-            $meta   = maybe_unserialize( $meta );
-
-            if ( isset( $meta['amount'] ) ) {
-                $amount = $meta['amount'];
-            }
-        }
-
-        if($amount < 0){
-            $amount = 0;
-        }
-
-        return $amount;
-    }
-    
-    private function setup_mode() {
-        return $this->get_meta( '_wpinv_mode' );
+    /**
+	 * Get the invoice fees total.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return float
+	 */
+	public function get_total_fees( $context = 'view' ) {
+		return wpinv_round_amount( wpinv_sanitize_amount( $this->get_prop( 'total_fees', $context ) ) );
     }
 
-    private function setup_gateway() {
-        $gateway = $this->get_meta( '_wpinv_gateway' );
-        
-        if ( empty( $gateway ) && 'publish' === $this->status ) {
-            $gateway = 'manual';
-        }
-        
-        return $gateway;
-    }
-    
-    private function setup_gateway_title() {
-        $gateway_title = wpinv_get_gateway_checkout_label( $this->gateway );
-        return $gateway_title;
+    /**
+	 * Alias for self::get_total_fees().
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return float
+	 */
+	public function get_fees_total( $context = 'view' ) {
+		return $this->get_total_fees( $context );
     }
 
-    private function setup_transaction_id() {
-        $transaction_id = $this->get_meta( '_wpinv_transaction_id' );
+    /**
+	 * Get the invoice total.
+	 *
+	 * @since 1.0.19
+     * @return float
+	 */
+	public function get_total( $context = 'view' ) {
+		return wpinv_round_amount( wpinv_sanitize_amount( $this->get_prop( 'total', $context ) ) );
+	}
 
-        if ( empty( $transaction_id ) || (int) $transaction_id === (int) $this->ID ) {
-            $gateway        = $this->gateway;
-            $transaction_id = apply_filters( 'wpinv_get_invoice_transaction_id-' . $gateway, $this->ID );
-        }
-
-        return $transaction_id;
+	/**
+	 * Get the invoice totals.
+	 *
+	 * @since 1.0.19
+     * @return array
+	 */
+	public function get_totals() {
+		return $this->totals;
     }
 
-    private function setup_ip() {
-        $ip = $this->get_meta( '_wpinv_user_ip' );
-        return $ip;
-    }
-
-    ///private function setup_user_id() {
-        ///$user_id = $this->get_meta( '_wpinv_user_id' );
-        ///return $user_id;
-    ///}
-        
-    private function setup_first_name() {
-        $first_name = $this->get_meta( '_wpinv_first_name' );
-        return $first_name;
-    }
-    
-    private function setup_last_name() {
-        $last_name = $this->get_meta( '_wpinv_last_name' );
-        return $last_name;
-    }
-    
-    private function setup_company() {
-        $company = $this->get_meta( '_wpinv_company' );
-        return $company;
-    }
-    
-    private function setup_vat_number() {
-        $vat_number = $this->get_meta( '_wpinv_vat_number' );
-        return $vat_number;
-    }
-    
-    private function setup_vat_rate() {
-        $vat_rate = $this->get_meta( '_wpinv_vat_rate' );
-        return $vat_rate;
-    }
-    
-    private function setup_adddress_confirmed() {
-        $adddress_confirmed = $this->get_meta( '_wpinv_adddress_confirmed' );
-        return $adddress_confirmed;
-    }
-    
-    private function setup_phone() {
-        $phone = $this->get_meta( '_wpinv_phone' );
-        return $phone;
-    }
-    
-    private function setup_address() {
-        $address = $this->get_meta( '_wpinv_address', true );
-        return $address;
-    }
-    
-    private function setup_city() {
-        $city = $this->get_meta( '_wpinv_city', true );
-        return $city;
-    }
-    
-    private function setup_country() {
-        $country = $this->get_meta( '_wpinv_country', true );
-        return $country;
-    }
-    
-    private function setup_state() {
-        $state = $this->get_meta( '_wpinv_state', true );
-        return $state;
-    }
-    
-    private function setup_zip() {
-        $zip = $this->get_meta( '_wpinv_zip', true );
-        return $zip;
-    }
-
-    private function setup_user_info() {
-        $defaults = array(
-            'user_id'        => $this->user_id,
-            'first_name'     => $this->first_name,
-            'last_name'      => $this->last_name,
-            'email'          => get_the_author_meta( 'email', $this->user_id ),
-            'phone'          => $this->phone,
-            'address'        => $this->address,
-            'city'           => $this->city,
-            'country'        => $this->country,
-            'state'          => $this->state,
-            'zip'            => $this->zip,
-            'company'        => $this->company,
-            'vat_number'     => $this->vat_number,
-            'vat_rate'       => $this->vat_rate,
-            'adddress_confirmed' => $this->adddress_confirmed,
-            'discount'       => $this->discounts,
-        );
-        
-        $user_info = array();
-        if ( isset( $this->payment_meta['user_info'] ) ) {
-            $user_info = maybe_unserialize( $this->payment_meta['user_info'] );
-            
-            if ( !empty( $user_info ) && isset( $user_info['user_id'] ) && $post = get_post( $this->ID ) ) {
-                $this->user_id = $post->post_author;
-                $this->email = get_the_author_meta( 'email', $this->user_id );
-                
-                $user_info['user_id'] = $this->user_id;
-                $user_info['email'] = $this->email;
-                $this->payment_meta['user_id'] = $this->user_id;
-                $this->payment_meta['email'] = $this->email;
-            }
-        }
-        
-        $user_info    = wp_parse_args( $user_info, $defaults );
-        
-        // Get the user, but only if it's been created
-        $user = get_userdata( $this->user_id );
-        
-        if ( !empty( $user ) && $user->ID > 0 ) {
-            if ( empty( $user_info ) ) {
-                $user_info = array(
-                    'user_id'    => $user->ID,
-                    'first_name' => $user->first_name,
-                    'last_name'  => $user->last_name,
-                    'email'      => $user->user_email,
-                    'discount'   => '',
-                );
-            } else {
-                foreach ( $user_info as $key => $value ) {
-                    if ( ! empty( $value ) ) {
-                        continue;
-                    }
-
-                    switch( $key ) {
-                        case 'user_id':
-                            $user_info[ $key ] = $user->ID;
-                            break;
-                        case 'first_name':
-                            $user_info[ $key ] = $user->first_name;
-                            break;
-                        case 'last_name':
-                            $user_info[ $key ] = $user->last_name;
-                            break;
-                        case 'email':
-                            $user_info[ $key ] = $user->user_email;
-                            break;
-                    }
-                }
-            }
-        }
-
-        return $user_info;
-    }
-
-    private function setup_invoice_key() {
-        $key = $this->get_meta( '_wpinv_key', true );
-        
-        return $key;
-    }
-
-    private function setup_invoice_number() {
-        $number = $this->get_meta( '_wpinv_number', true );
-
-        if ( !$number ) {
-            $number = $this->ID;
-
-            if ( $this->status == 'auto-draft' ) {
-                if ( wpinv_sequential_number_active( $this->post_type ) ) {
-                    $next_number = wpinv_get_next_invoice_number( $this->post_type );
-                    $number      = $next_number;
-                }
-            }
-            
-            $number = wpinv_format_invoice_number( $number, $this->post_type );
-        }
-
-        return $number;
-    }
-    
-    private function insert_invoice() {
-        global $wpdb;
-
-        if ( empty( $this->post_type ) ) {
-            if ( !empty( $this->ID ) && $post_type = get_post_type( $this->ID ) ) {
-                $this->post_type = $post_type;
-            } else if ( !empty( $this->parent_invoice ) && $post_type = get_post_type( $this->parent_invoice ) ) {
-                $this->post_type = $post_type;
-            } else {
-                $this->post_type = 'wpi_invoice';
-            }
-        }
-
-        $invoice_number = $this->ID;
-        if ( $number = $this->get_meta( '_wpinv_number', true ) ) {
-            $invoice_number = $number;
-        }
-
-        if ( empty( $this->key ) ) {
-            $this->key = self::generate_key();
-            $this->pending['key'] = $this->key;
-        }
-
-        if ( empty( $this->ip ) ) {
-            $this->ip = wpinv_get_ip();
-            $this->pending['ip'] = $this->ip;
-        }
-        
-        $payment_data = array(
-            'price'        => $this->total,
-            'date'         => $this->date,
-            'user_email'   => $this->email,
-            'invoice_key'  => $this->key,
-            'currency'     => $this->currency,
-            'items'        => $this->items,
-            'user_info' => array(
-                'user_id'    => $this->user_id,
-                'email'      => $this->email,
-                'first_name' => $this->first_name,
-                'last_name'  => $this->last_name,
-                'address'    => $this->address,
-                'phone'      => $this->phone,
-                'city'       => $this->city,
-                'country'    => $this->country,
-                'state'      => $this->state,
-                'zip'        => $this->zip,
-                'company'    => $this->company,
-                'vat_number' => $this->vat_number,
-                'discount'   => $this->discounts,
-            ),
-            'cart_details' => $this->cart_details,
-            'status'       => $this->status,
-            'fees'         => $this->fees,
-        );
-
-        $post_data = array(
-                        'post_title'    => $invoice_number,
-                        'post_status'   => $this->status,
-                        'post_author'   => $this->user_id,
-                        'post_type'     => $this->post_type,
-                        'post_date'     => ! empty( $this->date ) && $this->date != '0000-00-00 00:00:00' ? $this->date : current_time( 'mysql' ),
-                        'post_date_gmt' => ! empty( $this->date ) && $this->date != '0000-00-00 00:00:00' ? get_gmt_from_date( $this->date ) : current_time( 'mysql', 1 ),
-                        'post_parent'   => $this->parent_invoice,
-                    );
-        $args = apply_filters( 'wpinv_insert_invoice_args', $post_data, $this );
-
-        // Create a blank invoice
-        if ( !empty( $this->ID ) ) {
-            $args['ID']         = $this->ID;
-
-            $invoice_id = wp_update_post( $args, true );
-        } else {
-            $invoice_id = wp_insert_post( $args, true );
-        }
-
-        if ( is_wp_error( $invoice_id ) ) {
-            return false;
-        }
-
-        if ( !empty( $invoice_id ) ) {
-            $this->ID  = $invoice_id;
-            $this->_ID = $invoice_id;
-
-            $this->payment_meta = apply_filters( 'wpinv_payment_meta', $this->payment_meta, $payment_data );
-            if ( ! empty( $this->payment_meta['fees'] ) ) {
-                $this->fees = array_merge( $this->fees, $this->payment_meta['fees'] );
-                foreach( $this->fees as $fee ) {
-                    $this->increase_fees( $fee['amount'] );
-                }
-            }
-
-            $this->update_meta( '_wpinv_payment_meta', $this->payment_meta );    
-            $this->new = true;
-        }
-
-        return $this->ID;
-    }
-
-    public function save( $setup = false ) {
-        global $wpi_session;
-        
-        $saved = false;
-        if ( empty( $this->items ) ) {
-            return $saved; // Don't save empty invoice.
-        }
-        
-        if ( empty( $this->key ) ) {
-            $this->key = self::generate_key();
-            $this->pending['key'] = $this->key;
-        }
-        
-        if ( empty( $this->ID ) ) {
-            $invoice_id = $this->insert_invoice();
-
-            if ( false === $invoice_id ) {
-                $saved = false;
-            } else {
-                $this->ID = $invoice_id;
-            }
-        }
-
-        // If we have something pending, let's save it
-        if ( !empty( $this->pending ) ) {
-            $total_increase = 0;
-            $total_decrease = 0;
-
-            foreach ( $this->pending as $key => $value ) {
-                switch( $key ) {
-                    case 'items':
-                        // Update totals for pending items
-                        foreach ( $this->pending[ $key ] as $item ) {
-                            switch( $item['action'] ) {
-                                case 'add':
-                                    $price = $item['price'];
-                                    $taxes = $item['tax'];
-
-                                    if ( 'publish' === $this->status ) {
-                                        $total_increase += $price;
-                                    }
-                                    break;
-
-                                case 'remove':
-                                    if ( 'publish' === $this->status ) {
-                                        $total_decrease += $item['price'];
-                                    }
-                                    break;
-                            }
-                        }
-                        break;
-                    case 'fees':
-                        if ( 'publish' !== $this->status ) {
-                            break;
-                        }
-
-                        if ( empty( $this->pending[ $key ] ) ) {
-                            break;
-                        }
-
-                        foreach ( $this->pending[ $key ] as $fee ) {
-                            switch( $fee['action'] ) {
-                                case 'add':
-                                    $total_increase += $fee['amount'];
-                                    break;
-
-                                case 'remove':
-                                    $total_decrease += $fee['amount'];
-                                    break;
-                            }
-                        }
-                        break;
-                    case 'status':
-                        $this->update_status( $this->status );
-                        break;
-                    case 'gateway':
-                        $this->update_meta( '_wpinv_gateway', $this->gateway );
-                        break;
-                    case 'mode':
-                        $this->update_meta( '_wpinv_mode', $this->mode );
-                        break;
-                    case 'transaction_id':
-                        $this->update_meta( '_wpinv_transaction_id', $this->transaction_id );
-                        break;
-                    case 'ip':
-                        $this->update_meta( '_wpinv_user_ip', $this->ip );
-                        break;
-                    ///case 'user_id':
-                        ///$this->update_meta( '_wpinv_user_id', $this->user_id );
-                        ///$this->user_info['user_id'] = $this->user_id;
-                        ///break;
-                    case 'first_name':
-                        $this->update_meta( '_wpinv_first_name', $this->first_name );
-                        $this->user_info['first_name'] = $this->first_name;
-                        break;
-                    case 'last_name':
-                        $this->update_meta( '_wpinv_last_name', $this->last_name );
-                        $this->user_info['last_name'] = $this->last_name;
-                        break;
-                    case 'phone':
-                        $this->update_meta( '_wpinv_phone', $this->phone );
-                        $this->user_info['phone'] = $this->phone;
-                        break;
-                    case 'address':
-                        $this->update_meta( '_wpinv_address', $this->address );
-                        $this->user_info['address'] = $this->address;
-                        break;
-                    case 'city':
-                        $this->update_meta( '_wpinv_city', $this->city );
-                        $this->user_info['city'] = $this->city;
-                        break;
-                    case 'country':
-                        $this->update_meta( '_wpinv_country', $this->country );
-                        $this->user_info['country'] = $this->country;
-                        break;
-                    case 'state':
-                        $this->update_meta( '_wpinv_state', $this->state );
-                        $this->user_info['state'] = $this->state;
-                        break;
-                    case 'zip':
-                        $this->update_meta( '_wpinv_zip', $this->zip );
-                        $this->user_info['zip'] = $this->zip;
-                        break;
-                    case 'company':
-                        $this->update_meta( '_wpinv_company', $this->company );
-                        $this->user_info['company'] = $this->company;
-                        break;
-                    case 'vat_number':
-                        $this->update_meta( '_wpinv_vat_number', $this->vat_number );
-                        $this->user_info['vat_number'] = $this->vat_number;
-                        
-                        $vat_info = $wpi_session->get( 'user_vat_data' );
-                        if ( $this->vat_number && !empty( $vat_info ) && isset( $vat_info['number'] ) && isset( $vat_info['valid'] ) && $vat_info['number'] == $this->vat_number ) {
-                            $adddress_confirmed = isset( $vat_info['adddress_confirmed'] ) ? $vat_info['adddress_confirmed'] : false;
-                            $this->update_meta( '_wpinv_adddress_confirmed', (bool)$adddress_confirmed );
-                            $this->user_info['adddress_confirmed'] = (bool)$adddress_confirmed;
-                        }
-    
-                        break;
-                    case 'vat_rate':
-                        $this->update_meta( '_wpinv_vat_rate', $this->vat_rate );
-                        $this->user_info['vat_rate'] = $this->vat_rate;
-                        break;
-                    case 'adddress_confirmed':
-                        $this->update_meta( '_wpinv_adddress_confirmed', $this->adddress_confirmed );
-                        $this->user_info['adddress_confirmed'] = $this->adddress_confirmed;
-                        break;
-                    
-                    case 'key':
-                        $this->update_meta( '_wpinv_key', $this->key );
-                        break;
-                    case 'date':
-                        $args = array(
-                            'ID'        => $this->ID,
-                            'post_date' => $this->date,
-                            'edit_date' => true,
-                        );
-
-                        wp_update_post( $args );
-                        break;
-                    case 'due_date':
-                        if ( empty( $this->due_date ) ) {
-                            $this->due_date = 'none';
-                        }
-                        
-                        $this->update_meta( '_wpinv_due_date', $this->due_date );
-                        break;
-                    case 'completed_date':
-                        $this->update_meta( '_wpinv_completed_date', $this->completed_date );
-                        break;
-                    case 'discounts':
-                        if ( ! is_array( $this->discounts ) ) {
-                            $this->discounts = explode( ',', $this->discounts );
-                        }
-
-                        $this->user_info['discount'] = implode( ',', $this->discounts );
-                        break;
-                    case 'discount':
-                        $this->update_meta( '_wpinv_discount', wpinv_round_amount( $this->discount ) );
-                        break;
-                    case 'discount_code':
-                        $this->update_meta( '_wpinv_discount_code', $this->discount_code );
-                        break;
-                    case 'parent_invoice':
-                        $args = array(
-                            'ID'          => $this->ID,
-                            'post_parent' => $this->parent_invoice,
-                        );
-                        wp_update_post( $args );
-                        break;
-                    default:
-                        do_action( 'wpinv_save', $this, $key );
-                        break;
-                }
-            }
-
-            $this->update_meta( '_wpinv_subtotal', wpinv_round_amount( $this->subtotal ) );
-            $this->update_meta( '_wpinv_total', wpinv_round_amount( $this->total ) );
-            $this->update_meta( '_wpinv_tax', wpinv_round_amount( $this->tax ) );
-            
-            $this->items    = array_values( $this->items );
-            
-            $new_meta = array(
-                'items'         => $this->items,
-                'cart_details'  => $this->cart_details,
-                'fees'          => $this->fees,
-                'currency'      => $this->currency,
-                'user_info'     => $this->user_info,
-            );
-            
-            $meta        = $this->get_meta();
-            $merged_meta = array_merge( $meta, $new_meta );
-
-            // Only save the payment meta if it's changed
-            if ( md5( serialize( $meta ) ) !== md5( serialize( $merged_meta) ) ) {
-                $updated     = $this->update_meta( '_wpinv_payment_meta', $merged_meta );
-                if ( false !== $updated ) {
-                    $saved = true;
-                }
-            }
-
-            $this->pending = array();
-            $saved         = true;
-        } else {
-            $this->update_meta( '_wpinv_subtotal', wpinv_round_amount( $this->subtotal ) );
-            $this->update_meta( '_wpinv_total', wpinv_round_amount( $this->total ) );
-            $this->update_meta( '_wpinv_tax', wpinv_round_amount( $this->tax ) );
-        }
-        
-        do_action( 'wpinv_invoice_save', $this, $saved );
-
-        if ( true === $saved || $setup ) {
-            $this->setup_invoice( $this->ID );
-        }
-        
-        $this->refresh_item_ids();
-        
-        return $saved;
-    }
-    
-    public function add_fee( $args, $global = true ) {
-        $default_args = array(
-            'label'       => '',
-            'amount'      => 0,
-            'type'        => 'fee',
-            'id'          => '',
-            'no_tax'      => false,
-            'item_id'     => 0,
-        );
-
-        $fee = wp_parse_args( $args, $default_args );
-        
-        if ( empty( $fee['label'] ) ) {
-            return false;
-        }
-        
-        $fee['id']  = sanitize_title( $fee['label'] );
-        
-        $this->fees[]               = $fee;
-        
-        $added_fee               = $fee;
-        $added_fee['action']     = 'add';
-        $this->pending['fees'][] = $added_fee;
-        reset( $this->fees );
-
-        $this->increase_fees( $fee['amount'] );
-        return true;
-    }
-
-    public function remove_fee( $key ) {
-        $removed = false;
-
-        if ( is_numeric( $key ) ) {
-            $removed = $this->remove_fee_by( 'index', $key );
-        }
-
-        return $removed;
-    }
-
-    public function remove_fee_by( $key, $value, $global = false ) {
-        $allowed_fee_keys = apply_filters( 'wpinv_fee_keys', array(
-            'index', 'label', 'amount', 'type',
-        ) );
-
-        if ( ! in_array( $key, $allowed_fee_keys ) ) {
-            return false;
-        }
-
-        $removed = false;
-        if ( 'index' === $key && array_key_exists( $value, $this->fees ) ) {
-            $removed_fee             = $this->fees[ $value ];
-            $removed_fee['action']   = 'remove';
-            $this->pending['fees'][] = $removed_fee;
-
-            $this->decrease_fees( $removed_fee['amount'] );
-
-            unset( $this->fees[ $value ] );
-            $removed = true;
-        } else if ( 'index' !== $key ) {
-            foreach ( $this->fees as $index => $fee ) {
-                if ( isset( $fee[ $key ] ) && $fee[ $key ] == $value ) {
-                    $removed_fee             = $fee;
-                    $removed_fee['action']   = 'remove';
-                    $this->pending['fees'][] = $removed_fee;
-
-                    $this->decrease_fees( $removed_fee['amount'] );
-
-                    unset( $this->fees[ $index ] );
-                    $removed = true;
-
-                    if ( false === $global ) {
-                        break;
-                    }
-                }
-            }
-        }
-
-        if ( true === $removed ) {
-            $this->fees = array_values( $this->fees );
-        }
-
-        return $removed;
-    }
-
-    
-
-    public function add_note( $note = '', $customer_type = false, $added_by_user = false, $system = false ) {
-        // Bail if no note specified
-        if( !$note ) {
-            return false;
-        }
-
-        if ( empty( $this->ID ) )
-            return false;
-        
-        if ( ( ( is_user_logged_in() && wpinv_current_user_can_manage_invoicing() ) || $added_by_user ) && !$system ) {
-            $user                 = get_user_by( 'id', get_current_user_id() );
-            $comment_author       = $user->display_name;
-            $comment_author_email = $user->user_email;
-        } else {
-            $comment_author       = 'System';
-            $comment_author_email = 'system@';
-            $comment_author_email .= isset( $_SERVER['HTTP_HOST'] ) ? str_replace( 'www.', '', $_SERVER['HTTP_HOST'] ) : 'noreply.com';
-            $comment_author_email = sanitize_email( $comment_author_email );
-        }
-
-        do_action( 'wpinv_pre_insert_invoice_note', $this->ID, $note, $customer_type );
-
-        $note_id = wp_insert_comment( wp_filter_comment( array(
-            'comment_post_ID'      => $this->ID,
-            'comment_content'      => $note,
-            'comment_agent'        => 'WPInvoicing',
-            'user_id'              => is_admin() ? get_current_user_id() : 0,
-            'comment_date'         => current_time( 'mysql' ),
-            'comment_date_gmt'     => current_time( 'mysql', 1 ),
-            'comment_approved'     => 1,
-            'comment_parent'       => 0,
-            'comment_author'       => $comment_author,
-            'comment_author_IP'    => wpinv_get_ip(),
-            'comment_author_url'   => '',
-            'comment_author_email' => $comment_author_email,
-            'comment_type'         => 'wpinv_note'
-        ) ) );
-
-        do_action( 'wpinv_insert_payment_note', $note_id, $this->ID, $note );
-        
-        if ( $customer_type ) {
-            add_comment_meta( $note_id, '_wpi_customer_note', 1 );
-
-            do_action( 'wpinv_new_customer_note', array( 'invoice_id' => $this->ID, 'user_note' => $note ) );
-        }
-
-        return $note_id;
-    }
-
-    private function increase_subtotal( $amount = 0.00 ) {
-        $amount          = (float) $amount;
-        $this->subtotal += $amount;
-        $this->subtotal  = wpinv_round_amount( $this->subtotal );
-
-        $this->recalculate_total();
-    }
-
-    private function decrease_subtotal( $amount = 0.00 ) {
-        $amount          = (float) $amount;
-        $this->subtotal -= $amount;
-        $this->subtotal  = wpinv_round_amount( $this->subtotal );
-
-        if ( $this->subtotal < 0 ) {
-            $this->subtotal = 0;
-        }
-
-        $this->recalculate_total();
-    }
-
-    private function increase_fees( $amount = 0.00 ) {
-        $amount            = (float)$amount;
-        $this->fees_total += $amount;
-        $this->fees_total  = wpinv_round_amount( $this->fees_total );
-
-        $this->recalculate_total();
-    }
-
-    private function decrease_fees( $amount = 0.00 ) {
-        $amount            = (float) $amount;
-        $this->fees_total -= $amount;
-        $this->fees_total  = wpinv_round_amount( $this->fees_total );
-
-        if ( $this->fees_total < 0 ) {
-            $this->fees_total = 0;
-        }
-
-        $this->recalculate_total();
-    }
-
-    public function recalculate_total() {
-        global $wpi_nosave;
-        
-        $this->total = $this->subtotal + $this->tax + $this->fees_total;
-        $this->total = wpinv_round_amount( $this->total );
-        
-        do_action( 'wpinv_invoice_recalculate_total', $this, $wpi_nosave );
-    }
-    
-    public function increase_tax( $amount = 0.00 ) {
-        $amount       = (float) $amount;
-        $this->tax   += $amount;
-
-        $this->recalculate_total();
-    }
-
-    public function decrease_tax( $amount = 0.00 ) {
-        $amount     = (float) $amount;
-        $this->tax -= $amount;
-
-        if ( $this->tax < 0 ) {
-            $this->tax = 0;
-        }
-
-        $this->recalculate_total();
-    }
-
-    public function update_status( $new_status = false, $note = '', $manual = false ) {
-        $old_status = ! empty( $this->old_status ) ? $this->old_status : get_post_status( $this->ID );
-
-        if ( $old_status === $new_status && in_array( $new_status, array_keys( wpinv_get_invoice_statuses( true ) ) ) ) {
-            return false; // Don't permit status changes that aren't changes
-        }
-
-        $do_change = apply_filters( 'wpinv_should_update_invoice_status', true, $this->ID, $new_status, $old_status );
-        $updated = false;
-
-        if ( $do_change ) {
-            do_action( 'wpinv_before_invoice_status_change', $this->ID, $new_status, $old_status );
-
-            $update_post_data                   = array();
-            $update_post_data['ID']             = $this->ID;
-            $update_post_data['post_status']    = $new_status;
-            $update_post_data['edit_date']      = current_time( 'mysql', 0 );
-            $update_post_data['edit_date_gmt']  = current_time( 'mysql', 1 );
-            
-            $update_post_data = apply_filters( 'wpinv_update_invoice_status_fields', $update_post_data, $this->ID );
-
-            $updated = wp_update_post( $update_post_data );     
-           
-            // Process any specific status functions
-            switch( $new_status ) {
-                case 'wpi-refunded':
-                    $this->process_refund();
-                    break;
-                case 'wpi-failed':
-                    $this->process_failure();
-                    break;
-                case 'wpi-pending':
-                    $this->process_pending();
-                    break;
-            }
-            
-            // Status was changed.
-            do_action( 'wpinv_status_' . $new_status, $this->ID, $old_status );
-            do_action( 'wpinv_status_' . $old_status . '_to_' . $new_status, $this->ID, $old_status );
-            do_action( 'wpinv_update_status', $this->ID, $new_status, $old_status );
-        }
-
-        return $updated;
-    }
-
-    public function refund() {
-        $this->old_status        = $this->status;
-        $this->status            = 'wpi-refunded';
-        $this->pending['status'] = $this->status;
-
-        $this->save();
-    }
-
-    public function update_meta( $meta_key = '', $meta_value = '', $prev_value = '' ) {
-        if ( empty( $meta_key ) ) {
-            return false;
-        }
-
-        if ( $meta_key == 'key' || $meta_key == 'date' ) {
-            $current_meta = $this->get_meta();
-            $current_meta[ $meta_key ] = $meta_value;
-
-            $meta_key     = '_wpinv_payment_meta';
-            $meta_value   = $current_meta;
-        }
-
-        $meta_value = apply_filters( 'wpinv_update_payment_meta_' . $meta_key, $meta_value, $this->ID );
-        
-        // Do not update created date on invoice marked as paid.
-        /*if ( $meta_key == '_wpinv_completed_date' && !empty( $meta_value ) ) {
-            $args = array(
-                'ID'                => $this->ID,
-                'post_date'         => $meta_value,
-                'edit_date'         => true,
-                'post_date_gmt'     => get_gmt_from_date( $meta_value ),
-                'post_modified'     => $meta_value,
-                'post_modified_gmt' => get_gmt_from_date( $meta_value )
-            );
-            wp_update_post( $args );
-        }*/
-        
-        return update_post_meta( $this->ID, $meta_key, $meta_value, $prev_value );
-    }
-
-    private function process_refund() {
-        $process_refund = true;
-
-        // If the payment was not in publish, don't decrement stats as they were never incremented
-        if ( 'publish' != $this->old_status || 'wpi-refunded' != $this->status ) {
-            $process_refund = false;
-        }
-
-        // Allow extensions to filter for their own payment types, Example: Recurring Payments
-        $process_refund = apply_filters( 'wpinv_should_process_refund', $process_refund, $this );
-
-        if ( false === $process_refund ) {
-            return;
-        }
-
-        do_action( 'wpinv_pre_refund_invoice', $this );
-        
-        $decrease_store_earnings = apply_filters( 'wpinv_decrease_store_earnings_on_refund', true, $this );
-        $decrease_customer_value = apply_filters( 'wpinv_decrease_customer_value_on_refund', true, $this );
-        $decrease_purchase_count = apply_filters( 'wpinv_decrease_customer_purchase_count_on_refund', true, $this );
-        
-        do_action( 'wpinv_post_refund_invoice', $this );
-    }
-
-    private function process_failure() {
-        $discounts = $this->discounts;
-        if ( empty( $discounts ) ) {
-            return;
-        }
-
-        if ( ! is_array( $discounts ) ) {
-            $discounts = array_map( 'trim', explode( ',', $discounts ) );
-        }
-
-        foreach ( $discounts as $discount ) {
-            wpinv_decrease_discount_usage( $discount );
-        }
-    }
-    
-    private function process_pending() {
-        $process_pending = true;
-
-        // If the payment was not in publish or revoked status, don't decrement stats as they were never incremented
-        if ( ( 'publish' != $this->old_status && 'revoked' != $this->old_status ) || 'wpi-pending' != $this->status ) {
-            $process_pending = false;
-        }
-
-        // Allow extensions to filter for their own payment types, Example: Recurring Payments
-        $process_pending = apply_filters( 'wpinv_should_process_pending', $process_pending, $this );
-
-        if ( false === $process_pending ) {
-            return;
-        }
-
-        $decrease_store_earnings = apply_filters( 'wpinv_decrease_store_earnings_on_pending', true, $this );
-        $decrease_customer_value = apply_filters( 'wpinv_decrease_customer_value_on_pending', true, $this );
-        $decrease_purchase_count = apply_filters( 'wpinv_decrease_customer_purchase_count_on_pending', true, $this );
-
-        $this->completed_date = '';
-        $this->update_meta( '_wpinv_completed_date', '' );
-    }
-    
-    // get data
-    public function get_meta( $meta_key = '_wpinv_payment_meta', $single = true ) {
-        $meta = get_post_meta( $this->ID, $meta_key, $single );
-
-        if ( $meta_key === '_wpinv_payment_meta' ) {
-
-            if(!is_array($meta)){$meta = array();} // we need this to be an array so make sure it is.
-
-            if ( empty( $meta['key'] ) ) {
-                $meta['key'] = $this->setup_invoice_key();
-            }
-
-            if ( empty( $meta['date'] ) ) {
-                $meta['date'] = get_post_field( 'post_date', $this->ID );
-            }
-        }
-
-        $meta = apply_filters( 'wpinv_get_invoice_meta_' . $meta_key, $meta, $this->ID );
-
-        return apply_filters( 'wpinv_get_invoice_meta', $meta, $this->ID, $meta_key );
-    }
-    
-    public function get_description() {
-        $post = get_post( $this->ID );
-        
-        $description = !empty( $post ) ? $post->post_content : '';
-        return apply_filters( 'wpinv_get_description', $description, $this->ID, $this );
-    }
-    
-    public function get_status( $nicename = false ) {
-        if ( !$nicename ) {
-            $status = $this->status;
-        } else {
-            $status = $this->status_nicename;
-        }
-        
-        return apply_filters( 'wpinv_get_status', $status, $nicename, $this->ID, $this );
-    }
-    
-    public function get_cart_details() {
-        return apply_filters( 'wpinv_cart_details', $this->cart_details, $this->ID, $this );
-    }
-    
-    public function get_subtotal( $currency = false ) {
-        $subtotal = wpinv_round_amount( $this->subtotal );
-        
-        if ( $currency ) {
-            $subtotal = wpinv_price( wpinv_format_amount( $subtotal, NULL, !$currency ), $this->get_currency() );
-        }
-        
-        return apply_filters( 'wpinv_get_invoice_subtotal', $subtotal, $this->ID, $this, $currency );
-    }
-    
-    public function get_total( $currency = false ) {        
-        if ( $this->is_free_trial() ) {
-            $total = wpinv_round_amount( 0 );
-        } else {
-            $total = wpinv_round_amount( $this->total );
-        }
-        if ( $currency ) {
-            $total = wpinv_price( wpinv_format_amount( $total, NULL, !$currency ), $this->get_currency() );
-        }
-        
-        return apply_filters( 'wpinv_get_invoice_total', $total, $this->ID, $this, $currency );
-    }
-    
-    public function get_recurring_details( $field = '', $currency = false ) {        
-        $data                 = array();
-        $data['cart_details'] = $this->cart_details;
-        $data['subtotal']     = $this->get_subtotal();
-        $data['discount']     = $this->get_discount();
-        $data['tax']          = $this->get_tax();
-        $data['total']        = $this->get_total();
-    
-        if ( !empty( $this->cart_details ) && ( $this->is_parent() || $this->is_renewal() ) ) {
-            $is_free_trial = $this->is_free_trial();
-            $discounts = $this->get_discounts( true );
-            
-            if ( $is_free_trial || !empty( $discounts ) ) {
-                $first_use_only = false;
-                
-                if ( !empty( $discounts ) ) {
-                    foreach ( $discounts as $key => $code ) {
-                        if ( wpinv_discount_is_recurring( $code, true ) && !$this->is_renewal() ) {
-                            $first_use_only = true;
-                            break;
-                        }
-                    }
-                }
-                    
-                if ( !$first_use_only ) {
-                    $data['subtotal'] = wpinv_round_amount( $this->subtotal );
-                    $data['discount'] = wpinv_round_amount( $this->discount );
-                    $data['tax']      = wpinv_round_amount( $this->tax );
-                    $data['total']    = wpinv_round_amount( $this->total );
-                } else {
-                    $cart_subtotal   = 0;
-                    $cart_discount   = $this->discount;
-                    $cart_tax        = 0;
-
-                    foreach ( $this->cart_details as $key => $item ) {
-                        $item_quantity  = $item['quantity'] > 0 ? absint( $item['quantity'] ) : 1;
-                        $item_subtotal  = !empty( $item['subtotal'] ) ? $item['subtotal'] : $item['item_price'] * $item_quantity;
-                        $item_discount  = 0;
-                        $item_tax       = $item_subtotal > 0 && !empty( $item['vat_rate'] ) ? ( $item_subtotal * 0.01 * (float)$item['vat_rate'] ) : 0;
-                        
-                        if ( wpinv_prices_include_tax() ) {
-                            $item_subtotal -= wpinv_round_amount( $item_tax );
-                        }
-                        
-                        $item_total     = $item_subtotal - $item_discount + $item_tax;
-                        // Do not allow totals to go negative
-                        if ( $item_total < 0 ) {
-                            $item_total = 0;
-                        }
-                        
-                        $cart_subtotal  += (float)($item_subtotal);
-                        $cart_discount  += (float)($item_discount);
-                        $cart_tax       += (float)($item_tax);
-                        
-                        $data['cart_details'][$key]['discount']   = wpinv_round_amount( $item_discount );
-                        $data['cart_details'][$key]['tax']        = wpinv_round_amount( $item_tax );
-                        $data['cart_details'][$key]['price']      = wpinv_round_amount( $item_total );
-                    }
-
-	                $total = $data['subtotal'] - $data['discount'] + $data['tax'];
-	                if ( $total < 0 ) {
-		                $total = 0;
-	                }
-
-                    $data['subtotal'] = wpinv_round_amount( $cart_subtotal );
-                    $data['discount'] = wpinv_round_amount( $cart_discount );
-                    $data['tax']      = wpinv_round_amount( $cart_tax );
-                    $data['total']    = wpinv_round_amount( $total );
-                }
-            }
-        }
-        
-        $data = apply_filters( 'wpinv_get_invoice_recurring_details', $data, $this, $field, $currency );
+    /**
+	 * Get the initial invoice total.
+	 *
+	 * @since 1.0.19
+     * @param  string $context View or edit context.
+     * @return float
+	 */
+    public function get_initial_total() {
+
+		if ( empty( $this->totals ) ) {
+			$this->recalculate_total();
+		}
+
+		$tax      = $this->totals['tax']['initial'];
+		$fee      = $this->totals['fee']['initial'];
+		$discount = $this->totals['discount']['initial'];
+		$subtotal = $this->totals['subtotal']['initial'];
+		$total    = $tax + $fee - $discount + $subtotal;
+
+		if ( 0 > $total ) {
+			$total = 0;
+		}
+
+		$total = wpinv_round_amount( wpinv_sanitize_amount( $total ) );
+        return apply_filters( 'wpinv_get_initial_invoice_total', $total, $this );
+	}
+
+	/**
+	 * Get the recurring invoice total.
+	 *
+	 * @since 1.0.19
+     * @param  string $context View or edit context.
+     * @return float
+	 */
+    public function get_recurring_total() {
+
+		if ( empty( $this->totals ) ) {
+			$this->recalculate_total();
+		}
+
+		$tax      = $this->totals['tax']['recurring'];
+		$fee      = $this->totals['fee']['recurring'];
+		$discount = $this->totals['discount']['recurring'];
+		$subtotal = $this->totals['subtotal']['recurring'];
+		$total    = $tax + $fee - $discount + $subtotal;
+
+		if ( 0 > $total ) {
+			$total = 0;
+		}
+
+		$total = wpinv_round_amount( wpinv_sanitize_amount( $total ) );
+        return apply_filters( 'wpinv_get_recurring_invoice_total', $total, $this );
+	}
+
+	/**
+	 * Returns recurring payment details.
+	 *
+	 * @since 1.0.19
+     * @param  string $field Optionally provide a field to return.
+	 * @param string $currency Whether to include the currency.
+     * @return float|string
+	 */
+    public function get_recurring_details( $field = '', $currency = false ) {
+
+		// Maybe recalculate totals.
+		if ( empty( $this->totals ) ) {
+			$this->recalculate_total();
+		}
+
+		// Prepare recurring totals.
+        $data = apply_filters(
+			'wpinv_get_invoice_recurring_details',
+			array(
+				'cart_details' => $this->get_cart_details(),
+				'subtotal'     => $this->totals['subtotal']['recurring'],
+				'discount'     => $this->totals['discount']['recurring'],
+				'tax'          => $this->totals['tax']['recurring'],
+				'fee'          => $this->totals['fee']['recurring'],
+				'total'        => $this->get_recurring_total(),
+			),
+			$this,
+			$field,
+			$currency
+		);
 
         if ( isset( $data[$field] ) ) {
             return ( $currency ? wpinv_price( $data[$field], $this->get_currency() ) : $data[$field] );
         }
-        
+
         return $data;
     }
-    
-    public function get_final_tax( $currency = false ) {        
-        $final_total = wpinv_round_amount( $this->tax );
-        if ( $currency ) {
-            $final_total = wpinv_price( wpinv_format_amount( $final_total, NULL, !$currency ), $this->get_currency() );
-        }
-        
-        return apply_filters( 'wpinv_get_invoice_final_total', $final_total, $this, $currency );
-    }
-    
-    public function get_discounts( $array = false ) {
-        $discounts = $this->discounts;
-        if ( $array && $discounts ) {
-            $discounts = explode( ',', $discounts );
-        }
-        return apply_filters( 'wpinv_payment_discounts', $discounts, $this->ID, $this, $array );
-    }
-    
-    public function get_discount( $currency = false, $dash = false ) {
-        if ( !empty( $this->discounts ) ) {
-            global $ajax_cart_details;
-            $ajax_cart_details = $this->get_cart_details();
-            
-            if ( !empty( $ajax_cart_details ) && count( $ajax_cart_details ) == count( $this->items ) ) {
-                $cart_items = $ajax_cart_details;
-            } else {
-                $cart_items = $this->items;
-            }
 
-            $this->discount = wpinv_get_cart_items_discount_amount( $cart_items , $this->discounts );
-        }
-        $discount   = wpinv_round_amount( $this->discount );
-        $dash       = $dash && $discount > 0 ? '&ndash;' : '';
-        
-        if ( $currency ) {
-            $discount = wpinv_price( wpinv_format_amount( $discount, NULL, !$currency ), $this->get_currency() );
-        }
-        
-        $discount   = $dash . $discount;
-        
-        return apply_filters( 'wpinv_get_invoice_discount', $discount, $this->ID, $this, $currency, $dash );
-    }
-    
-    public function get_discount_code() {
-        return $this->discount_code;
-    }
-    
-    public function get_tax( $currency = false ) {
-        $tax = wpinv_round_amount( $this->tax );
-        
-        if ( $currency ) {
-            $tax = wpinv_price( wpinv_format_amount( $tax, NULL, !$currency ), $this->get_currency() );
-        }
-        
-        return apply_filters( 'wpinv_get_invoice_tax', $tax, $this->ID, $this, $currency );
-    }
-    
-    public function get_fees( $type = 'all' ) {
-        $fees    = array();
-
-        if ( ! empty( $this->fees ) && is_array( $this->fees ) ) {
-            foreach ( $this->fees as $fee ) {
-                if( 'all' != $type && ! empty( $fee['type'] ) && $type != $fee['type'] ) {
-                    continue;
-                }
-
-                $fee['label'] = stripslashes( $fee['label'] );
-                $fee['amount_display'] = wpinv_price( $fee['amount'], $this->get_currency() );
-                $fees[]    = $fee;
-            }
-        }
-
-        return apply_filters( 'wpinv_get_invoice_fees', $fees, $this->ID, $this );
-    }
-    
-    public function get_fees_total( $type = 'all' ) {
-        $fees_total = (float) 0.00;
-
-        $payment_fees = isset( $this->payment_meta['fees'] ) ? $this->payment_meta['fees'] : array();
-        if ( ! empty( $payment_fees ) ) {
-            foreach ( $payment_fees as $fee ) {
-                $fees_total += (float) $fee['amount'];
-            }
-        }
-
-        return apply_filters( 'wpinv_get_invoice_fees_total', $fees_total, $this->ID, $this );
-        /*
-        $fees = $this->get_fees( $type );
-
-        $fees_total = 0;
-        if ( ! empty( $fees ) && is_array( $fees ) ) {
-            foreach ( $fees as $fee_id => $fee ) {
-                if( 'all' != $type && !empty( $fee['type'] ) && $type != $fee['type'] ) {
-                    continue;
-                }
-
-                $fees_total += $fee['amount'];
-            }
-        }
-
-        return apply_filters( 'wpinv_get_invoice_fees_total', $fees_total, $this->ID, $this );
-        */
+    /**
+	 * Get the invoice fees.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return array
+	 */
+	public function get_fees( $context = 'view' ) {
+		return wpinv_parse_list( $this->get_prop( 'fees', $context ) );
     }
 
-    public function get_user_id() {
-        return apply_filters( 'wpinv_user_id', $this->user_id, $this->ID, $this );
+    /**
+	 * Get the invoice discounts.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return array
+	 */
+	public function get_discounts( $context = 'view' ) {
+		return wpinv_parse_list( $this->get_prop( 'discounts', $context ) );
     }
-    
-    public function get_first_name() {
-        return apply_filters( 'wpinv_first_name', $this->first_name, $this->ID, $this );
+
+    /**
+	 * Get the invoice taxes.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return array
+	 */
+	public function get_taxes( $context = 'view' ) {
+		return wpinv_parse_list( $this->get_prop( 'taxes', $context ) );
     }
-    
-    public function get_last_name() {
-        return apply_filters( 'wpinv_last_name', $this->last_name, $this->ID, $this );
+
+    /**
+	 * Get the invoice items.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return GetPaid_Form_Item[]
+	 */
+	public function get_items( $context = 'view' ) {
+        return $this->get_prop( 'items', $context );
+	}
+
+	/**
+	 * Get the invoice item ids.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_item_ids() {
+		return implode( ', ', wp_list_pluck( $this->get_cart_details(), 'item_id' ) );
     }
-    
-    public function get_user_full_name() {
-        return apply_filters( 'wpinv_user_full_name', $this->full_name, $this->ID, $this );
+
+    /**
+	 * Get the invoice's payment form.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+	public function get_payment_form( $context = 'view' ) {
+		return intval( $this->get_prop( 'payment_form', $context ) );
     }
-    
-    public function get_user_info() {
-        return apply_filters( 'wpinv_user_info', $this->user_info, $this->ID, $this );
+
+    /**
+	 * Get the invoice's submission id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_submission_id( $context = 'view' ) {
+		return $this->get_prop( 'submission_id', $context );
     }
-    
-    public function get_email() {
-        return apply_filters( 'wpinv_user_email', $this->email, $this->ID, $this );
+
+    /**
+	 * Get the invoice's discount code.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_discount_code( $context = 'view' ) {
+		return $this->get_prop( 'discount_code', $context );
     }
-    
-    public function get_address() {
-        return apply_filters( 'wpinv_address', $this->address, $this->ID, $this );
+
+    /**
+	 * Get the invoice's gateway.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_gateway( $context = 'view' ) {
+		return $this->get_prop( 'gateway', $context );
     }
-    
-    public function get_phone() {
-        return apply_filters( 'wpinv_phone', $this->phone, $this->ID, $this );
-    }
-    
-    public function get_number() {
-        return apply_filters( 'wpinv_number', $this->number, $this->ID, $this );
-    }
-    
-    public function get_items() {
-        return apply_filters( 'wpinv_payment_meta_items', $this->items, $this->ID, $this );
-    }
-    
-    public function get_key() {
-        return apply_filters( 'wpinv_key', $this->key, $this->ID, $this );
-    }
-    
-    public function get_transaction_id() {
-        return apply_filters( 'wpinv_get_invoice_transaction_id', $this->transaction_id, $this->ID, $this );
-    }
-    
-    public function get_gateway() {
-        return apply_filters( 'wpinv_gateway', $this->gateway, $this->ID, $this );
-    }
-    
+
+    /**
+	 * Get the invoice's gateway display title.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
     public function get_gateway_title() {
-        $this->gateway_title = !empty( $this->gateway_title ) ? $this->gateway_title : wpinv_get_gateway_checkout_label( $this->gateway );
-        
-        return apply_filters( 'wpinv_gateway_title', $this->gateway_title, $this->ID, $this );
+        $title =  wpinv_get_gateway_checkout_label( $this->get_gateway() );
+        return apply_filters( 'wpinv_gateway_title', $title, $this->get_id(), $this );
     }
-    
-    public function get_currency() {
-        return apply_filters( 'wpinv_currency_code', $this->currency, $this->ID, $this );
+
+    /**
+	 * Get the invoice's transaction id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_transaction_id( $context = 'view' ) {
+		return $this->get_prop( 'transaction_id', $context );
     }
-    
-    public function get_created_date() {
-        return apply_filters( 'wpinv_created_date', $this->date, $this->ID, $this );
+
+    /**
+	 * Get the invoice's currency.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return string
+	 */
+	public function get_currency( $context = 'view' ) {
+        $currency = $this->get_prop( 'currency', $context );
+        return empty( $currency ) ? wpinv_get_currency() : $currency;
     }
-    
-    public function get_due_date( $display = false ) {
-        $due_date = apply_filters( 'wpinv_due_date', $this->due_date, $this->ID, $this );
-        
-        if ( !$display || empty( $due_date ) ) {
-            return $due_date;
-        }
-        
-        return date_i18n( get_option( 'date_format' ), strtotime( $due_date ) );
+
+    /**
+	 * Checks if we are charging taxes for this invoice.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return bool
+	 */
+	public function get_disable_taxes( $context = 'view' ) {
+        return (bool) $this->get_prop( 'disable_taxes', $context );
     }
-    
-    public function get_completed_date() {
-        return apply_filters( 'wpinv_completed_date', $this->completed_date, $this->ID, $this );
-    }
-    
-    public function get_invoice_date( $formatted = true ) {
-        $date_completed = $this->completed_date;
-        $invoice_date   = $date_completed != '' && $date_completed != '0000-00-00 00:00:00' ? $date_completed : '';
-        
-        if ( $invoice_date == '' ) {
-            $date_created   = $this->date;
-            $invoice_date   = $date_created != '' && $date_created != '0000-00-00 00:00:00' ? $date_created : '';
-        }
-        
-        if ( $formatted && $invoice_date ) {
-            $invoice_date   = date_i18n( get_option( 'date_format' ), strtotime( $invoice_date ) );
+
+    /**
+	 * Retrieves the subscription id for an invoice.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+    public function get_subscription_id( $context = 'view' ) {
+		return $this->is_renewal() ? $this->get_parent()->get_subscription_id( $context ) : $this->get_prop( 'subscription_id', $context );
+	}
+
+	/**
+	 * Retrieves the remote subscription id for an invoice.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return int
+	 */
+    public function get_remote_subscription_id( $context = 'view' ) {
+        $subscription_id = $this->get_prop( 'remote_subscription_id', $context );
+
+        if ( empty( $subscription_id ) && $this->is_renewal() ) {
+            $parent = $this->get_parent();
+            return $parent->get_remote_subscription_id( $context );
         }
 
-        return apply_filters( 'wpinv_get_invoice_date', $invoice_date, $formatted, $this->ID, $this );
+        return $subscription_id;
     }
-    
-    public function get_ip() {
-        return apply_filters( 'wpinv_user_ip', $this->ip, $this->ID, $this );
-    }
-        
-    public function has_status( $status ) {
-        return apply_filters( 'wpinv_has_status', ( is_array( $status ) && in_array( $this->get_status(), $status ) ) || $this->get_status() === $status ? true : false, $this, $status );
-    }
-    
-    public function add_item( $item_id = 0, $args = array() ) {
-        global $wpi_current_id, $wpi_item_id;
-        
-        $item = new WPInv_Item( $item_id );
 
-        // Bail if this post isn't a item
-        if( !$item || $item->post_type !== 'wpi_item' ) {
-            return false;
-        }
-        
-        $has_quantities = wpinv_item_quantities_enabled();
+    /**
+	 * Retrieves the payment meta for an invoice.
+	 *
+	 * @since 1.0.19
+	 * @param  string $context View or edit context.
+	 * @return array
+	 */
+    public function get_payment_meta( $context = 'view' ) {
 
-        // Set some defaults
-        $defaults = array(
-            'quantity'      => 1,
-            'id'            => false,
-            'name'          => $item->get_name(),
-            'item_price'    => false,
-            'custom_price'  => '',
-            'discount'      => 0,
-            'tax'           => 0.00,
-            'meta'          => array(),
-            'fees'          => array()
+        return array(
+            'price'        => $this->get_total( $context ),
+            'date'         => $this->get_date_created( $context ),
+            'user_email'   => $this->get_email( $context ),
+            'invoice_key'  => $this->get_key( $context ),
+            'currency'     => $this->get_currency( $context ),
+            'items'        => $this->get_items( $context ),
+            'user_info'    => $this->get_user_info( $context ),
+            'cart_details' => $this->get_cart_details(),
+            'status'       => $this->get_status( $context ),
+            'fees'         => $this->get_fees( $context ),
+            'taxes'        => $this->get_taxes( $context ),
         );
 
-        $args = wp_parse_args( apply_filters( 'wpinv_add_item_args', $args, $item->ID ), $defaults );
-        $args['quantity']   = $has_quantities && $args['quantity'] > 0 ? absint( $args['quantity'] ) : 1;
-
-        $wpi_current_id         = $this->ID;
-        $wpi_item_id            = $item->ID;
-        $discounts              = $this->get_discounts();
-        
-        $_POST['wpinv_country'] = $this->country;
-        $_POST['wpinv_state']   = $this->state;
-        
-        $found_cart_key         = false;
-        
-        if ($has_quantities) {
-            $this->cart_details = !empty( $this->cart_details ) ? array_values( $this->cart_details ) : $this->cart_details;
-            
-            foreach ( $this->items as $key => $cart_item ) {
-                if ( (int)$item_id !== (int)$cart_item['id'] ) {
-                    continue;
-                }
-
-                $this->items[ $key ]['quantity'] += $args['quantity'];
-                break;
-            }
-            
-            foreach ( $this->cart_details as $cart_key => $cart_item ) {
-                if ( $item_id != $cart_item['id'] ) {
-                    continue;
-                }
-
-                $found_cart_key = $cart_key;
-                break;
-            }
-        }
-        
-        if ($has_quantities && $found_cart_key !== false) {
-            $cart_item          = $this->cart_details[$found_cart_key];
-            $item_price         = $cart_item['item_price'];
-            $quantity           = !empty( $cart_item['quantity'] ) ? $cart_item['quantity'] : 1;
-            $tax_rate           = !empty( $cart_item['vat_rate'] ) ? $cart_item['vat_rate'] : 0;
-            
-            $new_quantity       = $quantity + $args['quantity'];
-            $subtotal           = $item_price * $new_quantity;
-            
-            $args['quantity']   = $new_quantity;
-            $discount           = !empty( $args['discount'] ) ? $args['discount'] : 0;
-            $tax                = $subtotal > 0 && $tax_rate > 0 ? ( ( $subtotal - $discount ) * 0.01 * (float)$tax_rate ) : 0;
-            
-            $discount_increased = $discount > 0 && $subtotal > 0 && $discount > (float)$cart_item['discount'] ? $discount - (float)$cart_item['discount'] : 0;
-            $tax_increased      = $tax > 0 && $subtotal > 0 && $tax > (float)$cart_item['tax'] ? $tax - (float)$cart_item['tax'] : 0;
-            // The total increase equals the number removed * the item_price
-            $total_increased    = wpinv_round_amount( $item_price );
-            
-            if ( wpinv_prices_include_tax() ) {
-                $subtotal -= wpinv_round_amount( $tax );
-            }
-
-            $total              = $subtotal - $discount + $tax;
-
-            // Do not allow totals to go negative
-            if( $total < 0 ) {
-                $total = 0;
-            }
-            
-            $cart_item['quantity']  = $new_quantity;
-            $cart_item['subtotal']  = $subtotal;
-            $cart_item['discount']  = $discount;
-            $cart_item['tax']       = $tax;
-            $cart_item['price']     = $total;
-            
-            $subtotal               = $total_increased - $discount_increased;
-            $tax                    = $tax_increased;
-            
-            $this->cart_details[$found_cart_key] = $cart_item;
-        } else {
-            // Set custom price.
-            if ( $args['custom_price'] !== '' ) {
-                $item_price = $args['custom_price'];
-            } else {
-                // Allow overriding the price
-                if ( false !== $args['item_price'] ) {
-                    $item_price = $args['item_price'];
-                } else {
-                    $item_price = wpinv_get_item_price( $item->ID );
-                }
-            }
-
-            // Sanitizing the price here so we don't have a dozen calls later
-            $item_price = wpinv_sanitize_amount( $item_price );
-            $subtotal   = wpinv_round_amount( $item_price * $args['quantity'] );
-        
-            $discount   = !empty( $args['discount'] ) ? $args['discount'] : 0;
-            $tax_class  = !empty( $args['vat_class'] ) ? $args['vat_class'] : '';
-            $tax_rate   = !empty( $args['vat_rate'] ) ? $args['vat_rate'] : 0;
-            $tax        = $subtotal > 0 && $tax_rate > 0 ? ( ( $subtotal - $discount ) * 0.01 * (float)$tax_rate ) : 0;
-
-            // Setup the items meta item
-            $new_item = array(
-                'id'       => $item->ID,
-                'quantity' => $args['quantity'],
-            );
-
-            $this->items[]  = $new_item;
-
-            if ( wpinv_prices_include_tax() ) {
-                $subtotal -= wpinv_round_amount( $tax );
-            }
-
-            $total      = $subtotal - $discount + $tax;
-
-            // Do not allow totals to go negative
-            if( $total < 0 ) {
-                $total = 0;
-            }
-        
-            $this->cart_details[] = array(
-                'name'          => !empty($args['name']) ? $args['name'] : $item->get_name(),
-                'id'            => $item->ID,
-                'item_price'    => wpinv_round_amount( $item_price ),
-                'custom_price'  => ( $args['custom_price'] !== '' ? wpinv_round_amount( $args['custom_price'] ) : '' ),
-                'quantity'      => $args['quantity'],
-                'discount'      => $discount,
-                'subtotal'      => wpinv_round_amount( $subtotal ),
-                'tax'           => wpinv_round_amount( $tax ),
-                'price'         => wpinv_round_amount( $total ),
-                'vat_rate'      => $tax_rate,
-                'vat_class'     => $tax_class,
-                'meta'          => $args['meta'],
-                'fees'          => $args['fees'],
-            );
-                        
-            $subtotal = $subtotal - $discount;
-        }
-        
-        $added_item = end( $this->cart_details );
-        $added_item['action']  = 'add';
-        
-        $this->pending['items'][] = $added_item;
-        
-        $this->increase_subtotal( $subtotal );
-        $this->increase_tax( $tax );
-
-        return true;
     }
-    
-    public function remove_item( $item_id, $args = array() ) {
-        // Set some defaults
-        $defaults = array(
-            'quantity'      => 1,
-            'item_price'    => false,
-            'custom_price'  => '',
-            'cart_index'    => false,
-        );
-        $args = wp_parse_args( $args, $defaults );
 
-        // Bail if this post isn't a item
-        if ( get_post_type( $item_id ) !== 'wpi_item' ) {
-            return false;
-        }
-        
-        $this->cart_details = !empty( $this->cart_details ) ? array_values( $this->cart_details ) : $this->cart_details;
+    /**
+	 * Retrieves the cart details for an invoice.
+	 *
+	 * @since 1.0.19
+	 * @return array
+	 */
+    public function get_cart_details() {
+        $items        = $this->get_items();
+        $cart_details = array();
 
-        foreach ( $this->items as $key => $item ) {
-            if ( !empty($item['id']) && (int)$item_id !== (int)$item['id'] ) {
-                continue;
-            }
-
-            if ( false !== $args['cart_index'] ) {
-                $cart_index = absint( $args['cart_index'] );
-                $cart_item  = ! empty( $this->cart_details[ $cart_index ] ) ? $this->cart_details[ $cart_index ] : false;
-
-                if ( ! empty( $cart_item ) ) {
-                    // If the cart index item isn't the same item ID, don't remove it
-                    if ( !empty($cart_item['id']) && $cart_item['id'] != $item['id'] ) {
-                        continue;
-                    }
-                }
-            }
-
-            $item_quantity = $this->items[ $key ]['quantity'];
-            if ( $item_quantity > $args['quantity'] ) {
-                $this->items[ $key ]['quantity'] -= $args['quantity'];
-                break;
-            } else {
-                unset( $this->items[ $key ] );
-                break;
-            }
+        foreach ( $items as $item ) {
+			$item->invoice_id = $this->get_id();
+            $cart_details[]   = $item->prepare_data_for_saving();
         }
 
-        $found_cart_key = false;
-        if ( false === $args['cart_index'] ) {
-            foreach ( $this->cart_details as $cart_key => $item ) {
-                if ( $item_id != $item['id'] ) {
-                    continue;
-                }
+        return $cart_details;
+	}
 
-                if ( false !== $args['item_price'] ) {
-                    if ( isset( $item['item_price'] ) && (float) $args['item_price'] != (float) $item['item_price'] ) {
-                        continue;
-                    }
-                }
+	/**
+	 * Retrieves the recurring item.
+	 *
+	 * @return null|GetPaid_Form_Item|int
+	 */
+	public function get_recurring( $object = false ) {
 
-                $found_cart_key = $cart_key;
-                break;
-            }
-        } else {
-            $cart_index = absint( $args['cart_index'] );
-
-            if ( ! array_key_exists( $cart_index, $this->cart_details ) ) {
-                return false; // Invalid cart index passed.
-            }
-
-            if ( (int) $this->cart_details[ $cart_index ]['id'] > 0 && (int) $this->cart_details[ $cart_index ]['id'] !== (int) $item_id ) {
-                return false; // We still need the proper Item ID to be sure.
-            }
-
-            $found_cart_key = $cart_index;
+		// Are we returning an object?
+        if ( $object ) {
+            return $this->get_item( $this->recurring_item );
         }
-        
-        $cart_item  = $this->cart_details[$found_cart_key];
-        $quantity   = !empty( $cart_item['quantity'] ) ? $cart_item['quantity'] : 1;
-        
-        if ( count( $this->cart_details ) == 1 && ( $quantity - $args['quantity'] ) < 1 ) {
-            //return false; // Invoice must contain at least one item.
-        }
-        
-        $discounts  = $this->get_discounts();
-        
-        if ( $quantity > $args['quantity'] ) {
-            $item_price         = $cart_item['item_price'];
-            $tax_rate           = !empty( $cart_item['vat_rate'] ) ? $cart_item['vat_rate'] : 0;
-            
-            $new_quantity       = max( $quantity - $args['quantity'], 1);
-            $subtotal           = $item_price * $new_quantity;
-            
-            $args['quantity']   = $new_quantity;
-            $discount           = !empty( $cart_item['discount'] ) ? $cart_item['discount'] : 0;
-            $tax                = $subtotal > 0 && $tax_rate > 0 ? ( ( $subtotal - $discount ) * 0.01 * (float)$tax_rate ) : 0;
-            
-            $discount_decrease  = (float)$cart_item['discount'] > 0 && $quantity > 0 ? wpinv_round_amount( ( (float)$cart_item['discount'] / $quantity ) ) : 0;
-            $discount_decrease  = $discount > 0 && $subtotal > 0 && (float)$cart_item['discount'] > $discount ? (float)$cart_item['discount'] - $discount : $discount_decrease; 
-            $tax_decrease       = (float)$cart_item['tax'] > 0 && $quantity > 0 ? wpinv_round_amount( ( (float)$cart_item['tax'] / $quantity ) ) : 0;
-            $tax_decrease       = $tax > 0 && $subtotal > 0 && (float)$cart_item['tax'] > $tax ? (float)$cart_item['tax'] - $tax : $tax_decrease;
-            
-            // The total increase equals the number removed * the item_price
-            $total_decrease     = wpinv_round_amount( $item_price );
-            
-            if ( wpinv_prices_include_tax() ) {
-                $subtotal -= wpinv_round_amount( $tax );
-            }
 
-            $total              = $subtotal - $discount + $tax;
-
-            // Do not allow totals to go negative
-            if( $total < 0 ) {
-                $total = 0;
-            }
-            
-            $cart_item['quantity']  = $new_quantity;
-            $cart_item['subtotal']  = $subtotal;
-            $cart_item['discount']  = $discount;
-            $cart_item['tax']       = $tax;
-            $cart_item['price']     = $total;
-            
-            $added_item             = $cart_item;
-            $added_item['id']       = $item_id;
-            $added_item['price']    = $total_decrease;
-            $added_item['quantity'] = $args['quantity'];
-            
-            $subtotal_decrease      = $total_decrease - $discount_decrease;
-            
-            $this->cart_details[$found_cart_key] = $cart_item;
-            
-            $remove_item = end( $this->cart_details );
-        } else {
-            $item_price     = $cart_item['item_price'];
-            $discount       = !empty( $cart_item['discount'] ) ? $cart_item['discount'] : 0;
-            $tax            = !empty( $cart_item['tax'] ) ? $cart_item['tax'] : 0;
-        
-            $subtotal_decrease  = ( $item_price * $quantity ) - $discount;
-            $tax_decrease       = $tax;
-
-            unset( $this->cart_details[$found_cart_key] );
-            
-            $remove_item             = $args;
-            $remove_item['id']       = $item_id;
-            $remove_item['price']    = $subtotal_decrease;
-            $remove_item['quantity'] = $args['quantity'];
-        }
-        
-        $remove_item['action']      = 'remove';
-        $this->pending['items'][]   = $remove_item;
-               
-        $this->decrease_subtotal( $subtotal_decrease );
-        $this->decrease_tax( $tax_decrease );
-        
-        return true;
+        return $this->recurring_item;
     }
-    
-    public function update_items($temp = false) {
-        global $wpinv_euvat, $wpi_current_id, $wpi_item_id, $wpi_nosave;
-        
-        if ( !empty( $this->cart_details ) ) {
-            $wpi_nosave             = $temp;
-            $cart_subtotal          = 0;
-            $cart_discount          = 0;
-            $cart_tax               = 0;
-            $cart_details           = array();
-            
-            $_POST['wpinv_country'] = $this->country;
-            $_POST['wpinv_state']   = $this->state;
-            
-            foreach ( $this->cart_details as $key => $item ) {
-                $item_price = $item['item_price'];
-                $quantity   = wpinv_item_quantities_enabled() && $item['quantity'] > 0 ? absint( $item['quantity'] ) : 1;
-                $amount     = wpinv_round_amount( $item_price * $quantity );
-                $subtotal   = $item_price * $quantity;
-                
-                $wpi_current_id         = $this->ID;
-                $wpi_item_id            = $item['id'];
-                
-                $discount   = wpinv_get_cart_item_discount_amount( $item, $this->get_discounts() );
-                
-                $tax_rate   = wpinv_get_tax_rate( $this->country, $this->state, $wpi_item_id );
-                $tax_class  = $wpinv_euvat->get_item_class( $wpi_item_id );
-                $tax        = $item_price > 0 ? ( ( $subtotal - $discount ) * 0.01 * (float)$tax_rate ) : 0;
 
-                if ( wpinv_prices_include_tax() ) {
-                    $subtotal -= wpinv_round_amount( $tax );
-                }
+	/**
+	 * Retrieves the subscription name.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_subscription_name() {
 
-                $total      = $subtotal - $discount + $tax;
+		// Retrieve the recurring name
+        $item = $this->get_recurring( true );
 
-                // Do not allow totals to go negative
-                if( $total < 0 ) {
-                    $total = 0;
-                }
-
-                $cart_details[] = array(
-                    'id'          => $item['id'],
-                    'name'        => $item['name'],
-                    'item_price'  => wpinv_round_amount( $item_price ),
-                    'custom_price'=> ( isset( $item['custom_price'] ) ? $item['custom_price'] : '' ),
-                    'quantity'    => $quantity,
-                    'discount'    => $discount,
-                    'subtotal'    => wpinv_round_amount( $subtotal ),
-                    'tax'         => wpinv_round_amount( $tax ),
-                    'price'       => wpinv_round_amount( $total ),
-                    'vat_rate'    => $tax_rate,
-                    'vat_class'   => $tax_class,
-                    'meta'        => isset($item['meta']) ? $item['meta'] : array(),
-                    'fees'        => isset($item['fees']) ? $item['fees'] : array(),
-                );
-                
-                $cart_subtotal  += (float)($subtotal - $discount); // TODO
-                $cart_discount  += (float)($discount);
-                $cart_tax       += (float)($tax);
-            }
-            if ( $cart_subtotal < 0 ) {
-                $cart_subtotal = 0;
-            }
-            if ( $cart_tax < 0 ) {
-                $cart_tax = 0;
-            }
-            $this->subtotal = wpinv_round_amount( $cart_subtotal );
-            $this->tax      = wpinv_round_amount( $cart_tax );
-            $this->discount = wpinv_round_amount( $cart_discount );
-            
-            $this->recalculate_total();
-            
-            $this->cart_details = $cart_details;
+		// Abort if it does not exist.
+        if ( empty( $item ) ) {
+            return '';
         }
 
-        return $this;
-    }
-    
-    public function recalculate_totals($temp = false) {        
-        $this->update_items($temp);
-        $this->save( true );
-        
-        return $this;
-    }
-    
-    public function needs_payment() {
-        $valid_invoice_statuses = apply_filters( 'wpinv_valid_invoice_statuses_for_payment', array( 'wpi-pending' ), $this );
+		// Return the item name.
+        return apply_filters( 'wpinv_invoice_get_subscription_name', $item->get_name(), $this );
+	}
 
-        if ( $this->has_status( $valid_invoice_statuses ) && ( $this->get_total() > 0 || $this->is_free_trial() || $this->is_free() || $this->is_initial_free() ) ) {
-            $needs_payment = true;
-        } else {
-            $needs_payment = false;
-        }
+	/**
+	 * Retrieves the view url.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_view_url() {
+        $invoice_url = get_permalink( $this->get_id() );
+		$invoice_url = add_query_arg( 'invoice_key', $this->get_key(), $invoice_url );
+        return apply_filters( 'wpinv_get_view_url', $invoice_url, $this );
+	}
 
-        return apply_filters( 'wpinv_needs_payment', $needs_payment, $this, $valid_invoice_statuses );
-    }
-    
-    public function get_checkout_payment_url( $with_key = false, $secret = false ) {
+	/**
+	 * Retrieves the payment url.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_checkout_payment_url( $deprecated = false, $secret = false ) {
+
+		// Retrieve the checkout url.
         $pay_url = wpinv_get_checkout_uri();
 
+		// Maybe force ssl.
         if ( is_ssl() ) {
             $pay_url = str_replace( 'http:', 'https:', $pay_url );
         }
-        
-        $key = $this->get_key();
 
-        if ( $with_key ) {
-            $pay_url = add_query_arg( 'invoice_key', $key, $pay_url );
-        } else {
-            $pay_url = add_query_arg( array( 'wpi_action' => 'pay_for_invoice', 'invoice_key' => $key ), $pay_url );
-        }
-        
+		// Add the invoice key.
+		$pay_url = add_query_arg( 'invoice_key', $this->get_key(), $pay_url );
+
+		// (Maybe?) add a secret
         if ( $secret ) {
-            $pay_url = add_query_arg( array( '_wpipay' => md5( $this->get_user_id() . '::' . $this->get_email() . '::' . $key ) ), $pay_url );
+            $pay_url = add_query_arg( array( '_wpipay' => md5( $this->get_user_id() . '::' . $this->get_email() . '::' . $this->get_key() ) ), $pay_url );
         }
 
-        return apply_filters( 'wpinv_get_checkout_payment_url', $pay_url, $this, $with_key, $secret );
+        return apply_filters( 'wpinv_get_checkout_payment_url', $pay_url, $this, $deprecated, $secret );
+	}
+	
+	/**
+	 * Retrieves the receipt url.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_receipt_url() {
+
+		// Retrieve the checkout url.
+        $receipt_url = wpinv_get_success_page_uri();
+
+		// Maybe force ssl.
+        if ( is_ssl() ) {
+            $receipt_url = str_replace( 'http:', 'https:', $receipt_url );
+        }
+
+		// Add the invoice key.
+		$receipt_url = add_query_arg( 'invoice_key', $this->get_key(), $receipt_url );
+
+        return apply_filters( 'getpaid_get_invoice_receipt_url', $receipt_url, $this );
+	}
+	
+	/**
+	 * Retrieves the default status.
+	 *
+	 * @since 1.0.19
+	 * @return string
+	 */
+	public function get_default_status() {
+
+		$type   = $this->get_type();
+		$status = "wpi-$type-pending";
+		return str_replace( '-invoice', '', $status );
+
+	}
+
+    /**
+	 * Magic method for accessing invoice properties.
+	 *
+	 * @since 1.0.15
+	 * @access public
+	 *
+	 * @param string $key Discount data to retrieve
+	 * @param  string $context View or edit context.
+	 * @return mixed Value of the given invoice property (if set).
+	 */
+	public function get( $key, $context = 'view' ) {
+        return $this->get_prop( $key, $context );
+	}
+
+    /*
+	|--------------------------------------------------------------------------
+	| Setters
+	|--------------------------------------------------------------------------
+	|
+	| Functions for setting item data. These should not update anything in the
+	| database itself and should only change what is stored in the class
+	| object.
+    */
+
+    /**
+	 * Magic method for setting invoice properties.
+	 *
+	 * @since 1.0.19
+	 * @access public
+	 *
+	 * @param string $key Discount data to retrieve
+	 * @param  mixed $value new value.
+	 * @return mixed Value of the given invoice property (if set).
+	 */
+	public function set( $key, $value ) {
+
+        $setter = "set_$key";
+        if ( is_callable( array( $this, $setter ) ) ) {
+            $this->{$setter}( $value );
+        }
+
+	}
+
+	/**
+	 * Sets item status.
+	 *
+	 * @since 1.0.19
+	 * @param string $new_status    New status.
+	 * @param string $note          Optional note to add.
+	 * @param bool   $manual_update Is this a manual status change?.
+	 * @return array details of change.
+	 */
+	public function set_status( $new_status, $note = '', $manual_update = false ) {
+		$old_status = $this->get_status();
+
+		$statuses = $this->get_all_statuses();
+
+		if ( isset( $statuses[ 'draft' ] ) ) {
+			unset( $statuses[ 'draft' ] );
+		}
+
+		$this->set_prop( 'status', $new_status );
+
+		// If setting the status, ensure it's set to a valid status.
+		if ( true === $this->object_read ) {
+
+			// Only allow valid new status.
+			if ( ! array_key_exists( $new_status, $statuses ) ) {
+				$new_status = $this->get_default_status();
+			}
+
+			// If the old status is set but unknown (e.g. draft) assume its pending for action usage.
+			if ( $old_status && ! array_key_exists( $new_status, $statuses ) ) {
+				$old_status = $this->get_default_status();
+			}
+
+			// Paid - Renewal (i.e when duplicating a parent invoice )
+			if ( $new_status == 'wpi-pending' && $old_status == 'publish' && ! $this->get_id() ) {
+				$old_status = 'wpi-pending';
+			}
+
+		}
+
+		if ( true === $this->object_read && $old_status !== $new_status ) {
+			$this->status_transition = array(
+				'from'   => ! empty( $this->status_transition['from'] ) ? $this->status_transition['from'] : $old_status,
+				'to'     => $new_status,
+				'note'   => $note,
+				'manual' => (bool) $manual_update,
+			);
+
+			if ( $manual_update ) {
+				do_action( 'getpaid_' . $this->object_type .'_edit_status', $this->get_id(), $new_status );
+			}
+
+			$this->maybe_set_date_paid();
+
+		}
+
+		return array(
+			'from' => $old_status,
+			'to'   => $new_status,
+		);
+	}
+
+	/**
+	 * Maybe set date paid.
+	 *
+	 * Sets the date paid variable when transitioning to the payment complete
+	 * order status.
+	 *
+	 * @since 1.0.19
+	 */
+	public function maybe_set_date_paid() {
+
+		if ( ! $this->get_date_completed( 'edit' ) && $this->is_paid() ) {
+			$this->set_date_completed( current_time( 'mysql' ) );
+		}
+	}
+
+    /**
+	 * Set parent invoice ID.
+	 *
+	 * @since 1.0.19
+	 */
+	public function set_parent_id( $value ) {
+		if ( $value && ( $value === $this->get_id() ) ) {
+			return;
+		}
+		$this->set_prop( 'parent_id', absint( $value ) );
     }
-    
-    public function get_view_url( $with_key = false ) {
-        $invoice_url = get_permalink( $this->ID );
 
-        if ( $with_key ) {
-            $invoice_url = add_query_arg( 'invoice_key', $this->get_key(), $invoice_url );
-        }
-
-        return apply_filters( 'wpinv_get_view_url', $invoice_url, $this, $with_key );
-    }
-    
-    public function generate_key( $string = '' ) {
-        $auth_key  = defined( 'AUTH_KEY' ) ? AUTH_KEY : '';
-        return strtolower( md5( $string . date( 'Y-m-d H:i:s' ) . $auth_key . uniqid( 'wpinv', true ) ) );  // Unique key
-    }
-    
-    public function is_recurring() {
-        if ( empty( $this->cart_details ) ) {
-            return false;
-        }
-        
-        $has_subscription = false;
-        foreach( $this->cart_details as $cart_item ) {
-            if ( !empty( $cart_item['id'] ) && wpinv_is_recurring_item( $cart_item['id'] )  ) {
-                $has_subscription = true;
-                break;
-            }
-        }
-        
-        if ( count( $this->cart_details ) > 1 ) {
-            $has_subscription = false;
-        }
-
-        return apply_filters( 'wpinv_invoice_has_recurring_item', $has_subscription, $this->cart_details );
+    /**
+	 * Set plugin version when the invoice was created.
+	 *
+	 * @since 1.0.19
+	 */
+	public function set_version( $value ) {
+		$this->set_prop( 'version', $value );
     }
 
-    public function is_free_trial() {
-        $is_free_trial = false;
-        
-        if ( $this->is_parent() && $item = $this->get_recurring( true ) ) {
-            if ( !empty( $item ) && $item->has_free_trial() ) {
-                $is_free_trial = true;
-            }
+    /**
+	 * Set date when the invoice was created.
+	 *
+	 * @since 1.0.19
+	 * @param string $value Value to set.
+     * @return bool Whether or not the date was set.
+	 */
+	public function set_date_created( $value ) {
+        $date = strtotime( $value );
+
+        if ( $date && $value !== '0000-00-00 00:00:00' ) {
+            $this->set_prop( 'date_created', date( 'Y-m-d H:i:s', $date ) );
+            return true;
         }
 
-        return apply_filters( 'wpinv_invoice_is_free_trial', $is_free_trial, $this->cart_details, $this );
+		$this->set_prop( 'date_created', '' );
+		return false;
+
     }
 
-    public function is_initial_free() {
-        $is_initial_free = false;
-        
-        if ( ! ( (float)wpinv_round_amount( $this->get_total() ) > 0 ) && $this->is_parent() && $this->is_recurring() && ! $this->is_free_trial() && ! $this->is_free() ) {
-            $is_initial_free = true;
+    /**
+	 * Set date invoice due date.
+	 *
+	 * @since 1.0.19
+	 * @param string $value Value to set.
+     * @return bool Whether or not the date was set.
+	 */
+	public function set_due_date( $value ) {
+        $date = strtotime( $value );
+
+        if ( $date && $value !== '0000-00-00 00:00:00' ) {
+            $this->set_prop( 'due_date', date( 'Y-m-d H:i:s', $date ) );
+            return true;
         }
 
-        return apply_filters( 'wpinv_invoice_is_initial_free', $is_initial_free, $this->cart_details );
+		$this->set_prop( 'due_date', '' );
+        return false;
+
     }
-    
-    public function get_recurring( $object = false ) {
-        $item = NULL;
-        
-        if ( empty( $this->cart_details ) ) {
-            return $item;
-        }
-        
-        foreach( $this->cart_details as $cart_item ) {
-            if ( !empty( $cart_item['id'] ) && wpinv_is_recurring_item( $cart_item['id'] )  ) {
-                $item = $cart_item['id'];
-                break;
-            }
-        }
-        
-        if ( $object ) {
-            $item = $item ? new WPInv_Item( $item ) : NULL;
-            
-            apply_filters( 'wpinv_invoice_get_recurring_item', $item, $this );
+
+    /**
+	 * Alias of self::set_due_date().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New name.
+	 */
+	public function set_date_due( $value ) {
+		$this->set_due_date( $value );
+    }
+
+    /**
+	 * Set date invoice was completed.
+	 *
+	 * @since 1.0.19
+	 * @param string $value Value to set.
+     * @return bool Whether or not the date was set.
+	 */
+	public function set_completed_date( $value ) {
+        $date = strtotime( $value );
+
+        if ( $date && $value !== '0000-00-00 00:00:00'  ) {
+            $this->set_prop( 'completed_date', date( 'Y-m-d H:i:s', $date ) );
+            return true;
         }
 
-        return apply_filters( 'wpinv_invoice_get_recurring_item_id', $item, $this );
+		$this->set_prop( 'completed_date', '' );
+        return false;
+
     }
-    
-    public function get_subscription_name() {
-        $item = $this->get_recurring( true );
-        
-        if ( empty( $item ) ) {
-            return NULL;
-        }
-        
-        if ( !($name = $item->get_name()) ) {
-            $name = $item->post_name;
+
+    /**
+	 * Alias of self::set_completed_date().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New name.
+	 */
+	public function set_date_completed( $value ) {
+		$this->set_completed_date( $value );
+    }
+
+    /**
+	 * Set date when the invoice was last modified.
+	 *
+	 * @since 1.0.19
+	 * @param string $value Value to set.
+     * @return bool Whether or not the date was set.
+	 */
+	public function set_date_modified( $value ) {
+        $date = strtotime( $value );
+
+        if ( $date && $value !== '0000-00-00 00:00:00' ) {
+            $this->set_prop( 'date_modified', date( 'Y-m-d H:i:s', $date ) );
+            return true;
         }
 
-        return apply_filters( 'wpinv_invoice_get_subscription_name', $name, $this );
+		$this->set_prop( 'date_modified', '' );
+        return false;
+
     }
-    
-    public function get_subscription_id() {
-        $subscription_id = $this->get_meta( '_wpinv_subscr_profile_id', true );
-        
-        if ( empty( $subscription_id ) && !empty( $this->parent_invoice ) ) {
-            $parent_invoice = wpinv_get_invoice( $this->parent_invoice );
-            
-            $subscription_id = $parent_invoice->get_meta( '_wpinv_subscr_profile_id', true );
+
+    /**
+	 * Set the invoice number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New number.
+	 */
+	public function set_number( $value ) {
+        $number = sanitize_text_field( $value );
+		$this->set_prop( 'number', $number );
+    }
+
+    /**
+	 * Set the invoice type.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value Type.
+	 */
+	public function set_type( $value ) {
+        $type = sanitize_text_field( str_replace( 'wpi_', '', $value ) );
+		$this->set_prop( 'type', $type );
+	}
+
+    /**
+	 * Set the invoice post type.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value Post type.
+	 */
+	public function set_post_type( $value ) {
+        if ( getpaid_is_invoice_post_type( $value ) ) {
+			$this->set_type( $value );
+            $this->set_prop( 'post_type', $value );
         }
-        
-        return $subscription_id;
     }
-    
+
+    /**
+	 * Set the invoice key.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New key.
+	 */
+	public function set_key( $value ) {
+        $key = sanitize_text_field( $value );
+		$this->set_prop( 'key', $key );
+    }
+
+    /**
+	 * Set the invoice mode.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value mode.
+	 */
+	public function set_mode( $value ) {
+        if ( in_array( $value, array( 'live', 'test' ) ) ) {
+            $this->set_prop( 'mode', $value );
+        }
+    }
+
+    /**
+	 * Set the invoice path.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value path.
+	 */
+	public function set_path( $value ) {
+        $this->set_prop( 'path', $value );
+    }
+
+    /**
+	 * Set the invoice name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New name.
+	 */
+	public function set_name( $value ) {
+        $name = sanitize_text_field( $value );
+		$this->set_prop( 'name', $name );
+    }
+
+    /**
+	 * Alias of self::set_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New name.
+	 */
+	public function set_title( $value ) {
+		$this->set_name( $value );
+    }
+
+    /**
+	 * Set the invoice description.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New description.
+	 */
+	public function set_description( $value ) {
+        $description = wp_kses_post( $value );
+		$this->set_prop( 'description', $description );
+    }
+
+    /**
+	 * Alias of self::set_description().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New description.
+	 */
+	public function set_excerpt( $value ) {
+		$this->set_description( $value );
+    }
+
+    /**
+	 * Alias of self::set_description().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value New description.
+	 */
+	public function set_summary( $value ) {
+		$this->set_description( $value );
+    }
+
+    /**
+	 * Set the receiver of the invoice.
+	 *
+	 * @since 1.0.19
+	 * @param  int $value New author.
+	 */
+	public function set_author( $value ) {
+		$user = get_user_by( 'id', (int) $value );
+
+		if ( $user && $user->ID ) {
+			$this->set_prop( 'author', $user->ID );
+			$this->set_prop( 'email', $user->user_email );
+		}
+
+    }
+
+    /**
+	 * Alias of self::set_author().
+	 *
+	 * @since 1.0.19
+	 * @param  int $value New user id.
+	 */
+	public function set_user_id( $value ) {
+		$this->set_author( $value );
+    }
+
+    /**
+	 * Alias of self::set_author().
+	 *
+	 * @since 1.0.19
+	 * @param  int $value New user id.
+	 */
+	public function set_customer_id( $value ) {
+		$this->set_author( $value );
+    }
+
+    /**
+	 * Set the customer's ip.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value ip address.
+	 */
+	public function set_ip( $value ) {
+		$this->set_prop( 'ip', $value );
+    }
+
+    /**
+	 * Alias of self::set_ip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value ip address.
+	 */
+	public function set_user_ip( $value ) {
+		$this->set_ip( $value );
+    }
+
+    /**
+	 * Set the customer's first name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value first name.
+	 */
+	public function set_first_name( $value ) {
+		$this->set_prop( 'first_name', $value );
+    }
+
+    /**
+	 * Alias of self::set_first_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value first name.
+	 */
+	public function set_user_first_name( $value ) {
+		$this->set_first_name( $value );
+    }
+
+    /**
+	 * Alias of self::set_first_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value first name.
+	 */
+	public function set_customer_first_name( $value ) {
+		$this->set_first_name( $value );
+    }
+
+    /**
+	 * Set the customer's last name.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value last name.
+	 */
+	public function set_last_name( $value ) {
+		$this->set_prop( 'last_name', $value );
+    }
+
+    /**
+	 * Alias of self::set_last_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value last name.
+	 */
+	public function set_user_last_name( $value ) {
+		$this->set_last_name( $value );
+    }
+
+    /**
+	 * Alias of self::set_last_name().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value last name.
+	 */
+	public function set_customer_last_name( $value ) {
+		$this->set_last_name( $value );
+    }
+
+    /**
+	 * Set the customer's phone number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value phone.
+	 */
+	public function set_phone( $value ) {
+		$this->set_prop( 'phone', $value );
+    }
+
+    /**
+	 * Alias of self::set_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value phone.
+	 */
+	public function set_user_phone( $value ) {
+		$this->set_phone( $value );
+    }
+
+    /**
+	 * Alias of self::set_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value phone.
+	 */
+	public function set_customer_phone( $value ) {
+		$this->set_phone( $value );
+    }
+
+    /**
+	 * Alias of self::set_phone().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value phone.
+	 */
+	public function set_phone_number( $value ) {
+		$this->set_phone( $value );
+    }
+
+    /**
+	 * Set the customer's email address.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value email address.
+	 */
+	public function set_email( $value ) {
+		$this->set_prop( 'email', $value );
+    }
+
+    /**
+	 * Alias of self::set_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value email address.
+	 */
+	public function set_user_email( $value ) {
+		$this->set_email( $value );
+    }
+
+    /**
+	 * Alias of self::set_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value email address.
+	 */
+	public function set_email_address( $value ) {
+		$this->set_email( $value );
+    }
+
+    /**
+	 * Alias of self::set_email().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value email address.
+	 */
+	public function set_customer_email( $value ) {
+		$this->set_email( $value );
+    }
+
+    /**
+	 * Set the customer's country.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value country.
+	 */
+	public function set_country( $value ) {
+		$this->set_prop( 'country', $value );
+    }
+
+    /**
+	 * Alias of self::set_country().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value country.
+	 */
+	public function set_user_country( $value ) {
+		$this->set_country( $value );
+    }
+
+    /**
+	 * Alias of self::set_country().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value country.
+	 */
+	public function set_customer_country( $value ) {
+		$this->set_country( $value );
+    }
+
+    /**
+	 * Set the customer's state.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value state.
+	 */
+	public function set_state( $value ) {
+		$this->set_prop( 'state', $value );
+    }
+
+    /**
+	 * Alias of self::set_state().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value state.
+	 */
+	public function set_user_state( $value ) {
+		$this->set_state( $value );
+    }
+
+    /**
+	 * Alias of self::set_state().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value state.
+	 */
+	public function set_customer_state( $value ) {
+		$this->set_state( $value );
+    }
+
+    /**
+	 * Set the customer's city.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value city.
+	 */
+	public function set_city( $value ) {
+		$this->set_prop( 'city', $value );
+    }
+
+    /**
+	 * Alias of self::set_city().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value city.
+	 */
+	public function set_user_city( $value ) {
+		$this->set_city( $value );
+    }
+
+    /**
+	 * Alias of self::set_city().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value city.
+	 */
+	public function set_customer_city( $value ) {
+		$this->set_city( $value );
+    }
+
+    /**
+	 * Set the customer's zip code.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value zip.
+	 */
+	public function set_zip( $value ) {
+		$this->set_prop( 'zip', $value );
+    }
+
+    /**
+	 * Alias of self::set_zip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value zip.
+	 */
+	public function set_user_zip( $value ) {
+		$this->set_zip( $value );
+    }
+
+    /**
+	 * Alias of self::set_zip().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value zip.
+	 */
+	public function set_customer_zip( $value ) {
+		$this->set_zip( $value );
+    }
+
+    /**
+	 * Set the customer's company.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value company.
+	 */
+	public function set_company( $value ) {
+		$this->set_prop( 'company', $value );
+    }
+
+    /**
+	 * Alias of self::set_company().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value company.
+	 */
+	public function set_user_company( $value ) {
+		$this->set_company( $value );
+    }
+
+    /**
+	 * Alias of self::set_company().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value company.
+	 */
+	public function set_customer_company( $value ) {
+		$this->set_company( $value );
+    }
+
+    /**
+	 * Set the customer's var number.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var number.
+	 */
+	public function set_vat_number( $value ) {
+		$this->set_prop( 'vat_number', $value );
+    }
+
+    /**
+	 * Alias of self::set_vat_number().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var number.
+	 */
+	public function set_user_vat_number( $value ) {
+		$this->set_vat_number( $value );
+    }
+
+    /**
+	 * Alias of self::set_vat_number().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var number.
+	 */
+	public function set_customer_vat_number( $value ) {
+		$this->set_vat_number( $value );
+    }
+
+    /**
+	 * Set the customer's vat rate.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var rate.
+	 */
+	public function set_vat_rate( $value ) {
+		$this->set_prop( 'vat_rate', $value );
+    }
+
+    /**
+	 * Alias of self::set_vat_rate().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var number.
+	 */
+	public function set_user_vat_rate( $value ) {
+		$this->set_vat_rate( $value );
+    }
+
+    /**
+	 * Alias of self::set_vat_rate().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value var number.
+	 */
+	public function set_customer_vat_rate( $value ) {
+		$this->set_vat_rate( $value );
+    }
+
+    /**
+	 * Set the customer's address.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value address.
+	 */
+	public function set_address( $value ) {
+		$this->set_prop( 'address', $value );
+    }
+
+    /**
+	 * Alias of self::set_address().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value address.
+	 */
+	public function set_user_address( $value ) {
+		$this->set_address( $value );
+    }
+
+    /**
+	 * Alias of self::set_address().
+	 *
+	 * @since 1.0.19
+	 * @param  string $value address.
+	 */
+	public function set_customer_address( $value ) {
+		$this->set_address( $value );
+    }
+
+    /**
+	 * Set whether the customer has viewed the invoice or not.
+	 *
+	 * @since 1.0.19
+	 * @param  int|bool $value confirmed.
+	 */
+	public function set_is_viewed( $value ) {
+		$this->set_prop( 'is_viewed', $value );
+	}
+
+	/**
+	 * Set extra email recipients.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value email recipients.
+	 */
+	public function set_email_cc( $value ) {
+		$this->set_prop( 'email_cc', $value );
+	}
+
+	/**
+	 * Set the invoice template.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value template.
+	 */
+	public function set_template( $value ) {
+		if ( in_array( $value, array( 'quantity', 'hours', 'amount' ) ) ) {
+			$this->set_prop( 'template', $value );
+		}
+	}
+
+	/**
+	 * Set the invoice source.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value source.
+	 * @deprecated
+	 */
+	public function created_via( $value ) {
+		$this->set_created_via( sanitize_text_field( $value ) );
+	}
+
+	/**
+	 * Set the invoice source.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value source.
+	 */
+	public function set_created_via( $value ) {
+		$this->set_prop( 'created_via', sanitize_text_field( $value ) );
+	}
+
+	/**
+	 * Set the customer's address confirmed status.
+	 *
+	 * @since 1.0.19
+	 * @param  int|bool $value confirmed.
+	 */
+	public function set_address_confirmed( $value ) {
+		$this->set_prop( 'address_confirmed', $value );
+    }
+
+    /**
+	 * Alias of self::set_address_confirmed().
+	 *
+	 * @since 1.0.19
+	 * @param  int|bool $value confirmed.
+	 */
+	public function set_user_address_confirmed( $value ) {
+		$this->set_address_confirmed( $value );
+    }
+
+    /**
+	 * Alias of self::set_address_confirmed().
+	 *
+	 * @since 1.0.19
+	 * @param  int|bool $value confirmed.
+	 */
+	public function set_customer_address_confirmed( $value ) {
+		$this->set_address_confirmed( $value );
+    }
+
+    /**
+	 * Set the invoice sub total.
+	 *
+	 * @since 1.0.19
+	 * @param  float $value sub total.
+	 */
+	public function set_subtotal( $value ) {
+		$this->set_prop( 'subtotal', max( 0, $value ) );
+	}
+
+	/**
+	 * Set the invoice total.
+	 *
+	 * @since 1.0.19
+	 * @param  float $value sub total.
+	 */
+	public function set_total( $value ) {
+		$this->set_prop( 'total', max( 0, $value ) );
+    }
+
+    /**
+	 * Set the invoice discount amount.
+	 *
+	 * @since 1.0.19
+	 * @param  float $value discount total.
+	 */
+	public function set_total_discount( $value ) {
+		$this->set_prop( 'total_discount', max( 0, $value ) );
+    }
+
+    /**
+	 * Alias of self::set_total_discount().
+	 *
+	 * @since 1.0.19
+	 * @param  float $value discount total.
+	 */
+	public function set_discount( $value ) {
+		$this->set_total_discount( $value );
+    }
+
+    /**
+	 * Set the invoice tax amount.
+	 *
+	 * @since 1.0.19
+	 * @param  float $value tax total.
+	 */
+	public function set_total_tax( $value ) {
+		$this->set_prop( 'total_tax', max( 0, $value ) );
+    }
+
+    /**
+	 * Alias of self::set_total_tax().
+	 *
+	 * @since 1.0.19
+	 * @param  float $value tax total.
+	 */
+	public function set_tax_total( $value ) {
+		$this->set_total_tax( $value );
+    }
+
+    /**
+	 * Set the invoice fees amount.
+	 *
+	 * @since 1.0.19
+	 * @param  float $value fees total.
+	 */
+	public function set_total_fees( $value ) {
+		$this->set_prop( 'total_fees', max( 0, $value ) );
+    }
+
+    /**
+	 * Alias of self::set_total_fees().
+	 *
+	 * @since 1.0.19
+	 * @param  float $value fees total.
+	 */
+	public function set_fees_total( $value ) {
+		$this->set_total_fees( $value );
+    }
+
+    /**
+	 * Set the invoice fees.
+	 *
+	 * @since 1.0.19
+	 * @param  array $value fees.
+	 */
+	public function set_fees( $value ) {
+
+		if ( ! is_array( $value ) ) {
+			$value = array();
+		}
+
+		$this->set_prop( 'fees', $value );
+
+    }
+
+    /**
+	 * Set the invoice taxes.
+	 *
+	 * @since 1.0.19
+	 * @param  array $value taxes.
+	 */
+	public function set_taxes( $value ) {
+
+		if ( ! is_array( $value ) ) {
+			$value = array();
+		}
+
+		$this->set_prop( 'taxes', $value );
+
+    }
+
+    /**
+	 * Set the invoice discounts.
+	 *
+	 * @since 1.0.19
+	 * @param  array $value discounts.
+	 */
+	public function set_discounts( $value ) {
+
+		if ( ! is_array( $value ) ) {
+			$value = array();
+		}
+
+		$this->set_prop( 'discounts', $value );
+    }
+
+    /**
+	 * Set the invoice items.
+	 *
+	 * @since 1.0.19
+	 * @param  GetPaid_Form_Item[] $value items.
+	 */
+	public function set_items( $value ) {
+
+        // Remove existing items.
+        $this->set_prop( 'items', array() );
+		$this->recurring_item = null;
+
+        // Ensure that we have an array.
+        if ( ! is_array( $value ) ) {
+            return;
+        }
+
+        foreach ( $value as $item ) {
+            $this->add_item( $item );
+        }
+
+    }
+
+    /**
+	 * Set the payment form.
+	 *
+	 * @since 1.0.19
+	 * @param  int $value payment form.
+	 */
+	public function set_payment_form( $value ) {
+		$this->set_prop( 'payment_form', $value );
+    }
+
+    /**
+	 * Set the submission id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value submission id.
+	 */
+	public function set_submission_id( $value ) {
+		$this->set_prop( 'submission_id', $value );
+    }
+
+    /**
+	 * Set the discount code.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value discount code.
+	 */
+	public function set_discount_code( $value ) {
+		$this->set_prop( 'discount_code', sanitize_text_field( $value ) );
+    }
+
+    /**
+	 * Set the gateway.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value gateway.
+	 */
+	public function set_gateway( $value ) {
+		$this->set_prop( 'gateway', $value );
+    }
+
+    /**
+	 * Set the transaction id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value transaction id.
+	 */
+	public function set_transaction_id( $value ) {
+		if ( ! empty( $value ) ) {
+			$this->set_prop( 'transaction_id', $value );
+		}
+    }
+
+    /**
+	 * Set the currency id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value currency id.
+	 */
+	public function set_currency( $value ) {
+		$this->set_prop( 'currency', $value );
+    }
+
+	/**
+	 * Set whether to disable taxes.
+	 *
+	 * @since 1.0.19
+	 * @param  bool $value value.
+	 */
+	public function set_disable_taxes( $value ) {
+		$this->set_prop( 'disable_taxes', (bool) $value );
+	}
+
+    /**
+	 * Set the subscription id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value subscription id.
+	 */
+	public function set_subscription_id( $value ) {
+		$this->set_prop( 'subscription_id', $value );
+	}
+	
+	/**
+	 * Set the remote subscription id.
+	 *
+	 * @since 1.0.19
+	 * @param  string $value subscription id.
+	 */
+	public function set_remote_subscription_id( $value ) {
+		$this->set_prop( 'remote_subscription_id', $value );
+    }
+
+    /*
+	|--------------------------------------------------------------------------
+	| Boolean methods
+	|--------------------------------------------------------------------------
+	|
+	| Return true or false.
+	|
+    */
+
+    /**
+     * Checks if this is a parent invoice.
+     */
     public function is_parent() {
-        $is_parent = empty( $this->parent_invoice ) ? true : false;
-
-        return apply_filters( 'wpinv_invoice_is_parent', $is_parent, $this );
+        $parent = $this->get_parent_id();
+        return apply_filters( 'wpinv_invoice_is_parent', empty( $parent ), $this );
     }
-    
+
+    /**
+     * Checks if this is a renewal invoice.
+     */
     public function is_renewal() {
-        $is_renewal = $this->parent_invoice && $this->parent_invoice != $this->ID ? true : false;
+        return ! $this->is_parent();
+    }
 
-        return apply_filters( 'wpinv_invoice_is_renewal', $is_renewal, $this );
+    /**
+     * Checks if this is a recurring invoice.
+     */
+    public function is_recurring() {
+        return $this->is_renewal() || ! empty( $this->recurring_item );
     }
-    
-    public function get_parent_payment() {
-        $parent_payment = NULL;
-        
-        if ( $this->is_renewal() ) {
-            $parent_payment = wpinv_get_invoice( $this->parent_invoice );
-        }
-        
-        return $parent_payment;
+
+    /**
+     * Checks if this is a taxable invoice.
+     */
+    public function is_taxable() {
+        return ! $this->get_disable_taxes();
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public function has_vat() {
+        return $this->is_taxable();
+	}
+
+	/**
+	 * Checks to see if the invoice requires payment.
+	 */
+	public function is_free() {
+        $is_free = ( (float) wpinv_round_amount( $this->get_initial_total() ) == 0 );
+
+		if ( $this->is_recurring() && $this->get_recurring_total() > 0 ) {
+			$is_free = false;
+		}
+
+        return apply_filters( 'wpinv_invoice_is_free', $is_free, $this );
     }
-    
+
+    /**
+     * Checks if the invoice is paid.
+     */
     public function is_paid() {
         $is_paid = $this->has_status( array( 'publish', 'wpi-processing', 'wpi-renewal' ) );
-
         return apply_filters( 'wpinv_invoice_is_paid', $is_paid, $this );
+	}
+
+	/**
+     * Checks if the invoice needs payment.
+     */
+	public function needs_payment() {
+		$needs_payment = ! $this->is_paid() && ! $this->is_refunded() && ! $this->is_free();
+        return apply_filters( 'wpinv_needs_payment', $needs_payment, $this );
+    }
+  
+	/**
+     * Checks if the invoice is refunded.
+     */
+	public function is_refunded() {
+        $is_refunded = $this->has_status( 'wpi-refunded' );
+        return apply_filters( 'wpinv_invoice_is_refunded', $is_refunded, $this );
+	}
+
+	/**
+     * Checks if the invoice is held.
+     */
+	public function is_held() {
+        $is_held = $this->has_status( 'wpi-onhold' );
+        return apply_filters( 'wpinv_invoice_is_held', $is_held, $this );
+	}
+
+	/**
+     * Checks if the invoice is due.
+     */
+	public function is_due() {
+		$due_date = $this->get_due_date();
+		return empty( $due_date ) ? false : current_time( 'timestamp' ) > strtotime( $due_date );
+	}
+
+	/**
+     * Checks if the invoice is draft.
+     */
+	public function is_draft() {
+        return $this->has_status( 'draft, auto-draft' );
+	}
+
+    /**
+     * Checks if the invoice has a given status.
+     */
+    public function has_status( $status ) {
+        $status = wpinv_parse_list( $status );
+        return apply_filters( 'wpinv_has_status', in_array( $this->get_status(), $status ), $status );
+	}
+
+	/**
+     * Checks if the invoice is of a given type.
+     */
+    public function is_type( $type ) {
+        $type = wpinv_parse_list( $type );
+        return in_array( $this->get_type(), $type );
     }
 
     /**
      * Checks if this is a quote object.
-     * 
+     *
      * @since 1.0.15
      */
     public function is_quote() {
-        return 'wpi_quote' === $this->post_type;
+        return 'wpi_quote' == $this->get_post_type();
     }
-    
-    public function is_refunded() {
-        $is_refunded = $this->has_status( array( 'wpi-refunded' ) );
 
-        return apply_filters( 'wpinv_invoice_is_refunded', $is_refunded, $this );
+    /**
+     * Check if the invoice (or it's parent has a free trial).
+     *
+     */
+    public function has_free_trial() {
+        return $this->is_recurring() && 0 == $this->get_initial_total();
+	}
+
+	/**
+     * @deprecated
+     */
+    public function is_free_trial() {
+        $this->has_free_trial();
     }
-    
-    public function is_free() {
-        $is_free = false;
-        
-        if ( !( (float)wpinv_round_amount( $this->get_total() ) > 0 ) ) {
-            if ( $this->is_parent() && $this->is_recurring() ) {
-                $is_free = (float)wpinv_round_amount( $this->get_recurring_details( 'total' ) ) > 0 ? false : true;
-            } else {
-                $is_free = true;
-            }
-        }
-        
-        return apply_filters( 'wpinv_invoice_is_free', $is_free, $this );
+
+	/**
+     * Check if the initial payment if 0.
+     *
+     */
+	public function is_initial_free() {
+        $is_initial_free = ! ( (float) wpinv_round_amount( $this->get_initial_total() ) > 0 );
+        return apply_filters( 'wpinv_invoice_is_initial_free', $is_initial_free, $this->get_cart_details(), $this );
     }
-    
-    public function has_vat() {
-        global $wpinv_euvat, $wpi_country;
-        
-        $requires_vat = false;
-        
-        if ( $this->country ) {
-            $wpi_country        = $this->country;
-            
-            $requires_vat       = $wpinv_euvat->requires_vat( $requires_vat, $this->get_user_id(), $wpinv_euvat->invoice_has_digital_rule( $this ) );
-        }
-        
-        return apply_filters( 'wpinv_invoice_has_vat', $requires_vat, $this );
-    }
-    
-    public function refresh_item_ids() {
-        $item_ids = array();
-        
-        if ( !empty( $this->cart_details ) ) {
-            foreach ( $this->cart_details as $key => $item ) {
-                if ( !empty( $item['id'] ) ) {
-                    $item_ids[] = $item['id'];
-                }
-            }
-        }
-        
-        $item_ids = !empty( $item_ids ) ? implode( ',', array_unique( $item_ids ) ) : '';
-        
-        update_post_meta( $this->ID, '_wpinv_item_ids', $item_ids );
-    }
-    
-    public function get_invoice_quote_type( $post_id ) {
-        if ( empty( $post_id ) ) {
-            return '';
+	
+	/**
+     * Check if the recurring item has a free trial.
+     *
+     */
+    public function item_has_free_trial() {
+
+        // Ensure we have a recurring item.
+        if ( ! $this->is_recurring() ) {
+            return false;
         }
 
-        $type = get_post_type( $post_id );
+        $item = $this->get_recurring( true );
+        return $item->has_free_trial();
+	}
 
-        if ( 'wpi_invoice' === $type ) {
-            $post_type = __('Invoice', 'invoicing');
-        } else{
-            $post_type = __('Quote', 'invoicing');
+	/**
+     * Check if the free trial is a result of a discount.
+     */
+    public function is_free_trial_from_discount() {
+		return $this->has_free_trial() && ! $this->item_has_free_trial();
+	}
+	
+	/**
+     * @deprecated
+     */
+    public function discount_first_payment_only() {
+
+		$discount = wpinv_get_discount_obj( $this->get_discount_code() );
+        if ( ! $discount->exists() || ! $this->is_recurring() ) {
+            return true;
         }
 
-        return apply_filters('get_invoice_type_label', $post_type, $post_id);
+        return ! $discount->get_is_recurring();
     }
+
+    /*
+	|--------------------------------------------------------------------------
+	| Cart related methods
+	|--------------------------------------------------------------------------
+	|
+	| Do not forget to recalculate totals after calling the following methods.
+	|
+    */
+
+    /**
+     * Adds an item to the invoice.
+     *
+     * @param GetPaid_Form_Item|array $item
+     * @return WP_Error|Bool
+     */
+    public function add_item( $item ) {
+
+		if ( is_array( $item ) ) {
+			$item = $this->process_array_item( $item );
+		}
+
+		if ( is_numeric( $item ) ) {
+			$item = new GetPaid_Form_Item( $item );
+		}
+
+        // Make sure that it is available for purchase.
+		if ( $item->get_id() > 0 && ! $item->can_purchase() ) {
+			return new WP_Error( 'invalid_item', __( 'This item is not available for purchase', 'invoicing' ) );
+        }
+
+        // Do we have a recurring item?
+		if ( $item->is_recurring() ) {
+
+			// An invoice can only contain one recurring item.
+			if ( ! empty( $this->recurring_item )  && $this->recurring_item != (int) $item->get_id() ) {
+				return new WP_Error( 'recurring_item', __( 'An invoice can only contain one recurring item', 'invoicing' ) );
+			}
+
+			$this->recurring_item = $item->get_id();
+        }
+
+        // Invoice id.
+        $item->invoice_id = (int) $this->get_id();
+
+		// Remove duplicates.
+		$this->remove_item( $item->get_id() );
+
+		// Retrieve all items.
+        $items   = $this->get_items();
+
+		// Add new item.
+        $items[] = $item;
+
+        $this->set_prop( 'items', $items );
+
+		return true;
+	}
+
+	/**
+	 * Converts an array to an item.
+	 *
+	 * @since 1.0.19
+	 * @return GetPaid_Form_Item
+	 */
+	protected function process_array_item( $array ) {
+
+		$item_id = isset( $array['item_id'] ) ? $array['item_id'] : 0;
+		$item    = new GetPaid_Form_Item( $item_id );
+
+		// Set item data.
+		foreach ( array( 'name', 'price', 'description' ) as $key ) {
+			if ( isset( $array[ "item_$key" ] ) ) {
+				$method = "set_$key";
+				$item->$method( $array[ "item_$key" ] );
+			}
+		}
+
+		if ( isset( $array['quantity'] ) ) {
+			$item->set_quantity( $array['quantity'] );
+		}
+
+		// Set item meta.
+		if ( isset( $array['meta'] ) && is_array( $array['meta'] ) ) {
+			$item->set_item_meta( $array['meta'] );
+		}
+
+		return $item;
+
+	}
+
+    /**
+	 * Retrieves a specific item.
+	 *
+	 * @since 1.0.19
+	 * @return GetPaid_Form_Item|null
+	 */
+	public function get_item( $item_id ) {
+
+		foreach ( $this->get_items() as $item ) {
+			if ( (int) $item_id == $item->get_id() ) {
+				return $item;
+			}
+		}
+
+		return null;
+    }
+
+    /**
+	 * Removes a specific item.
+	 *
+	 * @since 1.0.19
+	 */
+	public function remove_item( $item_id ) {
+		$items   = $this->get_items();
+		$item_id = (int) $item_id;
+
+		foreach ( $items as $index => $item ) {
+			if ( (int) $item_id == $item->get_id() ) {
+				unset( $items[ $index ] );
+				$this->set_prop( 'items', $items );
+
+				if ( $item_id == $this->recurring_item ) {
+					$this->recurring_item = null;
+				}
+
+			}
+		}
+
+    }
+
+    /**
+	 * Adds a fee to the invoice.
+	 *
+	 * @param array $fee An array of fee details. name, initial_fee, and recurring_fee are required.
+	 * @since 1.0.19
+	 */
+    public function add_fee( $fee ) {
+
+		$fees                 = $this->get_fees();
+		$fees[ $fee['name'] ] = $fee;
+		$this->set_prop( 'fees', $fees );
+
+    }
+
+    /**
+	 * Retrieves a specific fee.
+	 *
+	 * @since 1.0.19
+	 */
+	public function get_fee( $fee ) {
+        $fees = $this->get_fees();
+		return isset( $fees[ $fee ] ) ? $fees[ $fee ] : null;
+    }
+
+    /**
+	 * Removes a specific fee.
+	 *
+	 * @since 1.0.19
+	 */
+	public function remove_fee( $fee ) {
+        $fees = $this->get_fees();
+        if ( isset( $fees[ $fee ] ) ) {
+            unset( $fees[ $fee ] );
+            $this->set_prop( 'fees', $fees );
+        }
+    }
+
+	/**
+	 * Adds a discount to the invoice.
+	 *
+	 * @param array $discount An array of discount details. name, initial_discount, and recurring_discount are required. Include discount_code if the discount is from a discount code.
+	 * @since 1.0.19
+	 */
+	public function add_discount( $discount ) {
+
+		$discounts = $this->get_discounts();
+		$discounts[ $discount['name'] ] = $discount;
+		$this->set_prop( 'discounts', $discounts );
+
+	}
+
+    /**
+	 * Retrieves a specific discount.
+	 *
+	 * @since 1.0.19
+	 * @return float
+	 */
+	public function get_discount( $discount = false ) {
+
+		// Backwards compatibilty.
+		if ( empty( $discount ) ) {
+			return $this->get_total_discount();
+		}
+
+        $discounts = $this->get_discounts();
+		return isset( $discounts[ $discount ] ) ? $discounts[ $discount ] : null;
+    }
+
+    /**
+	 * Removes a specific discount.
+	 *
+	 * @since 1.0.19
+	 */
+	public function remove_discount( $discount ) {
+        $discounts = $this->get_discounts();
+        if ( isset( $discounts[ $discount ] ) ) {
+            unset( $discounts[ $discount ] );
+            $this->set_prop( 'discounts', $discounts );
+        }
+    }
+
+    /**
+     * Adds a tax to the invoice.
+     *
+     * @param array $tax An array of tax details. name, initial_tax, and recurring_tax are required.
+     */
+    public function add_tax( $tax ) {
+        if ( $this->is_taxable() ) {
+
+            $taxes                 = $this->get_taxes();
+			$taxes[ $tax['name'] ] = $tax;
+			$this->set_prop( 'taxes', $tax );
+
+        }
+    }
+
+    /**
+	 * Retrieves a specific tax.
+	 *
+	 * @since 1.0.19
+	 */
+	public function get_tax( $tax = null ) {
+
+		// Backwards compatility.
+		if ( empty( $tax ) ) {
+			return $this->get_total_tax();
+		}
+
+        $taxes = $this->get_taxes();
+		return isset( $taxes[ $tax ] ) ? $taxes[ $tax ] : null;
+    }
+
+    /**
+	 * Removes a specific tax.
+	 *
+	 * @since 1.0.19
+	 */
+	public function remove_tax( $tax ) {
+        $taxes = $this->get_taxes();
+        if ( isset( $taxes[ $tax ] ) ) {
+            unset( $taxes[ $tax ] );
+            $this->set_prop( 'taxes', $taxes );
+        }
+    }
+
+    /**
+	 * Recalculates the invoice subtotal.
+	 *
+	 * @since 1.0.19
+	 * @return float The recalculated subtotal
+	 */
+	public function recalculate_subtotal() {
+        $items     = $this->get_items();
+		$subtotal  = 0;
+		$recurring = 0;
+
+        foreach ( $items as $item ) {
+			$subtotal  += $item->get_sub_total();
+			$recurring += $item->get_recurring_sub_total();
+        }
+
+		if ( wpinv_prices_include_tax() ) {
+			$subtotal  = max( 0, $subtotal - $this->totals['tax']['initial'] );
+			$recurring = max( 0, $recurring - $this->totals['tax']['recurring'] );
+		}
+
+		$current = $this->is_renewal() ? $recurring : $subtotal;
+		$this->set_subtotal( $current );
+
+		$this->totals['subtotal'] = array(
+			'initial'   => $subtotal,
+			'recurring' => $recurring,
+		);
+
+        return $current;
+    }
+
+    /**
+	 * Recalculates the invoice discount total.
+	 *
+	 * @since 1.0.19
+	 * @return float The recalculated discount
+	 */
+	public function recalculate_total_discount() {
+        $discounts = $this->get_discounts();
+		$discount  = 0;
+		$recurring = 0;
+
+        foreach ( $discounts as $data ) {
+			$discount  += wpinv_sanitize_amount( $data['initial_discount'] );
+			$recurring += wpinv_sanitize_amount( $data['recurring_discount'] );
+		}
+
+		$current = $this->is_renewal() ? $recurring : $discount;
+
+		$this->set_total_discount( $current );
+
+		$this->totals['discount'] = array(
+			'initial'   => $discount,
+			'recurring' => $recurring,
+		);
+
+		return $current;
+
+    }
+
+    /**
+	 * Recalculates the invoice tax total.
+	 *
+	 * @since 1.0.19
+	 * @return float The recalculated tax
+	 */
+	public function recalculate_total_tax() {
+
+		// Maybe disable taxes.
+		$vat_number = $this->get_vat_number();
+		$skip_tax   = GetPaid_Payment_Form_Submission_Taxes::is_eu_transaction( $this->get_country() ) && ! empty( $vat_number );
+
+		if ( wpinv_is_base_country( $this->get_country() ) && 'vat_too' == wpinv_get_option( 'vat_same_country_rule', 'vat_too' ) ) {
+			$skip_tax = false;
+		}
+
+		if ( ! wpinv_use_taxes() || $this->get_disable_taxes() || ! wpinv_is_country_taxable( $this->get_country() ) || $skip_tax   ) {
+
+			$this->totals['tax'] = array(
+				'initial'   => 0,
+				'recurring' => 0,
+			);
+
+			$this->set_taxes( array() );
+			$current = 0;
+		} else {
+
+			$item_taxes = array();
+
+			foreach ( $this->get_items() as $item ) {
+				$rates    = getpaid_get_item_tax_rates( $item, $this->get_country(), $this->get_state() );
+				$rates    = getpaid_filter_item_tax_rates( $item, $rates );
+				$taxes    = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item->get_id(), $item->get_sub_total(), $this->get_discount_code(), false ), $rates );
+				$r_taxes  = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item->get_id(), $item->get_recurring_sub_total(), $this->get_discount_code(), true ), $rates );
+				foreach ( $taxes as $name => $amount ) {
+					$recurring = isset( $r_taxes[ $name ] ) ? $r_taxes[ $name ] : 0;
+					$tax       = getpaid_prepare_item_tax( $item, $name, $amount, $recurring );
+
+					if ( ! isset( $item_taxes[ $name ] ) ) {
+						$item_taxes[ $name ] = $tax;
+						continue;
+					}
+
+					$item_taxes[ $name ]['initial_tax']   += $tax['initial_tax'];
+					$item_taxes[ $name ]['recurring_tax'] += $tax['recurring_tax'];
+
+				}
+
+			}
+
+			$item_taxes = array_replace( $this->get_taxes(), $item_taxes );
+			$this->set_taxes( $item_taxes );
+
+			$initial_tax   = array_sum( wp_list_pluck( $item_taxes, 'initial_tax' ) );
+			$recurring_tax = array_sum( wp_list_pluck( $item_taxes, 'recurring_tax' ) );
+
+			$current = $this->is_renewal() ? $recurring_tax : $initial_tax;
+
+			$this->totals['tax'] = array(
+				'initial'   => $initial_tax,
+				'recurring' => $recurring_tax,
+			);
+
+		}
+
+		$this->set_total_tax( $current );
+
+		return $current;
+
+    }
+
+    /**
+	 * Recalculates the invoice fees total.
+	 *
+	 * @since 1.0.19
+	 * @return float The recalculated fee
+	 */
+	public function recalculate_total_fees() {
+		$fees      = $this->get_fees();
+		$fee       = 0;
+		$recurring = 0;
+
+        foreach ( $fees as $data ) {
+			$fee       += wpinv_sanitize_amount( $data['initial_fee'] );
+			$recurring += wpinv_sanitize_amount( $data['recurring_fee'] );
+		}
+
+		$current = $this->is_renewal() ? $recurring : $fee;
+		$this->set_total_fees( $current );
+
+		$this->totals['fee'] = array(
+			'initial'   => $fee,
+			'recurring' => $recurring,
+		);
+
+        $this->set_total_fees( $fee );
+        return $current;
+    }
+
+    /**
+	 * Recalculates the invoice total.
+	 *
+	 * @since 1.0.19
+     * @return float The invoice total
+	 */
+	public function recalculate_total() {
+        $this->recalculate_total_fees();
+        $this->recalculate_total_discount();
+		$this->recalculate_total_tax();
+		$this->recalculate_subtotal();
+		$this->set_total( $this->get_total_tax() + $this->get_total_fees() + $this->get_subtotal() - $this->get_total_discount() );
+		return $this->get_total();
+	}
+
+	/**
+	 * @deprecated
+	 */
+    public function recalculate_totals() {
+        $this->recalculate_total();
+        $this->save( true );
+        return $this;
+    }
+
+    /**
+     * Convert this to an array.
+     */
+    public function array_convert() {
+        return $this->get_data();
+    }
+
+    /**
+     * Adds a note to an invoice.
+     *
+     * @param string $note The note being added.
+	 * @return int|false The new note's ID on success, false on failure.
+     *
+     */
+    public function add_note( $note = '', $customer_type = false, $added_by_user = false, $system = false ) {
+
+        // Bail if no note specified or this invoice is not yet saved.
+        if ( ! $note || $this->get_id() == 0 || ( ! is_user_logged_in() && ! $system ) ) {
+            return false;
+        }
+
+		$author       = 'System';
+		$author_email = 'bot@wpinvoicing.com';
+
+		// If this is an admin comment or it has been added by the user.
+		if ( is_user_logged_in() && ( ! $system || $added_by_user ) ) {
+			$user         = get_user_by( 'id', get_current_user_id() );
+            $author       = $user->display_name;
+            $author_email = $user->user_email;
+		}
+
+		return getpaid_notes()->add_invoice_note( $this, $note, $author, $author_email, $customer_type );
+
+	}
+
+	/**
+     * Generates a unique key for the invoice.
+     */
+    public function generate_key( $string = '' ) {
+        $auth_key  = defined( 'AUTH_KEY' ) ? AUTH_KEY : '';
+        return strtolower(
+            $string . md5( $this->get_id() . date( 'Y-m-d H:i:s' ) . $auth_key . uniqid( 'wpinv', true ) )
+        );
+    }
+
+    /**
+     * Generates a new number for the invoice.
+     */
+    public function generate_number() {
+        $number = $this->get_id();
+
+        if ( wpinv_sequential_number_active( $this->get_post_type() ) ) {
+            $number = wpinv_get_next_invoice_number( $this->get_post_type() );
+        }
+
+		return wpinv_format_invoice_number( $number, $this->get_post_type() );
+
+	}
+
+	/**
+	 * Handle the status transition.
+	 */
+	protected function status_transition() {
+		$status_transition = $this->status_transition;
+
+		// Reset status transition variable.
+		$this->status_transition = false;
+
+		if ( $status_transition ) {
+			try {
+
+				// Fire a hook for the status change.
+				do_action( 'getpaid_invoice_status_' . $status_transition['to'], $this, $status_transition );
+
+				// @deprecated this is deprecated and will be removed in the future.
+				do_action( 'wpinv_status_' . $status_transition['to'], $this->get_id(), $status_transition['from'] );
+
+				if ( ! empty( $status_transition['from'] ) ) {
+
+					/* translators: 1: old invoice status 2: new invoice status */
+					$transition_note = sprintf( __( 'Status changed from %1$s to %2$s.', 'invoicing' ), wpinv_status_nicename( $status_transition['from'], $this ), wpinv_status_nicename( $status_transition['to'], $this  ) );
+
+					// Fire another hook.
+					do_action( 'getpaid_invoice_status_' . $status_transition['from'] . '_to_' . $status_transition['to'], $this );
+					do_action( 'getpaid_invoice_status_changed', $this, $status_transition['from'], $status_transition['to'] );
+
+					// @deprecated this is deprecated and will be removed in the future.
+					do_action( 'wpinv_status_' . $status_transition['from'] . '_to_' . $status_transition['to'], $this->get_id(), $status_transition['from'] );
+
+					// Note the transition occurred.
+					$this->add_note( trim( $status_transition['note'] . ' ' . $transition_note ), false, $status_transition['manual'] );
+
+					// Work out if this was for a payment, and trigger a payment_status hook instead.
+					if (
+						in_array( $status_transition['from'], array( 'wpi-cancelled', 'wpi-pending', 'wpi-failed', 'wpi-refunded', 'wpi-onhold' ), true )
+						&& in_array( $status_transition['to'], array( 'publish', 'wpi-processing', 'wpi-renewal' ), true )
+					) {
+						do_action( 'getpaid_invoice_payment_status_changed', $this, $status_transition );
+					}
+
+					// Work out if this was for a payment reversal, and trigger a payment_status_reversed hook instead.
+					if (
+						in_array( $status_transition['from'], array( 'publish', 'wpi-processing', 'wpi-renewal' ), true )
+						&& in_array( $status_transition['to'], array( 'wpi-cancelled', 'wpi-pending', 'wpi-failed', 'wpi-refunded', 'wpi-onhold' ), true )
+					) {
+						do_action( 'getpaid_invoice_payment_status_reversed', $this, $status_transition );
+					}
+				} else {
+					/* translators: %s: new invoice status */
+					$transition_note = sprintf( __( 'Status set to %s.', 'invoicing' ), wpinv_status_nicename( $status_transition['to'], $this  ) );
+
+					// Note the transition occurred.
+					$this->add_note( trim( $status_transition['note'] . ' ' . $transition_note ), 0, $status_transition['manual'] );
+
+				}
+			} catch ( Exception $e ) {
+				$this->add_note( __( 'Error during status transition.', 'invoicing' ) . ' ' . $e->getMessage() );
+			}
+		}
+	}
+
+	/**
+	 * Updates an invoice status.
+	 */
+	public function update_status( $new_status = false, $note = '', $manual = false ) {
+
+		// Fires before updating a status.
+		do_action( 'wpinv_before_invoice_status_change', $this->get_id(), $new_status, $this->get_status( 'edit' ) );
+
+		// Update the status.
+		$this->set_status( $new_status, $note, $manual );
+
+		// Save the order.
+		return $this->save();
+
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public function refresh_item_ids() {
+        $item_ids = implode( ',', array_unique( wp_list_pluck( $this->get_cart_details(), 'item_id' ) ) );
+        update_post_meta( $this->get_id(), '_wpinv_item_ids', $item_ids );
+	}
+
+	/**
+	 * @deprecated
+	 */
+	public function update_items( $temp = false ) {
+
+		$this->set_items( $this->get_items() );
+
+		if ( ! $temp ) {
+			$this->save();
+		}
+
+        return $this;
+	}
+
+	/**
+	 * @deprecated
+	 */
+    public function validate_discount() {
+
+        $discount_code = $this->get_discount_code();
+
+        if ( empty( $discount_code ) ) {
+            return false;
+        }
+
+        $discount = wpinv_get_discount_obj( $discount_code );
+
+        // Ensure it is active.
+        return $discount->exists();
+
+    }
+
+	/**
+	 * Refunds an invoice.
+	 */
+    public function refund() {
+		$this->set_status( 'wpi-refunded' );
+        $this->save();
+	}
+
+	/**
+	 * Marks an invoice as paid.
+	 * 
+	 * @param string $transaction_id
+	 */
+    public function mark_paid( $transaction_id = null, $note = '' ) {
+
+		// Set the transaction id.
+		if ( empty( $transaction_id ) ) {
+			$transaction_id = $this->generate_key('trans_');
+		}
+
+		if ( ! $this->get_transaction_id() ) {
+			$this->set_transaction_id( $transaction_id );
+		}
+
+		if ( $this->is_paid() && 'wpi-processing' != $this->get_status() ) {
+			return $this->save();
+		}
+
+		// Set the completed date.
+		$this->set_date_completed( current_time( 'mysql' ) );
+
+		// Set the new status.
+		$gateway = sanitize_text_field( $this->get_gateway_title() );
+		if ( $this->is_renewal() ) {
+
+			$_note = wp_sprintf( __( 'Renewed via %s', 'invoicing' ), $gateway );
+			$_note = $_note . empty( $note ) ? '' : " ($note)";
+
+			if ( 'none' == $this->get_gateway() ) {
+				$_note = $note;
+			}
+
+			$this->set_status( 'wpi-renewal', $_note );
+
+		} else {
+
+			$_note = wp_sprintf( __( 'Paid via %s', 'invoicing' ), $gateway );
+			$_note = $_note . empty( $note ) ? '' : " ($note)";
+
+			if ( 'none' == $this->get_gateway() ) {
+				$_note = $note;
+			}
+
+			$this->set_status( 'publish', $_note );
+
+		}
+
+		// Set checkout mode.
+		$mode = wpinv_is_test_mode( $this->get_gateway() ) ? 'test' : 'live';
+		$this->set_mode( $mode );
+
+		// Save the invoice.
+        $this->save();
+	}
+
+	/**
+	 * Save data to the database.
+	 *
+	 * @since 1.0.19
+	 * @return int invoice ID
+	 */
+	public function save() {
+		$this->maybe_set_date_paid();
+		$this->maybe_set_key();
+		parent::save();
+		$this->clear_cache();
+		$this->status_transition();
+		return $this->get_id();
+	}
+
+	/**
+     * Clears the subscription's cache.
+     */
+    public function clear_cache() {
+		wp_cache_delete( $this->get_key(), 'getpaid_invoice_keys_to_invoice_ids' );
+		wp_cache_delete( $this->get_number(), 'getpaid_invoice_numbers_to_invoice_ids' );
+		wp_cache_delete( $this->get_transaction_id(), 'getpaid_invoice_transaction_ids_to_invoice_ids' );
+	}
+
 }

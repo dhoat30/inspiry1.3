@@ -163,9 +163,8 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Image_Editor' ) ) :
                 $imageManager = new Image_Manager( [ $metadata[ 'width' ], $metadata[ 'height' ] ] );
 
                 // Let's try to load the given image to memory,
-                // To do so, we need to try raising memory limit.
                 $image = $imageManager->make( $imageMeta->getOriginalFullPath() );
-
+                
                 @set_time_limit( 0 );
 
                 $imageMeta->setMimeType( $image->mime() );
@@ -354,14 +353,22 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Image_Editor' ) ) :
             $sizeName,
             $imageId
         ) {
+           
             $sourceInfo = File::mb_pathinfo( $sourcePath );
+            
+            $alreadyInJPG = in_array( $sourceInfo[ 'extension' ], [ 'jpg', 'jpeg' ] );
+            $isPNGToJPGEnabled = wp_sir_get_settings()[ 'jpg_convert' ];
 
-            if ( wp_sir_get_settings()[ 'jpg_convert' ]
-                 && ! in_array( $sourceInfo[ 'extension' ], [ 'jpg', 'jpeg' ] ) ) {
-                $extension = 'jpg';
+            if ( $isPNGToJPGEnabled && !$alreadyInJPG) {
+                // To avoid conflict with existing original image/thumbnails 
+                // under the same path and file name we preserve 
+                // the original extension in the filename, i.e. 'chair-500x500.png.jpg'
+                $extension = $sourceInfo['extension'] . '.jpg';
             } else {
+                // No conversion needed.
                 $extension = $sourceInfo[ 'extension' ];
             }
+
             $basename = sprintf(
                 '%s-%dx%d.%s',
                 $sourceInfo[ 'filename' ],
@@ -370,10 +377,9 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Image_Editor' ) ) :
                 $extension
             );
 
-
             $path = trailingslashit( $sourceInfo[ 'dirname' ] ) . $basename;
 
-            return apply_filters( 'wp_sir_thumbnail_save_path', $path, $sizeName, $imageId );
+            return apply_filters( 'wp_sir_thumbnail_save_path', $path, $sizeName, $imageId);
         }
 
     }

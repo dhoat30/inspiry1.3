@@ -129,11 +129,6 @@ class Woo_Free_Product_Sample_Admin {
 	 */	
 	public function wfps_settings_page() {
 
-		$current_user = wp_get_current_user();
-		if( ! in_array('administrator', $current_user->roles) ) {
-			return;
-		}
-
 		$settings = Woo_Free_Product_Sample_Settings::wfps_setting_fields();		
 		return include  WFPS_ADMIN_DIR_PATH . 'partials/woo-free-product-sample-settings.php';
 

@@ -8,6 +8,7 @@
  * @link https://docs.wpgeodirectory.com/article/346-customizing-templates/
  * @since 1.0.0
  * @package GeoDirectory
+ * @version 2.1.0.10
  * @global object $wpdb WordPress Database object.
  * @global object $post The current post object.
  * @global object $wp_query WordPress Query object.
@@ -33,6 +34,8 @@ if($row_gap){
 if($styles){
 	$style_tag = "style='$styles'";
 }
+
+global $gdecs_render_loop, $geodir_el_archive_item_tl;
 ?>
 <div class="elementor-posts-container elementor-posts elementor-grid elementor-posts--skin-gd_custom" <?php echo $style_tag;?>>
 	<?php if ( !empty( $widget_listings ) ) {
@@ -48,21 +51,19 @@ if($styles){
 		do_action('geodir_before_listing_post_listview');
 		$classes = 'elementor-post elementor-grid-item';
 		foreach ( $widget_listings as $widget_listing ) {
-//			elementor-post elementor-grid-item post-160 gd_place type-gd_place status-publish has-post-thumbnail hentry gd_place_tags-house gd_place_tags-logde gd_placecategory-houses
+			geodir_setup_postdata( $widget_listing );
+
+			$gdecs_render_loop = get_the_ID() . "," . $skin_id;
+			$geodir_el_archive_item_tl = $skin_id;
 			?>
 		<article id="post-<?php the_ID(); ?>" <?php post_class( [ $classes ] ); ?>>
 			<?php
-			geodir_setup_postdata( $widget_listing );
-
 			$return = \Elementor\Plugin::instance()->frontend->get_builder_content_for_display( $skin_id );
 
 			echo $return;
 			?>
 		</article>
 			<?php
-
-//			 geodir_get_template_part('content', 'listing');
-
 		}
 
 		/**

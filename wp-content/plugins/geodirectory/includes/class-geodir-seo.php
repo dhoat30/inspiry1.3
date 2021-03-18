@@ -52,6 +52,17 @@ class GeoDir_SEO {
 
 		// WP Sitemaps
 		add_filter( 'wp_sitemaps_posts_query_args', array( __CLASS__, 'wp_sitemaps_exclude_post_ids' ), 20, 2 );
+
+		add_action('wp_head', function() {
+			if ( geodir_is_page( 'search' ) ) {
+				add_filter( 'wpseo_frontend_page_type_simple_page_id', array( __CLASS__ , 'wpseo_frontend_page_type_simple_page_id' ), 10, 1 );
+			}
+		}, 0 );
+		add_action('wp_head', function() {
+			if ( geodir_is_page( 'search' ) ) {
+				remove_filter( 'wpseo_frontend_page_type_simple_page_id', array( __CLASS__ , 'wpseo_frontend_page_type_simple_page_id' ), 10, 1 );
+			}
+		}, 99 );
 	}
 
 	/**
@@ -100,6 +111,7 @@ class GeoDir_SEO {
 				}
 
 				if ( self::has_yoast_14() ) {
+					add_filter( 'wpseo_twitter_title', array( __CLASS__, 'wpseo_twitter_title' ), 10, 2 );
 					add_filter( 'wpseo_title', array( __CLASS__, 'wpseo_title' ), 20, 2 );
 					add_filter( 'wpseo_metadesc', array( __CLASS__, 'wpseo_metadesc' ), 20, 2 );
 
@@ -144,6 +156,8 @@ class GeoDir_SEO {
 		if ( self::has_yoast() ) {
 			// Yoast SEO v14.x
 			if ( self::has_yoast_14() ) {
+				add_filter( 'wpseo_twitter_title', array( __CLASS__, 'get_title' ), 10, 1 );
+				add_filter( 'wpseo_twitter_description', array( __CLASS__, 'get_description' ), 10, 1 );
 				add_filter( 'wpseo_opengraph_title', array( __CLASS__, 'get_title' ), 10, 1 );
 				add_filter( 'wpseo_opengraph_desc', array( __CLASS__, 'get_description' ), 10, 1 );
 				add_filter( 'wpseo_opengraph_url', array( __CLASS__, 'wpseo_opengraph_url' ), 20, 2 );
@@ -1318,6 +1332,26 @@ class GeoDir_SEO {
 
 					if ( ! empty( $term ) && ! is_wp_error( $term ) ) {
 						$presentation->source = $term;
+						$term_meta = WPSEO_Taxonomy_Meta::get_term_meta( $term, $term->taxonomy, null );
+
+						if ( ! empty( $term_meta ) ) {
+							$is_robots_noindex = null;
+
+							if ( array_key_exists( 'wpseo_noindex', $term_meta ) ) {
+								$value = $term_meta['wpseo_noindex'];
+
+								if ( $value === 'noindex' ) {
+									$is_robots_noindex = true;
+								} elseif ( $value === 'index' ) {
+									$is_robots_noindex = false;
+								} elseif ( $value == 'default' ) {
+									$is_robots_noindex = ! WPSEO_Options::get( 'noindex-tax-' . $term->taxonomy, false ) ? false : true;
+								}
+							}
+		
+							$presentation->model->is_robots_noindex = $is_robots_noindex;
+							$presentation->model->is_public = ( $presentation->model->is_robots_noindex === null ) ? null : ! $presentation->model->is_robots_noindex;
+						}
 					}
 				}
 			} catch ( Exception $e ) { }
@@ -1326,6 +1360,29 @@ class GeoDir_SEO {
 		return $presentation;
 	}
 
+	/**
+	 * Yoast filter the Twitter title.
+	 *
+	 * @since 2.1.0.9
+	 *
+	 * @param string                 $title Twitter title.
+	 * @param Indexable_Presentation $presentation The presentation of an indexable.
+	 * @return string Filtered title.
+	 */
+	public static function wpseo_twitter_title( $title, $presentation ) {
+		if ( geodir_is_page( 'search' ) && ! empty( $presentation ) ) {
+			$title = isset( $presentation->model->twitter_title ) ? $presentation->model->twitter_title : '';
+
+			if ( strpos( $title, '%%' ) !== false ) {
+				$title = wpseo_replace_vars( $title, get_post( (int) GeoDir_Compatibility::gd_page_id() ) );
+			}
+
+			if ( strpos( $title, '%%' ) !== false ) {
+				$title = self::replace_variable( $title, 'search' );
+			}
+		}
+		return $title;
+	}
 	/**
 	 * Filter the post meta data.
 	 *

@@ -83,6 +83,7 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Plugin' ) ) :
             wp_localize_script( 'wp-smart-image-resize', 'wp_sir_object', [
                 'ajax_url' => admin_url( 'admin-ajax.php' ),
                 'nonce'    => wp_create_nonce( 'wp-sir-ajax' ),
+                'process_ml_upload_cookie'=> Process_Media_Library_Upload::COOKIE_NAME
             ] );
         }
 
@@ -176,6 +177,7 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Plugin' ) ) :
             require_once WP_SIR_DIR . 'src/Filters/Filter_Subscriber.php';
             require_once WP_SIR_DIR . 'src/Image_Editor.php';
             require_once WP_SIR_DIR . 'src/Process_Media_Library_Upload.php';
+            require_once WP_SIR_DIR . 'src/Utilities/Backup.php';
             require_once WP_SIR_DIR . 'src/Admin.php';
 
             if ( extension_loaded( 'fileinfo' ) ) {
@@ -205,6 +207,27 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Plugin' ) ) :
             add_action( 'plugins_loaded', [ $this, 'set_locale' ] );
             add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_scripts' ] );
             add_action( 'admin_enqueue_scripts', [ $this, 'enqueue_styles' ] );
+            add_action('admin_head-tools_page_regenerate-thumbnails', function(){
+                if(! apply_filters('wp_sir_enable_rt_custom_page', true)){
+                    return;
+                }
+                ?>
+                <style type="text/css">
+                    #regenerate-thumbnails-app > div h2[class="title"],
+                    #regenerate-thumbnails-app > div h2[class="title"] + p,
+                    #regenerate-thumbnails-app > div h2[class="title"] + p + ul,
+                    #regenerate-thumbnails-app > div p[class="submit"] + p,
+                    #regenerate-thumbnails-app > div p[class="submit"] + p + ul,
+                    #regenerate-thumbnails-app > div p[class="submit"] + div > p,
+                    #regenerate-thumbnails-app > div p[class="submit"] + div > p + ul,
+                    #regenerate-thumbnails-app > div p[class="submit"] + p + ul + div > p,
+                    #regenerate-thumbnails-app > div p[class="submit"] + p + ul + div > p + ul
+                    {
+                        display: none;
+                    }
+                </style>
+                <?php
+            });
         }
 
 

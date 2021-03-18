@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Sassy Social Share\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-03 12:12+0530\n"
-"PO-Revision-Date: 2020-12-03 12:12+0530\n"
+"POT-Creation-Date: 2021-02-03 13:11+0530\n"
+"PO-Revision-Date: 2021-02-03 13:11+0530\n"
 "Last-Translator: Heateor <hello@heateor.com>\n"
 "Language-Team: Heateor <hello@heateor.com>\n"
 "Language: en_IN\n"
@@ -199,13 +199,13 @@ msgstr ""
 
 #: ../admin/partials/sassy-social-share-options-page.php:144
 #: ../admin/partials/sassy-social-share-options-page.php:460
-#: ../includes/class-sassy-social-share-widgets.php:785
+#: ../includes/class-sassy-social-share-widgets.php:789
 msgid "Round"
 msgstr ""
 
 #: ../admin/partials/sassy-social-share-options-page.php:146
 #: ../admin/partials/sassy-social-share-options-page.php:462
-#: ../includes/class-sassy-social-share-widgets.php:786
+#: ../includes/class-sassy-social-share-widgets.php:790
 msgid "Square"
 msgstr ""
 
@@ -347,7 +347,7 @@ msgstr ""
 #: ../admin/partials/sassy-social-share-options-page.php:973
 #: ../admin/partials/sassy-social-share-options-page.php:1430
 #: ../includes/class-sassy-social-share-widgets.php:467
-#: ../includes/class-sassy-social-share-widgets.php:762
+#: ../includes/class-sassy-social-share-widgets.php:766
 msgid "Left"
 msgstr ""
 
@@ -361,7 +361,7 @@ msgstr ""
 #: ../admin/partials/sassy-social-share-options-page.php:975
 #: ../admin/partials/sassy-social-share-options-page.php:1431
 #: ../includes/class-sassy-social-share-widgets.php:468
-#: ../includes/class-sassy-social-share-widgets.php:769
+#: ../includes/class-sassy-social-share-widgets.php:773
 msgid "Right"
 msgstr ""
 
@@ -441,7 +441,7 @@ msgid "Url to share"
 msgstr ""
 
 #: ../admin/partials/sassy-social-share-options-page.php:733
-#: ../includes/class-sassy-social-share-widgets.php:738
+#: ../includes/class-sassy-social-share-widgets.php:742
 msgid "Title"
 msgstr ""
 
@@ -691,9 +691,9 @@ msgid ""
 msgstr ""
 
 #: ../admin/partials/sassy-social-share-options-page.php:1447
-#: ../includes/class-sassy-social-share-widgets.php:775
-#: ../includes/class-sassy-social-share-widgets.php:798
-#: ../includes/class-sassy-social-share-widgets.php:800
+#: ../includes/class-sassy-social-share-widgets.php:779
+#: ../includes/class-sassy-social-share-widgets.php:802
+#: ../includes/class-sassy-social-share-widgets.php:804
 msgid "Left offset"
 msgstr ""
 
@@ -704,9 +704,9 @@ msgid ""
 msgstr ""
 
 #: ../admin/partials/sassy-social-share-options-page.php:1467
-#: ../includes/class-sassy-social-share-widgets.php:775
-#: ../includes/class-sassy-social-share-widgets.php:798
-#: ../includes/class-sassy-social-share-widgets.php:800
+#: ../includes/class-sassy-social-share-widgets.php:779
+#: ../includes/class-sassy-social-share-widgets.php:802
+#: ../includes/class-sassy-social-share-widgets.php:804
 msgid "Right offset"
 msgstr ""
 
@@ -1293,12 +1293,12 @@ msgid "Custom Url"
 msgstr ""
 
 #: ../includes/class-sassy-social-share-widgets.php:232
-#: ../includes/class-sassy-social-share-widgets.php:736
+#: ../includes/class-sassy-social-share-widgets.php:740
 msgid "Before widget content:"
 msgstr ""
 
 #: ../includes/class-sassy-social-share-widgets.php:234
-#: ../includes/class-sassy-social-share-widgets.php:886
+#: ../includes/class-sassy-social-share-widgets.php:893
 msgid "After widget content:"
 msgstr ""
 
@@ -1343,143 +1343,147 @@ msgstr ""
 msgid "These icons link to your Social Media accounts"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:740
+#: ../includes/class-sassy-social-share-widgets.php:744
 msgid "Type:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:743
+#: ../includes/class-sassy-social-share-widgets.php:747
 msgid "Standard"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:746
+#: ../includes/class-sassy-social-share-widgets.php:750
 msgid "Floating"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:751
+#: ../includes/class-sassy-social-share-widgets.php:755
 msgid "Top offset:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:755
+#: ../includes/class-sassy-social-share-widgets.php:759
 msgid "Alignment:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:781
+#: ../includes/class-sassy-social-share-widgets.php:785
 msgid "Size of icons"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:783
+#: ../includes/class-sassy-social-share-widgets.php:787
 msgid "Icon Shape"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:808
+#: ../includes/class-sassy-social-share-widgets.php:812
 msgid "Apply icon color and background color from Theme Selection section:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:810
+#: ../includes/class-sassy-social-share-widgets.php:814
 msgid "No"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:811
+#: ../includes/class-sassy-social-share-widgets.php:815
 msgid "Yes, Standard Interface Theme"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:812
+#: ../includes/class-sassy-social-share-widgets.php:816
 msgid "Yes, Floating Interface Theme"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:814
+#: ../includes/class-sassy-social-share-widgets.php:818
 msgid "Facebook URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:817
+#: ../includes/class-sassy-social-share-widgets.php:821
 msgid "Twitter URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:820
+#: ../includes/class-sassy-social-share-widgets.php:824
 msgid "Parler URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:823
+#: ../includes/class-sassy-social-share-widgets.php:827
 msgid "Instagram URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:826
+#: ../includes/class-sassy-social-share-widgets.php:830
 msgid "Pinterest URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:829
+#: ../includes/class-sassy-social-share-widgets.php:833
 msgid "Behance URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:832
+#: ../includes/class-sassy-social-share-widgets.php:836
 msgid "Flickr URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:835
+#: ../includes/class-sassy-social-share-widgets.php:839
 msgid "Foursquare URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:838
+#: ../includes/class-sassy-social-share-widgets.php:842
 msgid "Github URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:841
+#: ../includes/class-sassy-social-share-widgets.php:845
 msgid "LinkedIn URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:844
+#: ../includes/class-sassy-social-share-widgets.php:848
 msgid "LinkedIn Company URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:847
+#: ../includes/class-sassy-social-share-widgets.php:851
+msgid "Gab URL:"
+msgstr ""
+
+#: ../includes/class-sassy-social-share-widgets.php:854
 msgid "Medium URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:850
+#: ../includes/class-sassy-social-share-widgets.php:857
 msgid "MeWe URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:853
+#: ../includes/class-sassy-social-share-widgets.php:860
 msgid "Odnoklassniki URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:856
+#: ../includes/class-sassy-social-share-widgets.php:863
 msgid "Snapchat URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:859
+#: ../includes/class-sassy-social-share-widgets.php:866
 msgid "Telegram URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:862
+#: ../includes/class-sassy-social-share-widgets.php:869
 msgid "Tumblr URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:865
+#: ../includes/class-sassy-social-share-widgets.php:872
 msgid "Vimeo URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:868
+#: ../includes/class-sassy-social-share-widgets.php:875
 msgid "Vkontakte URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:871
+#: ../includes/class-sassy-social-share-widgets.php:878
 msgid "Whatsapp URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:874
+#: ../includes/class-sassy-social-share-widgets.php:881
 msgid "Xing URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:877
+#: ../includes/class-sassy-social-share-widgets.php:884
 msgid "Youtube URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:880
+#: ../includes/class-sassy-social-share-widgets.php:887
 msgid "Youtube Channel URL:"
 msgstr ""
 
-#: ../includes/class-sassy-social-share-widgets.php:883
+#: ../includes/class-sassy-social-share-widgets.php:890
 msgid "RSS Feed URL:"
 msgstr ""
 

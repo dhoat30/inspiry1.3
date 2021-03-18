@@ -35,11 +35,23 @@
 .trade-directory .main-cards .flex .card{ 
     width: 250px;
     height: 300px;
-    margin: 0 30px 90px 0;
+    margin: 0 30px 140px 0;
     transition: 800ms;
     transition-timing-function: ease-in-out;
     position: relative;
 }
+
+@media (max-width:640px){
+    .trade-directory .main-cards .flex .card{ 
+        width: 100%;
+        height: 300px;
+        margin: 0 30px 120px 0;
+        transition: 800ms;
+        transition-timing-function: ease-in-out;
+        position: relative;
+    }
+}
+
 .trade-directory .main-cards .flex .card:hover{ 
     transform: translateY(-10px);
 }

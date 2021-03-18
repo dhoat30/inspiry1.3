@@ -629,22 +629,32 @@ function geodir_listing_belong_to_current_user( $listing_id = '', $exclude_admin
  * @since 1.0.0
  * @package GeoDirectory
  *
+ * @global array $geodir_post_published Post ids being published.
+ *
  * @param int $post_ID The post ID.
  * @param object $post_after The post object after update.
  * @param object $post_before The post object before update.
  */
 function geodir_function_post_updated( $post_ID, $post_after, $post_before ) {
+	global $geodir_post_published;
+
 	$post_type = get_post_type( $post_ID );
 
 	if ( $post_type != '' && in_array( $post_type, geodir_get_posttypes() ) ) {
 		// send notification to client when post moves from draft to publish
 		if ( ! empty( $post_after->post_status ) && $post_after->post_status == 'publish' && ! empty( $post_before->post_status ) && $post_before->post_status != 'publish' && $post_before->post_status != 'trash' ) {
 			$gd_post = geodir_get_post_info( $post_ID );
+
 			if ( empty( $gd_post ) ) {
 				return;
 			}
-			// Send email to user
-			GeoDir_Email::send_user_publish_post_email( $gd_post );
+
+			if ( ! is_array( $geodir_post_published ) ) {
+				$geodir_post_published = array();
+			}
+
+			// post_updated executed before data saved in detail table.
+			$geodir_post_published[ $post_ID ] = $post_ID;
 		}
 	}
 }
@@ -886,7 +896,7 @@ function geodir_get_post_badge( $post_id ='', $args = array() ) {
 			$output = apply_filters( 'geodir_output_badge_field_key_' . $match_field, $output, $find_post, $args );
 		}
 
-		if ( $match_field && $match_field !== 'post_date' && $match_field !== 'post_modified' && $match_field !== 'default_category' ) {
+		if ( $match_field && $match_field !== 'post_date' && $match_field !== 'post_modified' && $match_field !== 'default_category' && $match_field !== 'post_id' ) {
 			$package_id = geodir_get_post_package_id( $post_id, $post_type );
 			$fields = geodir_post_custom_fields( $package_id, 'all', $post_type, 'none' );
 
@@ -951,10 +961,10 @@ function geodir_get_post_badge( $post_id ='', $args = array() ) {
 							$match_found = (bool) ( $search != '' && $match_value != $search );
 							break;
 						case 'is_greater_than':
-							$match_found = (bool) ( $search != '' && is_float( $search ) && is_float( $match_value ) && $match_value > $search );
+							$match_found = (bool) ( $search != '' && ( is_float( $search ) || is_numeric( $search ) ) && ( is_float( $match_value ) || is_numeric( $match_value ) ) && $match_value > $search );
 							break;
 						case 'is_less_than':
-							$match_found = (bool) ( $search != '' && is_float( $search ) && is_float( $match_value ) && $match_value < $search );
+							$match_found = (bool) ( $search != '' && ( is_float( $search ) || is_numeric( $search ) ) && ( is_float( $match_value ) || is_numeric( $match_value ) ) && $match_value < $search );
 							break;
 						case 'is_empty':
 							$match_found = (bool) ( $match_value === '' || $match_value === false || $match_value === '0' || is_null( $match_value ) );
@@ -1241,6 +1251,7 @@ function geodir_get_post_badge( $post_id ='', $args = array() ) {
 						$btn_class .= ' ' .$user_classes ;
 					}
 					$btn_args = array(
+						'data-id' => $post_id,
 //						'class'     => 'btn btn-primary  btn-sm px-1 py-0 font-weight-bold gd-badgex',
 						'class'     => $btn_class,
 						'content' => $badge,
@@ -1642,6 +1653,8 @@ function geodir_validate_custom_field_value_textarea( $value, $gd_post, $custom_
 						'scrolling'    => true,
 						'style'        => true,
 						'title'        => true,
+						'allow'        => true,
+						'allowfullscreen' => true,
 						'data-*'       => true,
 					);
 				}
@@ -1816,6 +1829,17 @@ function geodir_post_meta_standard_fields( $post_type = 'gd_place' ) {
 		'htmlvar_name' => 'post_status',
 		'frontend_title' => __( 'Status', 'geodirectory' ),
 		'field_icon' => 'fas fa-play',
+		'field_type_key' => '',
+		'css_class' => '',
+		'extra_fields' => ''
+	);
+
+	$fields['post_id'] = array(
+		'type' => 'custom',
+		'name' => 'post_id',
+		'htmlvar_name' => 'post_id',
+		'frontend_title' => __( 'ID', 'geodirectory' ),
+		'field_icon' => 'fas fa-thumbtack',
 		'field_type_key' => '',
 		'css_class' => '',
 		'extra_fields' => ''

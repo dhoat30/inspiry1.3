@@ -23,8 +23,26 @@ class Decoder extends AbstractDecoder
 
             $core->setBackgroundColor(new \ImagickPixel('transparent'));
             $core->readImage($path);
-            $core->setImageType(defined('\Imagick::IMGTYPE_TRUECOLORALPHA') ? \Imagick::IMGTYPE_TRUECOLORALPHA : \Imagick::IMGTYPE_TRUECOLORMATTE);
+            
+            $setImageType = true;
 
+            if($core->getImageColorspace() === \Imagick::COLORSPACE_CMYK){
+
+                // Attempty to convert CMYK to sRGB.
+               $core->profileImage('icc', file_get_contents(__DIR__ . '/sRGB_v4_ICC_preference.icc'));
+            
+               // Since `profileImage()` could fails silently, wee need to verify whether 
+               // the profile has been changed or not.
+               if( $core->getImageColorspace() === \Imagick::COLORSPACE_SRGB ){
+                   $setImageType = false;
+               }
+            }
+          
+             if( $setImageType ){
+                $core->setImageType(defined('\Imagick::IMGTYPE_TRUECOLORALPHA') ? \Imagick::IMGTYPE_TRUECOLORALPHA : \Imagick::IMGTYPE_TRUECOLORMATTE);
+           
+            }
+        
         } catch (\ImagickException $e) {
             throw new \Intervention\Image\Exception\NotReadableException(
                 "Unable to read image from path ({$path}).",

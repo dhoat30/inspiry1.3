@@ -17,7 +17,7 @@ trait Processable_Trait
      */
     function isProcessable( $image_id, $imageMeta )
     {
-
+        
         $cache = wp_cache_get( 'processable_image_' . $image_id, 'wp_sir_cache' );
 
         if ( $cache === 'yes' || $cache === 'no' ) {
@@ -37,7 +37,6 @@ trait Processable_Trait
         }
 
         $rest_params = $this->get_rest_request_params();
-
         if ( isset( $rest_params[ '_processable_image' ] ) ) {
             return filter_var( $rest_params[ '_processable_image' ], FILTER_VALIDATE_BOOLEAN );
         }

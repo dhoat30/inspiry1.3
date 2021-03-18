@@ -11,17 +11,19 @@
  * Plugin Name: Smart Image Resize PRO
  * Plugin URI: https://sirplugin.com
  * Description: Make WooCommerce products images the same size and uniform without cropping.
- * Version: 1.4.6
+ * Version: 1.4.9
  * Author: Nabil Lemsieh
  * Author URI: https://sirplugin.com
  * License: GPLv3
  * License URI: http://www.gnu.org/licenses/gpl.html
  * Text Domain: wp-smart-image-resize
  * Domain Path: /languages
+ * WC requires at least: 3.0.0
+ * WC tested up to: 5.0
  */
 
 
-define( 'WP_SIR_VERSION', '1.4.6' );
+define( 'WP_SIR_VERSION', '1.4.9' );
 define( 'WP_SIR_NAME', 'wp-smart-image-resize' );
 define( 'WP_SIR_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WP_SIR_URL', plugin_dir_url( __FILE__ ) );

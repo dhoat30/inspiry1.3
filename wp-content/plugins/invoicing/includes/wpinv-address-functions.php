@@ -19,6 +19,16 @@ function wpinv_get_default_country() {
 }
 
 /**
+ * GeoLocates an IP Address.
+ *
+ * @return string
+ */
+function getpaid_get_ip_country( $ip_address = '' ) {
+    $country = GetPaid_Geolocation::geolocate_ip( $ip_address, true );
+    return $country['country'];
+}
+
+/**
  * Sanitizes a country code.
  * 
  * @param string $country The country code to sanitize
@@ -56,7 +66,7 @@ function wpinv_country_name( $country_code = '' ) {
 }
 
 function wpinv_get_default_state() {
-	$state = wpinv_get_option( 'default_state', false );
+	$state = wpinv_get_option( 'default_state', '' );
 
 	return apply_filters( 'wpinv_default_state', $state );
 }
@@ -79,55 +89,204 @@ function wpinv_store_address() {
     return apply_filters( 'wpinv_store_address', $address );
 }
 
-function wpinv_get_user_address( $user_id = 0, $with_default = true ) {
-    global $wpi_userID;
-    
-    if( empty( $user_id ) ) {
-        $user_id = !empty( $wpi_userID ) ? $wpi_userID : get_current_user_id();
+/**
+ * (Maybe) adds the default address to an invoice.
+ *
+ * @param WPInv_Invoice $invoice
+ */
+function getpaid_maybe_add_default_address( &$invoice ) {
+
+    $user_id = $invoice->get_user_id();
+
+    // Abort if the invoice belongs to no one.
+    if ( empty( $user_id ) ) {
+        return;
     }
-    
-    $address_fields = array(
-        ///'user_id',
-        'first_name',
-        'last_name',
-        'company',
-        'vat_number',
-        ///'email',
-        'phone',
-        'address',
-        'city',
-        'state',
-        'country',
-        'zip',
+
+    // Fill in defaults whenever necessary.
+    foreach ( wpinv_get_user_address( $user_id ) as $key => $value ) {
+
+        if ( is_callable( $invoice, "get_$key" ) ) {
+            $current = call_user_func( array( $invoice, "get_$key" ) );
+
+            if ( empty( $current ) ) {
+                $method = "set_$key";
+                $invoice->$method( $value );
+            }
+
+        }
+
+    }
+
+}
+
+/**
+ * Returns an array of user address fields
+ * 
+ * @return array
+ */
+function getpaid_user_address_fields() {
+
+    $address_fields = apply_filters(
+        'getpaid_user_address_fields',
+        array(
+            'first_name' => __( 'First Name', 'invoicing' ),
+            'last_name'  => __( 'Last Name', 'invoicing' ),
+            'country'    => __( 'Country', 'invoicing' ),
+            'state'      => __( 'State', 'invoicing' ),
+            'city'       => __( 'City', 'invoicing' ),
+            'zip'        => __( 'Zip/Postal Code', 'invoicing' ),
+            'address'    => __( 'Address', 'invoicing' ),
+            'phone'      => __( 'Phone Number', 'invoicing' ),
+            'company'    => __( 'Company', 'invoicing' ),
+            'vat_number' => __( 'VAT Number', 'invoicing' ),
+        )
     );
-    
+
+    if ( ! wpinv_use_taxes() && isset( $address_fields['vat_number'] ) ) {
+        unset( $address_fields['vat_number'] );
+    }
+
+    return $address_fields;
+}
+
+/**
+ * Checks whether or not an address field is whitelisted.
+ * 
+ * @return bool
+ */
+function getpaid_is_address_field_whitelisted( $key ) {
+    return array_key_exists( $key, getpaid_user_address_fields() );
+}
+
+/**
+ * Saves a user address.
+ *
+ * This function is called whenever an invoice is created/updated to ensure that the user address is always up to date.
+ *
+ * @param WPInv_Invoice $invoice
+ */
+function getpaid_save_invoice_user_address( $invoice ) {
+
+    // Retrieve the invoice.
+    $invoice = wpinv_get_invoice( $invoice );
+
+    // Abort if it does not exist.
+    if ( empty( $invoice ) ) {
+        return;
+    }
+
+    foreach ( array_keys( getpaid_user_address_fields() ) as $field ) {
+
+        if ( is_callable( array( $invoice, "get_$field" ) ) ) {
+            $value = call_user_func( array( $invoice, "get_$field" ) );
+
+            // Only save if it is not empty.
+            if ( ! empty( $value ) ) {
+                update_user_meta( $invoice->get_user_id(), '_wpinv_' . $field, $value );
+            }
+
+        }
+
+    }
+
+    $first_name = $invoice->get_first_name();
+    $last_name  = $invoice->get_last_name();
+    $update     = array();
+
+    if ( ! empty( $first_name ) ) {
+        $update['first_name'] = $first_name;
+    }
+
+    if ( ! empty( $last_name ) ) {
+        $update['last_name'] = $last_name;
+    }
+
+    if ( 2 == count( $update ) ) {
+        $update['display_name'] = $first_name . ' ' .$last_name;
+    }
+
+    $update['ID'] = $invoice->get_user_id();
+    wp_update_user( $update );
+
+}
+add_action( 'getpaid_new_invoice', 'getpaid_save_invoice_user_address' );
+add_action( 'getpaid_update_invoice', 'getpaid_save_invoice_user_address' );
+
+/**
+ * Retrieves a saved user address.
+ *
+ * @param int $user_id The user id whose address we should get. Defaults to the current user id.
+ * @param bool $with_default Whether or not we should use the default country and state.
+ * @return array
+ */
+function wpinv_get_user_address( $user_id = 0, $with_default = true ) {
+
+    // Prepare the user id.
+    $user_id   = empty( $user_id ) ? get_current_user_id() : $user_id;
     $user_info = get_userdata( $user_id );
-    
-    $address = array();
-    $address['user_id'] = $user_id;
-    $address['email'] = !empty( $user_info ) ? $user_info->user_email : '';
-    foreach ( $address_fields as $field ) {
-        $address[$field] = get_user_meta( $user_id, '_wpinv_' . $field, true );
+
+    // Abort if non exists.
+    if ( empty( $user_info ) ) {
+        return array();
     }
 
-    if ( !empty( $user_info ) ) {
-        if( empty( $address['first_name'] ) )
-            $address['first_name'] = $user_info->first_name;
+    // Prepare the address.
+    $address = array(
+        'user_id' => $user_id,
+        'email'   => $user_info->user_email,
+    );
+
+    foreach ( array_keys( getpaid_user_address_fields() ) as $field ) {
+        $address[$field] = getpaid_get_user_address_field( $user_id, $field );
+    }
+
+    if ( ! $with_default ) {
+        return $address;
+    }
+
+    $defaults = array(
+        'first_name' => $user_info->first_name,
+        'last_name'  => $user_info->last_name,
+        'state'      => wpinv_get_default_state(),
+        'country'    => wpinv_get_default_country(),
+    );
+
+    return getpaid_array_merge_if_empty( $address, $defaults );
+
+}
+
+/**
+ * Retrieves a saved user address field.
+ *
+ * @param int $user_id The user id whose address field we should get.
+ * @param string $field The field to use.
+ * @return string|null
+ */
+function getpaid_get_user_address_field( $user_id, $field ) {
+
+    $prefixes = array(
+        '_wpinv_',
+        'billing_',
+        ''
+    );
+
+    foreach ( $prefixes as $prefix ) {
+
+        // Meta table.
+        $value = get_user_meta( $user_id, $prefix . $field, true );
         
-        if( empty( $address['last_name'] ) )
-            $address['last_name'] = $user_info->last_name;
+        // UWP table.
+        $value = ( empty( $value ) && function_exists( 'uwp_get_usermeta' ) ) ? uwp_get_usermeta( $user_id, $prefix . $field ) : $value;
+
+        if ( ! empty( $value ) ) {
+            return $value;
+        }
+
     }
-    
-    $address['name'] = trim( trim( $address['first_name'] . ' ' . $address['last_name'] ), "," );
-    
-    if( empty( $address['state'] ) && $with_default )
-        $address['state'] = wpinv_get_default_state();
 
-    if( empty( $address['country'] ) && $with_default )
-        $address['country'] = wpinv_get_default_country();
+    return null;
 
-
-    return $address;
 }
 
 /**
@@ -473,7 +632,7 @@ function wpinv_get_states_field() {
         $args = array(
 			'name'    => $sanitized_field_name,
 			'id'      => $sanitized_field_name,
-			'class'   => $sanitized_field_name . ' wpinv-select wpi_select2',
+			'class'   => $sanitized_field_name . 'custom-select wpinv-select wpi_select2',
 			'options' => array_merge( array( '' => '' ), $states ),
 			'show_option_all'  => false,
 			'show_option_none' => false
@@ -598,13 +757,13 @@ function wpinv_get_invoice_address_replacements( $billing_details ) {
 		'company'           => '',
     );
 
-    $args    = array_map( 'trim', wp_parse_args( $billing_details, $default_args ) );
+    $args    = map_deep( wp_parse_args( $billing_details, $default_args ), 'trim' );
     $state   = $args['state'];
     $country = $args['country'];
-    
+
     // Handle full country name.
     $full_country = empty( $country ) ? $country : wpinv_country_name( $country );
-    
+
     // Handle full state name.
     $full_state   = ( $country && $state ) ?  wpinv_state_name( $state, $country ) : $state;
 

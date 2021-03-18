@@ -139,7 +139,10 @@ class FacetWP_Facet_Pager extends FacetWP_Facet
         $options = explode( ',', str_replace( ' ', '', $facet['per_page_options'] ) );
 
         $output = '<select class="facetwp-per-page-select">';
-        $output .= '<option value="">' . $label . '</option>';
+
+        if ( ! empty( $label ) ) {
+            $output .= '<option value="">' . $label . '</option>';
+        }
 
         $per_page = $this->pager_args['per_page'];
         $var_exists = isset( FWP()->request->url_vars['per_page'] );

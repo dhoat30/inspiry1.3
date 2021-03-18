@@ -4,11 +4,11 @@ Tags: WooCommerce product image resize, fix image crop, resize, image, picture r
 Requires at least: 4.0
 Tested up to: 5.6
 WC requires at least: 3.0
-WC tested up to: 4.9
+WC tested up to: 5.0
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Requires PHP: 5.6
-Stable tag: 1.4.6
+Stable tag: 1.4.9
 
 
 Make WooCommerce products images the same size and uniform without cropping.
@@ -52,6 +52,27 @@ Make sure PHP extension `fileinfo` is enabled.
 2. Settings page.
 
 == Changelog ==
+
+= 1.4.9 =
+
+* Use GD extension by default to process large images.
+
+
+= 1.4.8 =
+
+* Fixed an issue with some images in CMYK color.
+
+= 1.4.7 =
+
+* Fixed an issue with PNG-JPG conversion conflict
+* Added support for WCFM plugin.
+* Declared compatibility with WooCommerce (v5.0)
+* Stability improvement
+
+
+= 1.4.6.1 =
+
+* Declared compatibility with WooCommerce (v4.9).
 
 = 1.4.6 =
 

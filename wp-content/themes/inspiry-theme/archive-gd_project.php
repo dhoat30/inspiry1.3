@@ -30,7 +30,7 @@ get_header();
                     <a href="<?php the_permalink(); ?>">
                       <div class="logo">
 
-                              <img src="<?php echo  get_the_post_thumbnail_url( $postID, 'small'); ?>" alt="<?php the_title();?>">
+                              <img src="<?php echo  get_the_post_thumbnail_url( $postID, 'large'); ?>" alt="<?php the_title();?>">
                         </div>
                       </a>
                       <div class="link">

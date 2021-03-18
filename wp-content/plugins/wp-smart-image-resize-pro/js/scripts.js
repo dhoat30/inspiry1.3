@@ -1,3 +1,14 @@
+// Utils
+
+var WP_SIR_UTIL = {
+  setCookie : function (cname, cvalue, exdays) {
+    var d = new Date();
+    d.setTime(d.getTime() + (exdays*24*60*60*1000));
+    var expires = "expires="+ d.toUTCString();
+    document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+  }
+};
+
 (function ($) {
   'use strict';
 
@@ -48,11 +59,15 @@
       $('.wpsirProcessMediaLibraryImageWraper')
         .insertBefore($('#wp-media-grid > .media-frame'));
 
+      handleProcessMediaLibraryChange($('#processMediaLibraryImage'));
+
       $(document).on('change', '#processMediaLibraryImage', function () {
         handleProcessMediaLibraryChange($(this));
       });
+
     }
   }, 100);
+
 
   /**
    * Allow user to decide whether to process image being uploaded.
@@ -63,6 +78,8 @@
 
   function handleProcessMediaLibraryChange($input) {
     var isProcessable = $input.is(':checked');
+
+    WP_SIR_UTIL.setCookie(wp_sir_object.process_ml_upload_cookie, isProcessable.toString(), 365);
     // Normal HTML uploader.
     if ($('#html-upload-ui').length) {
       var $htmlProcessableInput = $('input[name="_processable_image"]');
@@ -91,10 +108,7 @@
       wp.media.frame.uploader &&
       wp.media.frame.uploader.uploader
     ) {
-      wp.media.frame.uploader.uploader.param(
-        '_processable_image',
-        isProcessable
-      );
+      wp.media.frame.uploader.uploader.param('_processable_image', isProcessable);
     }
   }
 

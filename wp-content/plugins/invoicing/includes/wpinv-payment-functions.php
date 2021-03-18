@@ -177,8 +177,8 @@ function wpinv_get_billing_cycle( $initial, $recurring, $period, $interval, $bil
         }
     }
     
-    $initial_amount     = wpinv_price( wpinv_format_amount( $initial_total ), $currency );
-    $recurring_amount   = wpinv_price( wpinv_format_amount( $recurring_total ), $currency );
+    $initial_amount     = wpinv_price( $initial_total, $currency );
+    $recurring_amount   = wpinv_price( $recurring_total, $currency );
     
     $recurring          = wpinv_subscription_recurring_payment_desc( $recurring_amount, $period, $interval, $bill_times, $trial_period, $trial_interval );
         
@@ -193,9 +193,52 @@ function wpinv_get_billing_cycle( $initial, $recurring, $period, $interval, $bil
     return apply_filters( 'wpinv_get_billing_cycle', $description, $initial, $recurring, $period, $interval, $bill_times, $trial_period, $trial_interval, $currency );
 }
 
-function wpinv_recurring_send_payment_failed( $invoice ) {
-    if ( !empty( $invoice->ID ) ) {
-        wpinv_failed_invoice_notification( $invoice->ID );
+/**
+ * Calculates the card name form a card number.
+ *
+ *
+ * @param string $card_number Card number.
+ * @return string
+ */
+function getpaid_get_card_name( $card_number ) {
+
+    // Known regexes.
+    $regexes = array(
+        '/^4/'                     => __( 'Visa', 'invoicing' ),
+        '/^5[1-5]/'                => __( 'Mastercard', 'invoicing' ),
+        '/^3[47]/'                 => __( 'Amex', 'invoicing' ),
+        '/^3(?:0[0-5]|[68])/'      => __( 'Diners Club', 'invoicing' ),
+        '/^6(?:011|5)/'            => __( 'Discover', 'invoicing' ),
+        '/^(?:2131|1800|35\d{3})/' => __( 'JCB', 'invoicing' ),
+    );
+
+    // Confirm if one matches.
+    foreach ( $regexes as $regex => $card ) {
+        if ( preg_match ( $regex, $card_number ) >= 1 ) {
+            return $card;
+        }
     }
+
+    // None matched.
+    return __( 'Card', 'invoicing' );
+
 }
-add_action( 'wpinv_recurring_payment_failed', 'wpinv_recurring_send_payment_failed', 10, 1 );
+
+/**
+ * Sends an error response during checkout.
+ * 
+ * @param WPInv_Invoice|int|null $invoice
+ */
+function wpinv_send_back_to_checkout( $invoice = null ) {
+
+    if ( ! empty( $invoice ) ) {
+        do_action( 'getpaid_checkout_invoice_exception', $invoice );
+    }
+
+	// Do we have any errors?
+    if ( wpinv_get_errors() ) {
+        wp_send_json_error( getpaid_get_errors_html( true, false ) );
+    }
+
+    wp_send_json_error( __( 'An error occured while processing your payment. Please try again.', 'invoicing' ) );
+}

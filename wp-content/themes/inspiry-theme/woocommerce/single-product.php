@@ -22,6 +22,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 get_header( 'shop' ); ?>
 
 	<?php
+	
 		/**
 		 * woocommerce_before_main_content hook.
 		 *
@@ -54,14 +55,14 @@ get_header( 'shop' ); ?>
 		 * @hooked woocommerce_get_sidebar - 10
 		 */
 		do_action( 'woocommerce_sidebar' );
+		// Loop over $cart items
+		?>
+		
+		<?php
 		
 	?>
-
 
 <?php
 get_footer( 'shop' );
 
 /* Omit closing PHP tag at the end of PHP files to avoid "headers already sent" issues. */
-
-
-

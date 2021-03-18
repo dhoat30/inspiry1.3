@@ -127,7 +127,7 @@ function initMap(map_options) {
             return attr == 'margin-top:0 !important;' ? '' : 'margin-top:0 !important;';
         });
         jQuery('body').toggleClass('body_fullscreen overflow-hidden');
-        jQuery('#' + map_canvas + ', #sticky_map_' + map_canvas + ',#' + map_canvas + '_wrapper,#' + map_canvas + '_loading_div,#' + map_canvas + '_map_nofound,#' + map_canvas + '_map_notloaded').toggleClass('vw-100 vh-100');
+        jQuery('#' + map_canvas + ', #sticky_map_' + map_canvas + ',#' + map_canvas + '_wrapper').toggleClass('vw-100 vh-100');
         jQuery('#' + map_canvas + '_triggermap i, .geodir-map-directions-wrap, #wpadminbar').toggleClass('d-none');
 
         window.setTimeout(function() {
@@ -312,6 +312,18 @@ function build_map_ajax_search_param(map_canvas, reload_cat_list, catObj, hide_l
                         return jQuery(this).data("post-id")
                     }) //Project Ids
                     .get(); //ToArray
+
+                if ((typeof loopIds == 'object' || typeof loopIds == 'array') && loopIds.length > 0) {
+                    query_string += '&post[]=' + loopIds.join("&post[]=");
+                } else {
+                    query_string += '&post[]=-1';
+                }
+            } else if (custom_loop && jQuery(custom_loop + ' .elementor-posts').length) {
+                // Elementor posts loop.
+                var loopIds = jQuery(custom_loop + ' .elementor-posts').find(".elementor-post.type-" + post_type)
+                    .map(function() {
+                        return jQuery(this).attr('id').match(/post-\d+/)[0].replace("post-","");
+                    }).get();
 
                 if ((typeof loopIds == 'object' || typeof loopIds == 'array') && loopIds.length > 0) {
                     query_string += '&post[]=' + loopIds.join("&post[]=");
@@ -509,7 +521,7 @@ function parse_marker_jason(json, map_canvas_var) {
             jQuery.goMap.map.setZoom(parseInt(options.maxZoom));
         }
     } else {
-        document.getElementById(map_canvas_var + '_map_nofound').style.display = 'block';
+        document.getElementById(map_canvas_var + '_map_nofound').style.display = 'flex';
         var nLat = options.nomap_lat ? options.nomap_lat : (options.default_lat ? options.default_lat : '39.952484');
         var nLng = options.nomap_lng ? options.nomap_lng : (options.default_lng ? options.default_lng : '-75.163786');
         var nZoom = parseInt(options.nomap_zoom) > 0 ? parseInt(options.nomap_zoom) : (parseInt(options.zoom) > 0 ? parseInt(options.zoom) : 11);
@@ -1277,7 +1289,7 @@ function parse_marker_jason_osm(json, map_canvas_var) {
             jQuery.goMap.map.setZoom(parseInt(options.maxZoom));
         }
     } else {
-        document.getElementById(map_canvas_var + '_map_nofound').style.display = 'block';
+        document.getElementById(map_canvas_var + '_map_nofound').style.display = 'flex';
         var nLat = options.nomap_lat ? options.nomap_lat : (options.default_lat ? options.default_lat : '39.952484');
         var nLng = options.nomap_lng ? options.nomap_lng : (options.default_lng ? options.default_lng : '-75.163786');
         var nZoom = parseInt(options.nomap_zoom) > 0 ? parseInt(options.nomap_zoom) : (parseInt(options.zoom) > 0 ? parseInt(options.zoom) : 11);

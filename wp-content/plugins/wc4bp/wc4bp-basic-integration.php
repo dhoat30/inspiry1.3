@@ -9,7 +9,7 @@ if ( !defined( 'ABSPATH' ) ) {
  * Description: Integrates WooCommerce with a BuddyPress social network
  * Author: ThemeKraft
  * Author URI: https://themekraft.com/products/woocommerce-buddypress-integration/
- * Version: 3.3.13
+ * Version: 3.3.14
  * Licence: GPLv3
  * Text Domain: wc4bp
  * Domain Path: /languages
@@ -17,7 +17,7 @@ if ( !defined( 'ABSPATH' ) ) {
  *
  *****************************************************************************
  * WC requires at least: 3.3.0
- * WC tested up to: 4.8.0
+ * WC tested up to: 5.1.0
  *****************************************************************************
  *
  * This script is free software; you can redistribute it and/or modify
@@ -47,7 +47,7 @@ if ( !class_exists( 'WC4BP_Loader' ) ) {
         /**
          * The plugin version
          */
-        const  VERSION = '3.3.13' ;
+        const  VERSION = '3.3.14' ;
         /**
          * Minimum required WP version
          */

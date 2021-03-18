@@ -704,4 +704,26 @@ class Woo_Free_Product_Sample_Public {
 		}
 	}
 	
+	/**
+     * Woo Reviews Shortcode
+     *
+     * @param none
+     * @return void
+     **/     
+    public function wfps_order_sample( $atts ) 
+    {
+
+        // $atts = shortcode_atts( array(
+        //     'product_id'    => '',                    
+		// ), $atts );
+
+		// $product_id = $atts['product_id'];
+		// $echo ='';
+		// $echo .= '<a href="" class="woo-free-sample-button">';
+		// 	$echo .= \Woo_Free_Product_Sample_Helper::wfps_button_text();
+		// $echo .= '</a>';
+		
+		// return $echo;
+    }   
+	
 }

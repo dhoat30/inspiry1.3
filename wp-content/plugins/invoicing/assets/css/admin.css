@@ -1,75 +1,38 @@
-.wpi-form-table.form-table th {
-    padding: 12.5px 10px 12.5px 0;
-}
-.wpi-form-table.form-table td {
-    padding: 10px;
-}
-.wpi-form-table p.description {
-    line-height: normal;
-}
-.medium-text {
-    width: 220px;
-}
 .w100 {
     width: 100px!important;
 }
-.w120 {
-    width: 120px!important;
-}
+
 /* invoice notes */
-.post-type-wpi_invoice .wp-list-table.widefat th#ID {
+.getpaid-is-invoice-cpt .wp-list-table.widefat th#ID {
     width: 70px;
 }
-.post-type-wpi_invoice .wp-list-table.widefat th#number {
-    width: 120px;
+
+.getpaid-is-invoice-cpt .wp-list-table.widefat th#number {
+    width: 300px;
 }
-.post-type-wpi_invoice #commentsdiv.postbox {
+
+.getpaid-is-invoice-cpt #commentsdiv.postbox {
     display: none !important;
 }
-.post-type-wpi_invoice .wp-list-table.widefat th#invoice_date,
-.post-type-wpi_invoice .wp-list-table.widefat th#payment_date {
-    width: 120px;
+
+.getpaid-is-invoice-cpt.post-type-wpi_quote .wp-list-table.widefat th#invoice_date {
+    width: 160px;
 }
-.post-type-wpi_invoice .wp-list-table.widefat th#status {
+
+.getpaid-is-invoice-cpt .wp-list-table.widefat th#status {
     width: 150px;
 }
-.post-type-wpi_invoice .wp-list-table.widefat th#amount {
+
+.getpaid-is-invoice-cpt .wp-list-table.widefat th#amount {
     width: 110px;
 }
-.post-type-wpi_invoice .wp-list-table.widefat th#customer {
-    width: 170px;
+
+.getpaid-is-invoice-cpt .wp-list-table.widefat th#customer {
+    width: 180px;
 }
-.postbox-container #wpinv-address .gdmbx2-wrap .wpinv-address.gdmbx-row .gdmbx-row {
-    width: 50%;
-    padding: 0;
-    float: left;
-}
-.postbox-container #wpinv-address .gdmbx2-wrap .wpinv-address.gdmbx-row  input,
-.postbox-container #wpinv-address .gdmbx2-wrap .wpinv-address.gdmbx-row  select {
-    margin: 0;
-}
+
 #post-body select#invoice_note_type {
     width: auto;
-}
-.gdmbx-row.gdmbx-row-wrap {
-    float: none !important;
-}
-
-.gdmbx2-wrap .wpinv-address.gdmbx-row {
-    margin: 0;
-    padding: 0;
-    max-width: 900px;
-}
-.gdmbx2-wrap .wpinv-address > .gdmbx-row {
-    width: calc(50% - 14px) !important;
-    padding: 0 7px !important;
-}
-.gdmbx2-wrap .wpinv-address .gdmbx2-text-large {
-    width: 100% !important;
-}
-
-.wpinv .gdmbx2-wrap select {
-    height: auto;
 }
 #wpinv-details #wpinv-vat-rates-list td {
     padding: 5px 10px;
@@ -86,13 +49,11 @@
 #poststuff #wpinv-notes .inside ul.invoice_notes li {
     padding: 0 10px
 }
-.gdmbx2-wrap .gdmbx-row label {
-    font-size: 13px;
-}
+
 ul.invoice_notes {
     padding: 2px 0 0;
     max-height: 300px;
-    overflow-y: scroll;
+    overflow-y: auto;
     overflow-x: hidden;
 }
 ul.invoice_notes li p.meta .exact-date {
@@ -168,18 +129,7 @@ ul.invoice_notes li.system-note .note_content:after {
   line-height: 1.85;
 }
 .wpinv #minor-publishing { display: none; }
-/* fixes akismet style conflict */
-.wpinv .alert {
-  border: medium none;
-  height: 1px;
-  margin: 0;
-  padding: 0;
-}
-.wpinv .alert.result-message.error  {
-  margin: 15px 0;
-  padding: 10px 12px;
-  border-left: 4px solid #dc3232;
-}
+
 .wpinv span.updated {
   background: #fff none repeat scroll 0 0;
   border-left: 4px solid #7ad03a;
@@ -205,19 +155,6 @@ ul.invoice_notes li.system-note .note_content:after {
 /*
   Edit invoice sidebar info section
 */
-.wpinv #side-sortables .inside .gdmbx2-metabox .gdmbx-row {
-  padding: 0 0 5px;
-}
-.wpinv #side-sortables .gdmbx-th label::after, .wpinv .inner-sidebar .gdmbx-th label::after {
-  border-bottom: none;
-  padding-top: 0;
-}
-.wpinv #side-sortables .gdmbx-row:not(:last-of-type), .wpinv .postbox-container .gdmbx-row:not(:last-of-type) {
-  border-bottom: none;
-}
-.wpinv #side-sortables .gdmbx-th, .wpinv .inner-sidebar .gdmbx-th {
-  padding-bottom: 0;
-}
 .wpinv #side-sortables .prefix {
   float: left;
   font-weight: bold;
@@ -228,20 +165,12 @@ ul.invoice_notes li.system-note .note_content:after {
 .wpinv #side-sortables select {
   width: 100%;
 }
-.wpinv #side-sortables .gdmbx-row .gdmbx2-metabox-description, .inner-sidebar .gdmbx-row .gdmbx2-metabox-description {
-  padding-bottom: 0;
-}
+
 .wpinv .button-small {
   font-weight: normal;
 }
 .wpinv .button-small.pull-right {
   float: right;
-}
-.wpinv #side-sortables .gdmbx-th label {
-  padding-bottom: 2px;
-}
-.wpinv #side-sortables .gdmbx-type-multicheck p {
-  margin-top: 4px;
 }
 
 /*
@@ -266,92 +195,10 @@ ul.invoice_notes li.system-note .note_content:after {
 /*
   Edit invoice list item section
 */
-.wpinv #wpinv-items .gdmbx-row.gdmbx-repeat-group-wrap {
-  padding: 0;
-}
-.wpinv .gdmbx2-metabox .gdmbx-repeat-group-wrap {
-    max-width: 100%;
-    padding-bottom: 0 !important;
-}
-.wpinv .gdmbx-group-title.gdmbxhandle-title {
-  background: #f1f1f1 none repeat scroll 0 0;
-}
-.wpinv .gdmbx2-metabox .gdmbx-repeat-group-wrap .gdmbx-repeatable-grouping {
-  border-bottom: 1px solid #e9e9e9;
-}
-.wpinv .postbox-container .gdmbx-repeat-group-field {
-  margin: 5px 0;
-  padding: 0;
-}
-.wpinv .gdmbx-repeat-group-wrap .gdmbx-th, .wpinv .postbox-container .gdmbx-th {
-  padding: 0;
-  width: 100%;
-}
-.wpinv .gdmbx-repeat-group-wrap .gdmbx-th + .gdmbx-td, .wpinv .postbox-container .gdmbx-th + .gdmbx-td {
-  float: none;
-  width: 100%;
-}
-
 .wpinv .repeatable input, .wpinv .repeatable textarea, .wpinv .repeatable select {
   padding: 3px 5px !important;
 }
-.wpinv .repeatable .gdmbx-type-text-small {
-  width: 15%;
-  float: left;
-  margin: 0 7px 0 0;
-}
-.wpinv .repeatable .gdmbx-type-text {
-  float: left;
-  width: 33%;
-  margin: 0 7px 0 0;
-}
-
 /* Money field */
-.wpinv .repeatable .gdmbx-type-text-money {
-    float: right;
-    margin: 0;
-    width: 30%
-}
-.wpinv .repeatable .gdmbx-type-select-vat-rates-class {
-    width: 25%;
-    float: left;
-    margin: 0;
-}
-.wpinv .repeatable .gdmbx-type-text-money .gdmbx-td {
-  line-height: 2.2;
-  text-align: right;
-  font-size: 14px;
-}
-.wpinv .repeatable .gdmbx-type-text-money label {
-  float: right;
-  width: 100%;
-}
-.wpinv .repeatable .gdmbx-type-text-money label .pull-left {
-  float: left;
-}
-.wpinv .repeatable .gdmbx-type-text-money label .pull-right {
-  float: right;
-}
-.wpinv .repeatable .gdmbx-type-text-money .currency_symbol {
-  float: left;
-  margin: 0 3px 0 10px;
-}
-.wpinv .repeatable .gdmbx-type-text-money input {
-    float: left;
-    margin: 0;
-    width: 43%;
-}
-.wpinv .repeatable .gdmbx-type-text-money .item_total_wrap {
-  float: right;
-  width: 55%;
-}
-.wpinv .repeatable .gdmbx-type-text-money .item_total_wrap  .currency_symbol {
-  float: none;
-}
-
-.wpinv .repeatable .gdmbx-type-text-small input {
-    width: 99%;
-}
 .wpinv .repeatable input.regular-text {
   width: 99%;
 }
@@ -359,21 +206,11 @@ ul.invoice_notes li.system-note .note_content:after {
   width: 100%;
   height: 45px;
 }
-.wpinv .repeatable .gdmbx_textarea_small {
-  color: #555;
-  font-size: 12px;
-}
-.wpinv .repeatable .gdmbx-row.gdmbx-remove-field-row {
-  padding: 5px 0 3px;
-}
 .wpinv .pre_defined_products {
   float: left;
   margin: 5px 20px 0 0;
 }
-.wpinv .gdmbx-row.gdmbx-type-title.gdmbx2-id-wpinv-calc-total {
-  margin: -50px 0 0;
-  padding: 0 !important;
-}
+
 .wpinv .wpinv_totals {
   border: 1px solid #e5e5e5;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.04);
@@ -415,113 +252,17 @@ ul.invoice_notes li.system-note .note_content:after {
 .wpinv #wpbody-content .metabox-holder {
   padding-top: 0;
 }
-.wpinv .gdmbx2_options_page h2 {
-  margin: 0 0 20px;
-}
-.wpinv .gdmbx2_options_page h2.nav-tab-wrapper {
-  margin: 0;
-  padding: 0;
-  border-bottom: none;
-}
-.wpinv .gdmbx2_options_page .postbox {
-  border-top: none;
-}
-.wpinv .gdmbx2_options_page .nav-tab-active, .wpinv .gdmbx2_options_page .nav-tab-active:focus, .wpinv .gdmbx2_options_page .nav-tab-active:focus:active, .wpinv .gdmbx2_options_page .nav-tab-active:hover {
-  background: #fff none repeat scroll 0 0;
-  border-bottom: medium none;
-  color: #000;
-}
+
 .wpinv label small {
   color: #888;
   font-weight: normal;
   font-size: 11px;
-}
-.wpinv .gdmbx-type-checkbox .gdmbx-td label span.gdmbx2-metabox-description {
-  color: #444;
-  float: left;
-  font-size: 14px;
-  font-style: normal;
-  margin: 3px 0 0 10px !important;
-}
-.wpinv .gdmbx-type-checkbox .gdmbx-td input {
-  float: left;
-  margin: 10px 0 0 !important;
-}
-.wpinv_options .gdmbx-form form {
-  margin: 0;
-  padding: 0 20px;
-}
-.wpinv_options .gdmbx-form .metabox-holder h3.title {
-  font-size: 18px;
-  font-weight: 600;
-  padding: 20px 0 0 20px;
-}
-.wpinv_options .gdmbx-form .metabox-holder h3.gdmbx2-metabox-title {
-  border-top: 1px solid #ddd;
-  font-size: 16px;
-  margin-top: 15px;
-  padding: 20px 0 0;
-}
-.wpinv_options .gdmbx-form .metabox-holder .desc {
-  background: #f8f8f8 none repeat scroll 0 0;
-  border: 1px solid #e5e5e5;
-  border-radius: 3px;
-  margin: 10px 20px;
-  padding: 15px 20px 15px 12px;
-}
-.wpinv_options .gdmbx-form .metabox-holder .desc::before {
-  color: #777;
-  content: "\f348";
-  float: left;
-  font-family: dashicons;
-  font-size: 26px;
-  line-height: 14px;
-  margin: 0 5px 0 0;
-  padding: 0;
-}
-.wpinv_options .gdmbx-form .metabox-holder p.gdmbx2-metabox-description, .wpinv_options .gdmbx-form .metabox-holder span.gdmbx2-metabox-description {
-  color: #888;
-  display: block;
-  font-style: italic;
-  margin: 0;
-  padding-top: 0.5em;
-  font-size: 12px;
-}
-
-.wpinv_options .gdmbx-row.gdmbx-repeat-group-wrap {
-  padding-top: 30px;
-}
-.wpinv_options .gdmbx-repeatableing .inside {
-  margin: 5px 0 10px;
-}
-.wpinv_options .gdmbx-repeatableing .inside .gdmbx-row {
-  margin: 0;
-  padding: 10px 0;
-}
-.wpinv_options .gdmbx-form form .button-primary {
-  font-size: 16px;
-  height: 32px;
-  line-height: 16px;
-  margin: 20px 0;
-  padding: 0 15px 2px;
 }
 .wpinv_import_form {
   background: #fff none repeat scroll 0 0;
   border: 1px solid #ddd;
   padding: 10px 30px 5px;
   margin-bottom: 40px;
-}
-.wpinv .gdmbx2-id-wildcard-title .gdmbx-td {
-  background: #f8f8f8 none repeat scroll 0 0;
-  border: 1px solid #e6e6e6;
-  border-radius: 3px;
-  padding: 10px 20px 15px;
-}
-.wpinv .gdmbx2-id-wildcard-title .gdmbx-td h3.gdmbx2-metabox-title {
-  border: medium none;
-  font-size: 16px;
-  margin: 0;
-  padding: 5px 0 0;
 }
 .wpinv .labeled-chart-container {
   min-height: 180px;
@@ -564,9 +305,6 @@ ul.invoice_notes li.system-note .note_content:after {
 /*
  * Columns/ list view
  */
-.wpinv .manage-column.column-wpi_actions {
-  width: 80px;
-}
 .wpinv .manage-column.column-comments {
   width: 50px;
 }
@@ -642,66 +380,18 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
   color: #888;
   padding: 0 3px 0 10px;
 }
-.wpinv .column-wpi_actions {
-    text-align: center;
-}
+
 .wpinv-email-wc-row {
     padding: 10px;
     background: #fff;
     border-radius: 10px;
 }
 
-/*  ----------- */
-@media only screen and (min-width : 850px) and (max-width : 1100px) {
-  .wpinv .repeatable .gdmbx-type-text-small {
-    width: 18%;
-  }
-  .wpinv .repeatable .gdmbx-type-text {
-    width: 30%;
-  }
-  .wpinv .repeatable .gdmbx-type-text-money {
-    width: 33%;
-  }
-}
-
-@media only screen and (min-width : 783px) and (max-width : 960px) {
-}
-
-@media only screen and (min-width : 490px) and (max-width : 659px) {
-  .wpinv .repeatable .gdmbx-type-text-small {
-    width: 18%;
-  }
-  .wpinv .repeatable .gdmbx-type-text {
-    width: 30%;
-  }
-  .wpinv .repeatable .gdmbx-type-text-money {
-    width: 33%;
-  }
-}
-
 @media only screen and (min-width : 300px) and (max-width : 489px) {
-  #invoice_items_repeat .gdmbx-nested .gdmbx-row:nth-child(1) {
-    width: 30%;
-  }
-  #invoice_items_repeat .gdmbx-nested .gdmbx-row:nth-child(2) {
-    width: 65%;
-    float: right;
-  }
-  #invoice_items_repeat .gdmbx-nested .gdmbx-row:nth-child(3) {
-    clear: left;
-    width: 30%;
-    margin: 10px 0;
-  }
-  #invoice_items_repeat .gdmbx-nested .gdmbx-row:nth-child(4) {
-    width: 65%;
-    margin: 10px 0;
-  }
+
   .wpinv .pre_defined_products {
     margin: 10px 0;
     width: 100%;
-  }
-  .wpinv .gdmbx-row.gdmbx-type-title.gdmbx2-id-wpinv-calc-total {
-    margin: 0;
   }
   .wpinv .wpinv_totals {
     min-width: 100%;
@@ -709,11 +399,22 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 
 }
 
-.post-type-wpi_invoice .subsubsub .mine {
+.getpaid-is-invoice-cpt .subsubsub .mine {
     display: none;
 }
 
 /* General Settings Styles */
+.wpi-wpinv-settings .form-table th {
+    position: relative;
+    padding-right: 24px;
+}
+
+.wpi-wpinv-settings .form-table th .wpi-help-tip {
+    position: absolute;
+    right: 0;
+    color: #616161;
+}
+
 .wpi-wpinv-settings .form-table tbody tr:first-child th[scope="row"] {
     min-height: 1.4rem;
     display: inline-block;
@@ -721,16 +422,13 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 .wpi-wpinv-settings .form-table tbody tr:first-child th[scope="row"] h3 {
     position: absolute;
 }
-.wpi-wpinv-settings .form-table th {
-    padding: 15px 10px 15px 0;
-}
+
 .wpi-wpinv-settings .form-table td {
     padding: 12.5px 10px;
 }
 .wpi-wpinv-settings .form-table label {
     color: #666;
     font-size: 14px;
-    font-style: italic;
     margin: 4px 0 0;
 }
 .wpi-wpinv-settings .form-table select + label,
@@ -752,43 +450,6 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 .wpi-wpinv-settings input.small-text[type="number"] {
     padding: 1px 1px 1px 6px;
     line-height: normal;
-}
-
-/* Tax rates */
-.wpi-wpinv-settings td.wpinv_tax_tdbox {
-    padding: 0;
-}
-#wpinv_tax_rates {
-    margin: 1em 0;
-}
-#wpinv_tax_rates .wpinv_tax_country *,
-#wpinv_tax_rates .wpinv_tax_state *,
-#wpinv_tax_rates .wpinv_tax_name * {
-    max-width: 100%;
-}
-#wpinv_tax_rates .wpinv_tax_country,
-#wpinv_tax_rates .wpinv_tax_state,
-#wpinv_tax_rates .wpinv_tax_global,
-#wpinv_tax_rates .wpinv_tax_name {
-    width: auto;
-}
-#wpinv_tax_rates .wpinv_tax_rate {
-    width: 70px;
-}
-#wpinv_tax_rates .wpinv_tax_action {
-    width: 120px;
-    text-align: center
-}
-#wpinv_tax_rates th {
-    padding: 15px 10px;
-    width: auto
-}
-#wpinv_tax_rates tbody td {
-    border-bottom: solid 1px #efefef
-}
-#wpinv_tax_rates thead th,
-#wpinv_tax_rates tfoot td {
-    background-color: #fafafa
 }
 
 /* Vat Settings */
@@ -852,22 +513,6 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 #wpinv_vat_rates tfoot td {
     background-color: #fafafa;
 }
-#wpinv-items .gdmbx2-id-wpinv-calc-total {
-    margin: 0;
-}
-#wpinv-items .gdmbx-repeat-group-wrap .gdmbx-repeatable-grouping {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    box-shadow: none;
-}
-#wpinv-items .inside {
-    margin: 0;
-}
-#wpinv-items > .inside {
-    margin: 0;
-    padding: 12px;
-}
 .wpinv_errors {
   background: #ffffe0 none repeat scroll 0 0;
   border: 1px solid #e6db55;
@@ -913,7 +558,7 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
     color: #333;
     font-size: 120%;
 }
-.post-type-wpi_invoice #submitpost #delete-action,
+.getpaid-is-invoice-cpt #submitpost #delete-action,
 .post-type-wpi_item #submitpost .misc-pub-visibility,
 .post-type-wpi_item #submitpost .misc-pub-curtime,
 .post-type-wpi_item #submitpost #delete-action,
@@ -961,8 +606,14 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
     width: 90px;
 }
 .post-type-wpi_item .fixed .column-price {
-    width: 120px;
+    width: 180px;
 }
+
+.post-type-wpi_item .fixed .column-shortcode {
+    width: 280px;
+    text-align: right;
+}
+
 .post-type-wpi_item .fixed .column-recurring {
     text-align: center;
     width: 90px;
@@ -980,8 +631,17 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 .post-type-wpi_item .fixed .column-type {
     width: 140px;
 }
+
+.post-type-wpi_payment_form .fixed .column-refunds,
+.post-type-wpi_payment_form .fixed .column-earnings,
+.post-type-wpi_payment_form .fixed .column-items,
+.post-type-wpi_payment_form .fixed .column-shortcode {
+    width: 14%;
+}
+
 .post-type-wpi_item .fixed .column-type .meta,
-.post-type-wpi_invoice .type-wpi_invoice td .meta {
+.post-type-wpi_item .fixed .column-price .meta,
+.getpaid-is-invoice-cpt .type-wpi_invoice td .meta {
     display: block;
     font-size: 90%;
     font-style: italic;
@@ -996,11 +656,6 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
 }
 .post-type-wpi_item #filter-by-date {
     display: none;
-}
-#wpinv-items .inside {
-    background: #fefefe;
-    margin: 0;
-    padding: 0;
 }
 #wpinv_items_wrap {
     margin: 0;
@@ -1109,13 +764,7 @@ td.taxonomy-invoice_status a[href*="cancelled"], .wpinv .subsubsub .cancelled a 
     font-size: 13px;
     width: 200px;
 }
-.wpinv .blockUI.blockMsg  {
-    background-color: transparent !important;
-    border: none !important;
-}
-.wpinv .blockUI.blockMsg .fa-refresh {
-    margin-right: 5px;
-}
+
 #wpinv_items_wrap table.wpinv-items tr .qty {
     text-align: left;
     width: 25px;
@@ -1258,78 +907,40 @@ body.wpi-wpinv-settings .wp-picker-holder,
 .wpinv-flr {
     float: right;
 }
-.wpinv-address > .gdmbx-row {
-    height: 3.6em;
-}
-#wpinv-address .wpinv-address > .gdmbx-row select {
-    font-size: 14px;
-    height: auto;
-}
-.gdmbx-wpinv-btns label {
-    text-indent: 1000px!important;
-    overflow: hidden;
-}
-.gdmbx-wpinv-country .gdmbx-td {
-    position: relative;
-}
-.gdmbx-wpinv-country .wpi-loader {
-    margin: 0 5px 0 0;
-    font-weight: normal;
-    float: right;
-    display: none;
-}
 .wpinv-address .wpinv-new-user,
 .wpinv-address .wpinv-new-cancel {
     margin-left: 3px;
 }
-.post-type-wpi_invoice #TB_ajaxContent {
+.getpaid-is-invoice-cpt #TB_ajaxContent {
     max-height: calc(100% - 47px);
     min-width: 95% !important;
     width: auto !important;
 }
-.post-type-wpi_invoice #TB_ajaxContent .alert {
+.getpaid-is-invoice-cpt #TB_ajaxContent .alert {
     border: medium none;
     height: auto;
     margin: 5px 15px 2px;
     padding: 1px 12px;
 }
-.post-type-wpi_invoice #TB_ajaxContent .form-table th,
-.post-type-wpi_invoice #TB_ajaxContent .cmb-th {
+.getpaid-is-invoice-cpt #TB_ajaxContent .form-table th,
+.getpaid-is-invoice-cpt #TB_ajaxContent .cmb-th {
     padding: 5px 10px 5px 0;
 }
-.post-type-wpi_invoice .popup-form .form-field label {
+.getpaid-is-invoice-cpt .popup-form .form-field label {
     float: left;
     font-weight: bold;
     margin: 10px 0 5px;
     width: 100%;
 }
-.post-type-wpi_invoice #TB_ajaxContent .form-table td {
+.getpaid-is-invoice-cpt #TB_ajaxContent .form-table td {
     margin-bottom: 0;
     padding: 5px 0;
 }
-.post-type-wpi_invoice #TB_ajaxContent .show-password #pass1-text {
+.getpaid-is-invoice-cpt #TB_ajaxContent .show-password #pass1-text {
     width: 25em;
 }
-.post-type-wpi_invoice .result-message {
+.getpaid-is-invoice-cpt .result-message {
     display: none;
-}
-.gdmbx-wpinv-save-send {
-    background: #f5f5f5 !important;
-    border-top: 1px solid #ddd !important;
-    margin: 12px -12px -12px -12px !important;
-    padding: 12px 12px 5px 12px !important;
-}
-.gdmbx-wpinv-save-send p {
-    margin: 0;
-}
-.gdmbx-wpinv-save-send #wpi_save_send {
-    margin-left: 3px !important;
-    width: 60px !important;
-}
-.gdmbx-wpinv-save-send .wpi-send-info {
-    color: #72777c;
-    line-height: 15px !important;
-    font-size: 12px;
 }
 #wpinv-details #major-publishing-actions {
     border-top: none;
@@ -1412,18 +1023,18 @@ body.wpi-wpinv-settings .wp-picker-holder,
 }
 .post-type-wpi_discount .wp-list-table.widefat .column-amount,
 .post-type-wpi_discount .wp-list-table.widefat .column-code,
+.post-type-wpi_discount .wp-list-table.widefat .column-description,
 .post-type-wpi_discount .wp-list-table.widefat .column-usage,
-.post-type-wpi_discount .wp-list-table.widefat .column-status {
-    width: 90px;
-}
-.post-type-wpi_discount .wp-list-table.widefat .column-usage,
-.post-type-wpi_discount .wp-list-table.widefat .column-status {
-    text-align: center;
-}
 .post-type-wpi_discount .wp-list-table.widefat .column-start_date,
-.post-type-wpi_discount .wp-list-table.widefat .column-expiry_date  {
-    width: 130px;
+.post-type-wpi_discount .wp-list-table.widefat .column-expiry_date,
+.post-type-wpi_discount .wp-list-table.widefat .column-status {
+    min-width: 14%;
 }
+
+.post-type-wpi_discount .wp-list-table.widefat .column-title {
+    width: 30%;
+}
+
 .post-type-wpi_discount #submitpost #delete-action,
 .post-type-wpi_discount #submitpost #visibility,
 .post-type-wpi_discount #submitpost .misc-pub-curtime {
@@ -1432,97 +1043,10 @@ body.wpi-wpinv-settings .wp-picker-holder,
 textarea.wpi-email_overdue_content {
     width: 100%;
 }
-/* Export */
-.wpi-reports-export {
-    padding-top: 10px;
-}
-.wpi-export-invoices form > span {
-    margin-right: 5px;
-}
-.wpi-export-invoices form > span > select {
-    vertical-align: inherit;
-}
-.wpi-reports-export .wpiDatepicker {
-    width: 12em;
-}
-.wpi-export-form {
-    position: relative;
-}
+
 #wpinv-submit-wrap [type="submit"] {
     vertical-align: top;
     line-height: normal;
-}
-.wpi-export-form .wpi-progress {
-    width: calc(100% - 50px);
-    height: 16px;
-    background-color: #ddd;
-    float: left;
-    position: relative;
-}
-.wpi-export-form .wpi-progress div {
-    background-color: orange;
-    height: 100%;
-    width: 0;
-    display: block
-}
-.wpi-export-form .wpi-progress > span {
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    display: block;
-    font-size: 13px;
-    line-height: 14px;
-    text-align: center;
-    vertical-align: top;
-    top: 0;
-}
-.wpi-export-form .wpi-msg-wrap {
-    padding: 12px;
-    background-color: #f4f4f4;
-    border-style: solid;
-    border-width: 1px 0;
-    border-color: #eae9e9;
-    overflow: auto;
-    margin: 20px -12px -23px;
-    position: relative;
-}
-.wpi-export-form .wpi-msg-wrap .wpi-export-loader {
-    display: inline-block;
-    float: right;
-    margin: 0;
-    vertical-align: middle;
-    width: 40px;
-    height: 16px;
-    text-align: center;
-}
-.wpi-export-form .wpi-export-loader .fa {
-    font-size: 17px;
-    color: orange;
-}
-.wpi-export-form .wpi-export-loader .fa-spin {
-    color: #000;
-}
-.wpi-msg-wrap .updated {
-    margin: 0 0 2px 0 !important;
-}
-.wpi-export-file {
-    display: block;
-    padding-top: 7px;
-    clear: both;
-    display: block;
-}
-.wpi-export-file a {
-    text-decoration: none;
-}
-#wpinv-details #wpinv_discount {
-    display: inline-block;
-    width: 120px;
-    text-align: center;
-}
-#wpinv-details #wpinv-apply-code,
-#wpinv-details #wpinv-remove-code {
-    display: inline-block;
-    margin: 2px 0 0 10px;
 }
 .wpi-hide {
     display: none!important
@@ -1536,44 +1060,44 @@ textarea.wpi-email_overdue_content {
 .wpinv-items-wrap.wpi-recurring #wpinv-recalc-totals {
     float: none;
 }
-.post-type-wpi_item.wpi-editable-n #submitdiv #major-publishing-actions,
-.post-type-wpi_item.wpi-editable-n #submitdiv #misc-publishing-actions a.edit-post-status,
-.post-type-wpi_item.wpi-editable-n #setting-error-wpinv-edit-n .notice-dismiss {
+
+.getpaid-is-invoice-cpt form#post #edit-slug-buttons {
     display: none;
 }
-.post-type-wpi_invoice form#post #edit-slug-buttons {
-    display: none;
-}
-#gdmbx2-metabox-wpinv_details input#wpinv_number {
-    cursor: default;
-}
-.post-type-wpi_invoice form#post #titlediv [name="post_title"] {
+.getpaid-is-invoice-cpt form#post #titlediv [name="post_title"] {
     cursor: not-allowed;
     opacity: .75;
 }
-.wpi-wpinv-subscriptions .subscriptions .column-actions {
-    text-align: center;
+
+.wpi-wpinv-subscriptions .subscriptions .column-status,
+.wpi-wpinv-subscriptions .subscriptions .column-renewal_date,
+.wpi-wpinv-subscriptions .subscriptions .column-start_date,
+.wpi-wpinv-subscriptions .subscriptions .column-renewals,
+.wpi-wpinv-subscriptions .subscriptions .column-item {
+    width: 140px;
 }
-.wpi-wpinv-subscriptions .subscriptions .column-sub_id {
-    width: 60px;
+
+#poststuff #getpaid_admin_subscription_invoice_details_metabox .inside,
+#poststuff #wpinv-mb-subscription-invoices .inside {
+    margin: 0;
+    padding: 0;
 }
-.wpi-wpinv-subscriptions .subscriptions .column-initial_amount {
-    width: 95px;
+
+#getpaid_admin_subscription_invoice_details_metabox table thead th:first-child,
+#getpaid_admin_subscription_invoice_details_metabox table tbody td:first-child {
+    padding-left: .75rem !important;
 }
-.wpi-wpinv-subscriptions .subscriptions .column-status {
-    width: 65px;
+
+#getpaid_admin_subscription_invoice_details_metabox table thead th:last-child,
+#getpaid_admin_subscription_invoice_details_metabox table tbody td:last-child {
+    text-align: right;
 }
+
 .wpi-mcheck-rows .wpi-mcheck-row {
     float: none;
-    display: inline-block;
+    display: block;
 }
-.wpi-mcheck-rows.wpi-mcheck-email_due_reminder_days .wpi-mcheck-row {display: block;}
-.wpi-mcheck-rows.wpi-w33p .wpi-mcheck-row {
-    width: 33%;
-}
-.wpi-mcheck-rows.wpi-w50p .wpi-mcheck-row {
-    width: 50%;
-}
+
 .wpi-mcheck-row input[type="checkbox"] {
     margin-top: 3px;
 }
@@ -1600,9 +1124,6 @@ textarea.wpi-email_overdue_content {
     line-height: normal;
     font-size: 13px;
     font-style: italic;
-}
-.wpinv.wpinv-pdf .manage-column.column-wpi_actions {
-    width: 110px;
 }
 
 .wpi-products .wpi-product {
@@ -1677,36 +1198,14 @@ textarea.wpi-email_overdue_content {
     max-width: 100%; }
 
 @media screen and ( max-width: 782px) {
-    .wpinv-address .gdmbx-wpinv-btns .button-secondary {
-        padding: 4px 10px;
-    }
     .wpi-mcheck-rows.wpi-w33p .wpi-mcheck-row,
     .wpi-mcheck-rows.wpi-w50p .wpi-mcheck-row  {
         width: 50%;
     }
 }
-@media screen and (max-width: 640px) {
-    .gdmbx2-wrap .wpinv-address > .gdmbx-row {
-        padding: 0 !important;
-    }
-    .wpinv-address .gdmbx-wpinv-btns.gdmbx-row {
-        height: auto;
-    }
-}
+
 @media screen and (max-width: 480px) {
-    .gdmbx2-wrap .wpinv-address > .gdmbx-row {
-        width: 100% !important;
-        float: none;
-    }
-    .gdmbx2-wrap .wpinv-address.gdmbx-row .gdmbx-th,
-    .gdmbx2-wrap .wpinv-address.gdmbx-row .gdmbx-td {
-        float: none;
-        clear: both;
-        width: 100%;
-    }
-    .wpinv-address .gdmbx-wpinv-btns .gdmbx-th {
-        display: none;
-    }
+
     #wpinv_items_wrap .wpinv-actions [type="button"],
     #wpinv_items_wrap .wpinv-actions select {
         width: 47%;
@@ -1747,9 +1246,7 @@ textarea.wpi-email_overdue_content {
   text-align: center;
   margin: 0px;
 }
-.membership-cta-contet .feature-list {
 
-}
 .membership-cta-contet .feature-list h3 {
   font-size: 20px;
   color: #fff;
@@ -1863,4 +1360,445 @@ textarea.wpi-email_overdue_content {
   font-size: 16px;
   float: right;
   color: #353C7C;
+}
+
+.wpinv-form-builder-element-preview {
+    padding: 10px;
+    box-sizing: border-box;
+    cursor: move;
+}
+
+.wpinv-form-builder-element-preview.address {
+    padding-bottom: 0;
+}
+
+.wpinv-form-builder-element-preview.address .address-field-preview:last-child {
+    margin-bottom: 0;
+}
+
+.wpinv-form-builder-element-preview:hover,
+.wpinv-form-builder-element-preview.active {
+    border: 1px dashed #ffb74d;
+}
+
+.wpinv-form-builder-element-preview h2 {
+    font-size: 23px !important;
+    padding: 0 !important;
+}
+
+.wpinv-form-builder-right input,
+.wpinv-form-builder-right button,
+.wpinv-form-builder-right select,
+.wpinv-form-builder-right textarea{
+    cursor: not-allowed !important;
+}
+
+.wpinv-available-items-editor,
+.wpinv-form-address-field-editor {
+    display: block;
+    position: relative;
+    margin: 5px 0;
+    padding: 0;
+    min-height: 20px;
+    font-size: 13px;
+    line-height: 25px;
+    border: 1px solid #e0e0e0;
+    border-radius: 3px;
+}
+
+.wpinv-available-items-editor-header,
+.wpinv-form-address-field-editor-header {
+    background: #fafafa;
+    height: 37px;
+    padding: 5px 10px;
+    color: #333;
+    text-decoration: none;
+    font-weight: bold;
+    box-sizing: border-box;
+    overflow: hidden;
+    display: flex;
+    cursor: move;
+    width: 100%;
+}
+
+.wpinv-form-address-field-editor {
+    opacity: 0.3;
+}
+
+.wpinv-form-address-field-editor.visible {
+    opacity: 1;
+}
+
+/** Panel visibility indicators*/
+.wpinv-form-address-field-editor:not(.visible) .wpinv-form-address-field-editor-header .dashicons-visibility {
+    display: none;
+}
+
+.wpinv-form-address-field-editor.visible .wpinv-form-address-field-editor-header .dashicons-hidden {
+    display: none;
+}
+
+/** Panel toggle arrows*/
+.wpinv-form-address-field-editor:not(.active) .wpinv-form-address-field-editor-header .dashicons-arrow-up {
+    display: none;
+}
+
+.wpinv-form-address-field-editor.active .wpinv-form-address-field-editor-header .dashicons-arrow-down {
+    display: none;
+}
+
+.wpinv-available-items-editor-header .label,
+.wpinv-form-address-field-editor-header .label {
+    flex: 1;
+}
+
+.wpinv-available-items-editor-header .price{
+    font-weight: initial;
+}
+
+.wpinv-available-items-editor-header .toggle-icon,
+.wpinv-form-address-field-editor-header .toggle-icon,
+.wpinv-form-address-field-editor-header .toggle-visibility-icon {
+    margin-left: 4px;
+    cursor: pointer;
+}
+
+.wpinv-available-items-editor-header .dashicons,
+.wpinv-form-address-field-editor-header .dashicons{
+    vertical-align: bottom;
+}
+
+.wpinv-available-items-editor-body,
+.wpinv-form-address-field-editor-editor-body {
+    display: none;
+    overflow: hidden;
+}
+
+.wpinv-address-wrapper .address-field-preview:hover {
+    cursor: move;
+}
+
+.wpinv-address-wrapper .wpinv-payment-form-field-preview-overlay:hover {
+    background: rgba(255, 235, 59, 0.08);
+    margin: -10px;
+}
+
+.wpinv-form-builder-element-preview-inner {
+    position: relative;
+}
+
+.wpinv-payment-form-field-preview-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2;
+}
+
+.wpinv-form-builder-edit-field-wrapper option:disabled {
+    color: #9e9e9e;
+}
+
+.wpinv-payment-form-left-fields-field {
+    width: 49%;
+    background-color: #fafafa;
+    margin-bottom: 9px;
+    cursor: move;
+    border: 1px solid #eeeeee;
+    list-style: none;
+}
+
+.wpinv-payment-form-left-fields-field .btn {
+    width: 100%;
+    cursor: move;
+    font-size: 14px;
+}
+
+.wpinv-payment-form-left-fields-field.sortable-ghost {
+    width: 100%;
+}
+
+.wpinv-report-container {
+    box-sizing: border-box;
+    padding: 20px 15px 15px 15px;
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    background: #fff;
+    background: linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -o-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -ms-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -moz-linear-gradient(#f6f6f6 0, #fff 50px);
+    background: -webkit-linear-gradient(#f6f6f6 0, #fff 50px);
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    -o-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -ms-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -moz-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.getpaid-mb-form-field {
+    padding: 5px 20px 5px 162px!important;
+    margin: 9px 0;
+    line-height: 24px;
+}
+
+.getpaid-mb-form-field label{
+    float: left;
+    width: 150px;
+    padding: 0;
+    margin: 0 0 0 -150px;
+}
+
+.getpaid-mb-form-field .dashicons{
+    vertical-align: bottom;
+}
+
+.getpaid-mb-form-field.form-field input[type="text"],
+.getpaid-mb-form-field.form-field input[type="password"],
+.getpaid-mb-form-field.form-field input[type="email"],
+.getpaid-mb-form-field.form-field input[type="number"], 
+.getpaid-mb-form-field.form-field input[type="tel"], 
+.getpaid-mb-form-field.form-field input[type="url"], 
+.getpaid-mb-form-field.form-field textarea {
+    float: left;
+    width: 50%;
+}
+
+#wpinv_discount_amount_wrap.flat .wpinv-if-percent {
+    display: none !important;
+}
+
+#wpinv_discount_amount_wrap.percent .wpinv-if-flat {
+    display: none !important;
+}
+
+/* Subscription items */
+/* We use classes to toggle so that the initial "display value e.g flex|blog" is maintained*/
+.getpaid_is_not_subscription_item .wpinv_show_if_recurring {
+    display: none !important;
+}
+
+.getpaid_is_subscription_item .wpinv_hide_if_recurring {
+    display: none !important;
+}
+
+/* Dynamic prices */
+.getpaid_is_not_dynamic_item .wpinv_show_if_dynamic {
+    display: none !important;
+}
+
+.getpaid_is_dynamic_item .wpinv_hide_if_dynamic {
+    display: none !important;
+}
+
+.getpaid-price-buttons label{
+    transition: all .3s ease-out;
+    text-align: center;
+    padding: 10px 20px;
+    background-color: #eeeeee;
+    border: 1px solid #e0e0e0;
+}
+
+.getpaid-price-circles label {
+    padding: 0 4px;
+    -moz-border-radius:50%;
+    -webkit-border-radius: 50%;
+    border-radius: 50%;
+}
+
+.getpaid-price-circles label span{
+    display: block;
+    padding: 50%;
+    margin: -3em -50% 0;
+    position: relative;
+    top: 1.5em;
+    border: 1em solid transparent;
+    white-space: nowrap;
+}
+
+.getpaid-price-buttons input[type="radio"]{
+    display: none;
+}
+
+.getpaid-price-buttons input[type="radio"]:checked + label,
+.getpaid-price-buttons label:hover {
+    color: #fff;
+    background-color: #1e73be;
+    border-color: #1e73be;
+}
+
+.getpaid-is-invoice-cpt #post-body-content,
+.getpaid-is-invoice-cpt #astra_settings_meta_box,
+.getpaid-is-invoice-cpt #rank_math_metabox_link_suggestions,
+.getpaid-is-invoice-cpt #rank_math_metabox {
+    display: none !important;
+}
+
+.getpaid_invoice_items {
+    width: 100%;
+    background: #fff;
+    border: 1px solid #ddd;
+    table-layout: fixed;
+}
+
+.getpaid_invoice_items tr{
+    border-bottom: 1px solid #ddd;
+}
+
+.getpaid_invoice_items th {
+    text-align: left;
+    padding: 1em;
+    font-weight: 400;
+    color: #999;
+    background: #f8f8f8;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.getpaid_invoice_items td {
+    text-align: left;
+    padding: 1em;
+}
+
+#wpinv-items .has-items .hide-if-has-items,
+#wpinv-items .no-items .hide-if-no-items,
+#wpinv-items .amount .hide-if-amount,
+#wpinv-items .quantity .getpaid-hide-if-quantity,
+#wpinv-items .hours .getpaid-hide-if-hours,
+#wpinv-items .not-editable .hide-if-not-editable,
+#wpinv-items .editable .hide-if-editable {
+    display: none !important;
+}
+
+.getpaid-invoice-item-actions {
+    border-bottom: 1px solid #dfdfdf;
+    border-left: 1px solid #dfdfdf;
+    padding: 10px;
+    border-right: 1px solid #dfdfdf;
+    background: #f8f8f8;
+}
+
+#getpaid-add-items-to-invoice table {
+    border: 0;
+}
+
+#getpaid-add-items-to-invoice th {
+    padding: 0 1em 1em 1em;
+    text-align: left;
+}
+
+#getpaid-add-items-to-invoice th {
+    padding: 0 1em 1em 1em;
+    text-align: left;
+}
+
+#getpaid-add-items-to-invoice td {
+    padding: 1em;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.getpaid-invoice-status {
+    display: inline-block;
+    line-height: 2.5em;
+    color: #777;
+    background: #e5e5e5;
+    border-radius: 4px;
+    border-bottom: 1px solid rgba(0,0,0,.05);
+    margin: -.25em 0;
+    white-space: nowrap;
+    max-width: 100%;
+}
+
+.getpaid-invoice-status.publish {
+    background: #b0bec5;
+}
+
+.getpaid-invoice-status.wpi-renewal {
+    background: #c8d7e1;
+}
+
+.getpaid-invoice-status.wpi-pending {
+    background: #cfd8dc;
+}
+
+.getpaid-invoice-status.wpi-failed {
+    background: #ffccbc;
+}
+
+.getpaid-invoice-status.wpi-cancelled {
+    background: #ffcdd2;
+}
+
+.getpaid-invoice-status > span {
+    margin: 0 1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.getpaid-is-invoice-cpt .wp-list-table .column-recurring,
+.post-type-wpi_quote .wp-list-table .column-recurring{
+    width: 60px;
+}
+
+.getpaid-invoice-totals-row {
+    border-bottom: 1px solid #dfdfdf;
+    border-left: 1px solid #dfdfdf;
+    padding: 10px;
+    border-right: 1px solid #dfdfdf;
+    background: #f8f8f8;
+}
+
+.getpaid-invoice-totals-row .value{
+    font-size: 1em!important;
+    width: 14em;
+    margin: 0 0 0 .5em;
+    box-sizing: border-box;
+    font-weight: 700;
+}
+
+.getpaid-invoice-totals-row .label{
+    vertical-align: top;
+}
+
+.getpaid-invoice-totals-row td{
+    padding: 0.4em;
+}
+
+.wpi-wpinv-settings table.form-table input.regular-input,
+.wpi-wpinv-settings table.form-table input[type=date],
+.wpi-wpinv-settings table.form-table input[type=datetime-local],
+.wpi-wpinv-settings table.form-table input[type=datetime],
+.wpi-wpinv-settings table.form-table input[type=email],
+.wpi-wpinv-settings table.form-table input[type=number],
+.wpi-wpinv-settings table.form-table input[type=password],
+.wpi-wpinv-settings table.form-table input[type=tel],
+.wpi-wpinv-settings table.form-table input[type=text],
+.wpi-wpinv-settings table.form-table input[type=time],
+.wpi-wpinv-settings table.form-table input[type=url],
+.wpi-wpinv-settings table.form-table input[type=week],
+.wpi-wpinv-settings table.form-table textarea,
+.wpi-wpinv-settings table.form-table select {
+    width: 25em;
+    max-width: 100%;
+    margin: 0;
+    box-sizing: border-box;
+    vertical-align: top;
+    padding: 0 8px;
+}
+
+.getpaid-settings-editor-input {
+    width: 620px;
 }

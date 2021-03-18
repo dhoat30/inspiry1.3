@@ -1,90 +1,97 @@
-=== Invoicing - Invoice & Payments Plugin ===
-Contributors: stiofansisland, paoltaia, ayecode, Ismiaini
+=== WordPress Payments Plugin | GetPaid ===
+Contributors: stiofansisland, paoltaia, ayecode, Ismiaini, picocodes
 Donate link: https://www.ko-fi.com/stiofan
-Tags:  payments, invoice, invoicing, Recurring payments, Paypal
+Tags:  payments, invoice, invoicing, Recurring payments, Paypal, Stripe, credit card payments, buy now button, checkout form, payments form builder,
 Requires at least: 4.9
-Tested up to: 5.3
-Stable tag: 1.0.18
+Tested up to: 5.7
+Stable tag: 2.1.7
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
-WordPress Invoicing & payments plugin that allows to create Invoices, send them to clients and accept single or recurring payments. Invoicing can be easily used as check out system for 3rd party plugins.
+WordPress Payments & Invoicing plugin to quickly and easily sell online. Create buy now buttons or inline checkout forms in seconds to accept online payments on your website.
 
 == Description ==
 
-= Lightweight, extensible and very easy to use Invoicing plugin to create Invoices that you can send to your customers and they can pay online. =
+= Lightweight, extensible and very easy to use Online Payments and Invoicing plugin. =
 
-It can be used as payment system for 3rd party plugins too.
+GetPaid can be used as a payment system for 3rd party plugins too.
 
 = Features =
 
-* Create quotes and estimates to send to your clients [requires WPI quotes add-on](https://wordpress.org/plugins/invoicing-quotes/)
-* Quotes can be turned into invoices and client can pay online.
+* Create items with a one-time fee or recurring payments (subscriptions).
+* Add a free trial and/or allow buyers to name their price.
+* Add items to your website via Buy Now Buttons. Customers will be able to buy on your website via several Payment Gateways.
+* Create inline checkout forms to sell your items through an optimized landing page.
+* Create Invoices that you can send to your customers and they can pay online.
+* Create quotes and estimates to send to your clients [requires GetPaid quotes add-on](https://wordpress.org/plugins/invoicing-quotes/)
+* Quotes can be turned into invoices and clients can pay online.
 * Create and send invoices directly to receive single or recurring payments.
-* Accept payments via Paypal Standard, Authorize.net, WorldPay and Pre Bank Transfer (other payment gateways available as premium add-ons).
+* Accept payments via Stripe, Paypal Standard, Authorize.net, WorldPay and Pre Bank Transfer (other payment gateways available as premium add-ons).
 * Export payments and any other data through the reporting system.
 * Manage taxes.
 * VAT MOSS complaint (European Union VAT management system).
-* Easily create invoices programmatically through other plugins.
+* Easily accept payments and create invoices programmatically through other plugins.
 
 = A payment system for other plugins and themes =
 
-Invoicing can be used as payment system with check out page by any plugin.
+GetPaid can be used as a payment system with a checkout page by any plugin.
 
-[Here you find instructions on how to integrate any plugin with Invoicing.](https://wpinvoicing.com/docs/adding-a-custom-item-type/)
+[Here you find instructions on how to integrate any plugin with GetPaid.](https://wpgetpaid.com/docs/adding-a-custom-item-type/)
 
-= Plugins currently using Invoicing as their Payment system are =
+= Plugins currently using GetPaid as their Payment system are =
 
-* [GeoDirectory](https://wpgeodirectory.com/) - GeoDirectory uses Invoicing to manage Invoices, taxes, VAT and payments.
-* [Paid Members](https://wordpress.org/plugins/members/) - Coming soon - An add-on for Members to create paid membership with custom roles and permissions.
+* [GeoDirectory](https://wpgeodirectory.com/) - GeoDirectory uses GetPaid to manage Invoices, taxes, VAT and payments.
 
 = Payment Gateways =
 
-* PayPal Standard (built in) - Accept Paypal and credit card payments (single or recurring) via paypal.
-* Authorize.Net (built in) - Accept credit card payments (single or recurring) via Authorize.Net.
-* Worldpay (built in) - Accept credit card payments (single or recurring) via Worldpay.
-* Pre Bank Transfer (built in) - Instruct users how to send you a bank transfer which you can then later mark as paid.
-* [Stripe](https://wpinvoicing.com/downloads/stripe-payment-gateway/) - Accept credit card payments (single or recurring) directly on your website via Stripe.
-* [PayPal Pro](https://wpinvoicing.com/downloads/paypal-pro-payment-gateway/) - Accept Paypal and credit card payments (single or recurring) directly on your website.
-* [PayFast](https://wpinvoicing.com/downloads/payfast-payment-gateway/) - Accept payments via PayFast.
-* [Cheque Payment](https://wpinvoicing.com/downloads/cheque-payment-gateway/)  - Accept payments via Cheques
-* [Mollie](https://wpinvoicing.com/downloads/mollie-payment-gateway/)  - Accept payment via Mollie (EUR only)
-* [GoCardless](https://wpinvoicing.com/downloads/gocardless-payment-gateway/)  - Accept payments via GoCardless (direct debits)
-* [Sage Pay](https://wpinvoicing.com/downloads/sage-pay-payment-gateway/)  - Accept payments via Sage Pay
-* [2CheckOut](https://wpinvoicing.com/downloads/2checkout-payment-gateway/) - Accept payments (single or recurring) via 2CO.
-* [Cash on Delivery](https://wpinvoicing.com/downloads/cash-on-delivery-payment-gateway/) - Accept payments via Cash on Delivery
-* [PayUmoney](https://wpinvoicing.com/downloads/payumoney-payment-gateway/) - Accept payments via PayUmoney
-* [WebPay](https://wpinvoicing.com/downloads/payumoney-payment-gateway/) - Accept payments via WebPay
-* [PayUmoney Latam](https://wpinvoicing.com/downloads/payumoney-latam-payment-gateway/) - Accept payments via PayUmoney Latam
-* [PayPal Payflow](https://wpinvoicing.com/downloads/paypal-payflow-payment-gateway/) - Accept credit card payments (single or recurring) directly on your website.
-* [Square](https://wpinvoicing.com/downloads/square-payment-gateway/) - Accept payments via Square
-* [First Data](https://wpinvoicing.com/downloads/firstdata-payment-gateway/) - Accept payments via FirstData
-* [Braintree](https://wpinvoicing.com/downloads/braintree-payment-gateway/) - Accept payments via Braintree
-* [eWay](https://wpinvoicing.com/downloads/eway-payment-gateway/) - Accept payments via eWay payment gateway
+* PayPal Standard (built-in) - Accept Paypal and credit card payments (single or recurring) via paypal.
+* Authorize.Net (built-in) - Accept credit card payments (single or recurring) via Authorize.Net.
+* Worldpay (built-in) - Accept credit card payments via Worldpay.
+* Pre Bank Transfer (built-in) - Instruct users how to send you a bank transfer which you can then later mark as paid.
+* [Stripe](https://wpgetpaid.com/downloads/stripe-payment-gateway/) - Accept credit card payments (single or recurring) directly on your website via Stripe.
+* [PayPal Pro](https://wpgetpaid.com/downloads/paypal-pro-payment-gateway/) - Accept Paypal and credit card payments (single or recurring) directly on your website.
+* [PayFast](https://wpgetpaid.com/downloads/payfast-payment-gateway/) - Accept payments via PayFast.
+* [Cheque Payment](https://wpgetpaid.com/downloads/cheque-payment-gateway/)  - Accept payments via Cheques
+* [Mollie](https://wpgetpaid.com/downloads/mollie-payment-gateway/)  - Accept payment via Mollie (EUR only)
+* [GoCardless](https://wpgetpaid.com/downloads/gocardless-payment-gateway/)  - Accept payments via GoCardless (direct debits)
+* [Sage Pay](https://wpgetpaid.com/downloads/sage-pay-payment-gateway/)  - Accept payments via Sage Pay
+* [2CheckOut](https://wpgetpaid.com/downloads/2checkout-payment-gateway/) - Accept payments (single or recurring) via 2CO.
+* [Cash on Delivery](https://wpgetpaid.com/downloads/cash-on-delivery-payment-gateway/) - Accept payments via Cash on Delivery
+* [PayUmoney](https://wpgetpaid.com/downloads/payumoney-payment-gateway/) - Accept payments via PayUmoney
+* [WebPay](https://wpgetpaid.com/downloads/payumoney-payment-gateway/) - Accept payments via WebPay
+* [PayUmoney Latam](https://wpgetpaid.com/downloads/payumoney-latam-payment-gateway/) - Accept payments via PayUmoney Latam
+* [PayPal Payflow](https://wpgetpaid.com/downloads/paypal-payflow-payment-gateway/) - Accept credit card payments (single or recurring) directly on your website.
+* [Square](https://wpgetpaid.com/downloads/square-payment-gateway/) - Accept payments via Square
+* [First Data](https://wpgetpaid.com/downloads/firstdata-payment-gateway/) - Accept payments via FirstData
+* [Braintree](https://wpgetpaid.com/downloads/braintree-payment-gateway/) - Accept payments via Braintree
+* [eWay](https://wpgetpaid.com/downloads/eway-payment-gateway/) - Accept payments via eWay payment gateway
 
 
 = Add-ons =
 
 * [Quotes](https://wordpress.org/plugins/invoicing-quotes/) - Create quotes, send them to clients and convert them to Invoices when accepted by the customer
-* [PDF Invoices](https://wpinvoicing.com/downloads/pdf-invoices/) - Send PDF invoices via email or let users download them
-* [AffiliateWP Integration](https://wpinvoicing.com/downloads/affiliatewp-integration/) - Integrate with the [AffiliateWP plugin](https://affiliatewp.com/)
-* [Contact form 7](https://wpinvoicing.com/downloads/contact-form-7/) - Send a invoice/quote when a user fills out a form
-* [Gravity Forms](https://wpinvoicing.com/downloads/gravity-forms/) - Send a invoice/quote when a user fills out a form
-* [Ninja Forms](https://wordpress.org/plugins/ninja-forms/) - Send a invoice/quote when a user fills out a form
+* [PDF Invoices](https://wpgetpaid.com/downloads/pdf-invoices/) - Send PDF invoices via email or let users download them
+* [AffiliateWP Integration](https://wpgetpaid.com/downloads/affiliatewp-integration/) - Integrate with the [AffiliateWP plugin](https://affiliatewp.com/)
+* [Contact form 7](https://wpgetpaid.com/downloads/contact-form-7/) - Send an invoice/quote when a user fills out a form
+* [Gravity Forms](https://wpgetpaid.com/downloads/gravity-forms/) - Send an invoice/quote when a user fills out a form
+* [Ninja Forms](https://wordpress.org/plugins/ninja-forms/) - Send an invoice/quote when a user fills out a form
 
 
-New Payment Gateways and Add-ons will be created regularly. If there is a Payment Gateway that you need urgently or a feature missing that you think we must add, [get in touch with us](https://wpinvoicing.com/contact-form/). we will consider it.
+New Payment Gateways and Add-ons will be created regularly. If there is a Payment Gateway that you need urgently or a feature missing that you think we must add, [get in touch with us](https://wpgetpaid.com/contact-form/) and we will consider it.
 
 = Support =
 
-Get timely and friendly support for both Core Plugin and add-ons at our official website, [Invoicing Support](https://wpinvoicing.com/support/)
+Get timely and friendly support for both Core Plugin and add-ons at our official website, [GetPaid Support](https://wpgetpaid.com/support/)
 
 = Origin =
 
-Work on Invoicing started in April 2016.
+Work on GetPaid ( AKA, Get Paid or wpGetPaid ) started in April 2016.
 We are proud the original base of the plugin was a fork of [EDD](https://wordpress.org/plugins/easy-digital-downloads/) with permission from Pippin.
-Additionally we are proud some code from [Sliced Invoices](https://wordpress.org/plugins/sliced-invoices/) by David Grant was used in places, mostly for his beautiful invoice layout.
+Additionally, we are proud some code from [Sliced Invoices](https://wordpress.org/plugins/sliced-invoices/) by David Grant was used in places, mostly for his beautiful invoice layout.
 We worked on the plugin for over a year before it got its first public release, we stripped down the code to make it a simple lightweight payment and invoicing plugin with many additional features to fit the needs of our customers.
+
+This product includes GeoLite2 data created by MaxMind, available from
+<a href="https://www.maxmind.com">https://www.maxmind.com</a>
 
 == Installation ==
 
@@ -96,13 +103,13 @@ We worked on the plugin for over a year before it got its first public release, 
 
 = Automatic installation =
 
-Automatic installation is the easiest option. To do an automatic install of WP Invoicing, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
+Automatic installation is the easiest option. To do an automatic install of WP GetPaid, log in to your WordPress dashboard, navigate to the Plugins menu and click Add New.
 
-In the search field type WP Invoicing and click Search Plugins. Once you've found WP Invoicing plugin you install it by simply clicking Install Now. [Invoicing  basic installation](http://wpinvoicing.com/docs/basic-installation/)
+In the search field type WP GetPaid and click Search Plugins. Once you've found WP GetPaid plugin you install it by simply clicking Install Now. [GetPaid  basic installation](http://wpgetpaid.com/docs/basic-installation/)
 
 = Manual installation =
 
-The manual installation method involves downloading our Directory plugin and uploading it to your webserver via your favourite FTP application. The WordPress codex will tell you more [here](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation). [Invoicing  basic installation](http://wpinvoicing.com/docs/basic-installation/)
+The manual installation method involves downloading our Directory plugin and uploading it to your webserver via your favorite FTP application. The WordPress codex will tell you more [here](http://codex.wordpress.org/Managing_Plugins#Manual_Plugin_Installation). [GetPaid  basic installation](http://wpgetpaid.com/docs/basic-installation/)
 
 = Updating =
 
@@ -110,22 +117,183 @@ Automatic updates should seamlessly work. We always suggest you backup up your w
 
 == Frequently Asked Questions ==
 
-[Invoicing FAQ](https://wpinvoicing.com/faq/).
+[GetPaid FAQ](https://wpgetpaid.com/faq/).
 
 == Screenshots ==
 
-1. General Settings.
-2. Payment Gateways.
-3. Taxes and VAT MOSS Settings.
-4. Email Settings.
-5. Miscellaneous.
-6. Add new Invoice.
-7. Invoice Details.
-8. Invoice Items.
-9. Invoice Notes.
-10. Client Invoice
+1. Recurring service subscription.
+2. One-time digital product payment.
+3. Donations/Fundraising example.
+4. Admin payment forms list table.
+5. Admin subscriptions list table.
+6. Admin earnings report.
+7. Sample crowdfunding payment form.
+8. Invoice edit screen.
+9. Single invoice view page.
 
 == Changelog ==
+
+= 2.1.7 =
+* Lots of customers causes the invoices screen to hang - FIXED
+* New invoice emails not sent for invoices created via admin - FIXED
+* Philippines misspelled - UPDATED
+* Invoice items ordered by ID instead of order added - CHANGED
+* Summer Pro theme sets checkboxes/radio buttons to 100% width - FIXED
+* Changing country recalculates the invoice totals - CHANGED
+* Cancel subscription when all PayPal renewal retries fail - ADDED
+
+= 2.1.6 =
+* Subscription emails not editable - FIXED
+* Pre-GetPaid invoices containing discounts do not apply the discount on renewals - FIXED
+* Tool to recalculate discounts for existing invoices that have discount codes but are not discounted - ADDED.
+* Ability to manually add a discount code when editing an invoice - ADDED
+* Item description escapes quotes - FIXED
+
+= 2.1.5 =
+* Show admin notice on our settings page if a GetPaid database table is missing - ADDED
+* Better BuddyPress integration - ADDED
+* Ability to manually delete a subscription - ADDED
+* Do not display VAT number input on the address edit form if taxes are disabled - CHANGED
+
+= 2.1.4 =
+* Validate minimum amounts without sending the value to the servers - CHANGED
+* Missing state defaults to country when editing an invoice - FIXED
+* Change website name on invoice templates to business name - CHANGED
+* Add the sellers vat number at the bottom of the "from" section and remove from the info section - CHANGED
+* Move the buyers vat number from invoice meta to "To" section - CHANGED
+* If VAT is reverse charged, indicate next to the tax field - ADDED
+* "Same country rule" defaults to charging tax even if VAT number is validated - CHANGED
+* "Recalculate totals" button on the invoice edit page does not use the updated VAT numbers - FIXED
+* Recurring discount code does not update the recurring text - FIXED
+
+= 2.1.3 =
+* `wpinv_insert_invoice()` function does not return created invoice on success - FIXED
+* UK nolonger treated as an EU state and nolonger applies reverse VAT - CHANGED
+* Ability to for customers to edit their billing addresses - ADDED
+* Show total spent on the customers list table - ADDED
+* Show invoice count on the customers list table - ADDED
+* Show registration date on the customers list table - ADDED
+* Ability to search through customers - ADDED
+
+= 2.1.2 =
+* Customers list does not display all available customers - FIXED
+* Discounts only usable once if a maximum use count is set - FIXED
+* Remove jQuery block ui dependancy - CHANGED
+* City not showing on invoice edit metabox - FIXED
+* Price inclusive of tax does not update the subtotal on the invoice - FIXED
+* Display subscriptions info on the Gateways overview page - CHANGED
+* Card details validated even if 100% discount is used - FIXED
+* Display an invoice's date of payment on the admin list table and invoice edit screen - ADDED
+
+= 2.1.1 = 
+* Fabulous Fluid theme floats payment form paragraphs - FIXED
+* Only migrate an invoice is it's yet to be migrated - FIXED
+* VAT only reverse-charged if vat numbers are required to be validated - FIXED
+
+= 2.1.0 =
+* Taxes calculated on original amount even if discounts have been added - FIXED
+* Invoice totals calculated on the fly instead of displaying the saved total - CHANGED
+
+= 2.0.8 =
+* Sometimes PayPal subscriptions generate a renewal invoice instantly - FIXED
+* Only display the discount/fee on a payment form / invoice if we actually have a discount/fee - CHANGED
+* Privacy exporter only exports a maximum of 10 invoices - CHANGED
+* Show login link on invoice page if required - ADDED
+* Display currency in the "minimum amount" error message - ADDED
+* Use a responsive invoice table - ADDED
+* Ability to use decimal item quantities - ADDED
+* Item not updated when only the description is changed - FIXED
+
+= 2.0.7 =
+* Incompatibility issues with UX Builder from Flatsome - FIXED
+* Template overides loaded twice - FIXED
+* Taxes sometimes applied even if disabled - FIXED
+* Wrong trial period shown on the item edit page - FIXED
+
+= 2.0.6 =
+* Tool to create missing database tables - ADDED
+* Tool to re-copy missing invoices - ADDED
+* Conflict with youzer plugin - FIXED
+* Make it possible to translate the default payment form using WPML - ADDED
+* Invoices edited via admin do not show taxes in the admin unless paid for - ADDED
+* Save default tax rates for fresh installs - ADDED
+
+= 2.0.3 =
+* Authorize.NET using the last name as the customer's address - FIXED
+* Resend invoice button not working - FIXED
+* Send invoice reminder button not working - FIXED
+* Manual gateway renamed to "Test Gateway" - CHANGED
+* VAT validation not working - FIXED
+
+= 2.0.2 =
+* Default pages not created for new installs - FIXED
+* Default payment form only created during the first checkout - FIXED
+* Remove PHP notices shown when a logged out users uses a "buy now" button - FIXED
+* Add a tool to generate missing GetPaid pages - ADDED
+* Show notice if some GetPaid pages are not set - ADDED
+
+= 2.0.1 =
+* New invoices not visible unless a status is manually set - FIXED
+* Deleting an invoice item updates the total but does not remove the item from the HTML markup - FIXED
+* Subscription not deleted when the recurring item is removed from an invoice - FIXED
+* Prices multiplied by 100 when using a comma as a decimal separator - FIXED
+* Phone numbers not saving - FIXED
+* Payment forms show the current user's billing details instead of the invoice user's billing details - FIXED
+* Report graphs not displayed if WordFence is active - FIXED
+
+= 2.0.0-beta3 =
+* Fix "minimum value" error with number settings fields - FIXED
+* Add the settings REST API endpoint - ADDED
+* Add sales REST API endpoint - ADDED
+* Add top-sellers REST API endpoint - ADDED
+* Add top-earners REST API endpoint - ADDED
+* Add invoice counts REST API endpoint - ADDED
+
+= 2.0.0-beta2 =
+* Add the raw_html settings field type - ADDED
+
+= 2.0.0-beta1 =
+* Exclude invoicing pages from Yoast XML page sitemap - CHANGED
+* Bump tested upto WP version - CHANGED
+* Send BCC email to admin for Payment Reminder - ADDED
+* Ability to create payment forms - ADDED
+* If VAT is enabled, you can now disable taxes on a per item basis - ADDED
+* If VAT is enabled, you can now disable taxes on a per invoice basis - ADDED
+* Inovice action buttons not working on the 2019 theme - FIXED
+* Ability to change the invoice date - ADDED
+* CTA for free checkouts changed from "Complete" to "Continue" - CHANGED
+* Unable to checkout when required fields are hidden via CSS - FIXED
+* Buy now buttons shortcode now visible - ADDED
+* Admin menus re-ordered to provide better hierachy - CHANGED
+* Revenue reports - ADDED
+* Yoast SEO 14.1 style conflicts - FIXED
+* Show subscription details on receipt - ADDED
+* GeoIP2 database not downloading - FIXED
+* Pay now link working for logged out users - FIXED
+* Upcoming subscription renewal emails - ADDED
+* Ability to send invoice notifications to other emails (CC) other than the one currently being billed - ADDED
+* VAT Reverse charge notice - ADDED
+* Ability to add descriptions/excerpts to invoices - ADDED
+* Ability to view and edit customers - ADDED
+* Error shows if all discounts are expired - FIXED
+* Some discounts do not have a delete link - FIXED
+* Remove Astra and RankMath metaboxes from the Invoice edit pages - ADDED
+* Change item prices on a per invoice basis - ADDED
+* Improve UI to change invoice item quantities - ADDED
+* Ability to charge hours, quantities or amounts only - ADDED
+* Worldpay - You can now specify an MD5 secret and callback password.
+* Worldpay - invoices are now automatically marked as paid or failed.
+* Authorize.NET - Get rid of the Authorize.NET SDK to improve on speed, size and reduce the required minimum PHP version.
+* Authorize.NET - Allow customers to save their payment profiles for quicker checkouts.
+* Authorize.NET - Replaced the deprecated md5 secret with a [signature key](https://support.authorize.net/s/article/MD5-Hash-End-of-Life-Signature-Key-Replacement)
+* Authorize.NET - Improve the subscriptions feature.
+* Admin can now manually renew a subscription - ADDED
+* Ability to enter prices with tax - ADDED
+* All matching tax rates are now applied - CHANGED
+* Ability to calculate tax based on base address instead of shop address - ADDED
+* Invoice exports now include the item ids - ADDED
+* Users can now set a tax rate for all countries - ADDED
+* Users can now set a tax rate for multiple states - ADDED
 
 = 1.0.18 =
 * Display customer notes on the invoice print page - ADDED

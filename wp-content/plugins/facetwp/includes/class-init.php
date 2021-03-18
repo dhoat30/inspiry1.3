@@ -67,9 +67,10 @@ class FacetWP_Init
         // hooks
         add_action( 'admin_menu', [ $this, 'admin_menu' ] );
         add_action( 'wp_enqueue_scripts', [ $this, 'front_scripts' ] );
-        add_action( 'admin_enqueue_scripts', [ $this, 'admin_scripts' ] );
         add_filter( 'redirect_canonical', [ $this, 'redirect_canonical' ], 10, 2 );
         add_filter( 'plugin_action_links_facetwp/index.php', [ $this, 'plugin_action_links' ] );
+
+        do_action( 'facetwp_init' );
     }
 
 
@@ -98,16 +99,8 @@ class FacetWP_Init
      * Enqueue jQuery
      */
     function front_scripts() {
-        wp_enqueue_script( 'jquery' );
-    }
-
-
-    /**
-     * Enqueue admin tooltips
-     */
-    function admin_scripts( $hook ) {
-        if ( 'settings_page_facetwp' == $hook ) {
-            wp_enqueue_script( 'jquery-powertip', FACETWP_URL . '/assets/vendor/jquery-powertip/jquery.powertip.min.js', [ 'jquery' ], '1.2.0' );
+        if ( 'yes' == FWP()->helper->get_setting( 'load_jquery', 'yes' ) ) {
+            wp_enqueue_script( 'jquery' );
         }
     }
 

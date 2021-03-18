@@ -57,6 +57,7 @@ class WPInv_Session_Handler extends WPInv_Session {
 		add_action( 'wp_logout', array( $this, 'destroy_session' ) );
 		add_action( 'wp', array( $this, 'set_customer_session_cookie' ), 10 );
 		add_action( 'shutdown', array( $this, 'save_data' ), 20 );
+
 	}
 
 	/**
@@ -68,7 +69,7 @@ class WPInv_Session_Handler extends WPInv_Session {
 		$this->init_session_cookie();
 
 		if ( ! is_user_logged_in() ) {
-			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ) );
+			add_filter( 'nonce_user_logged_out', array( $this, 'nonce_user_logged_out' ), 10, 2 );
 		}
 	}
 
@@ -167,24 +168,14 @@ class WPInv_Session_Handler extends WPInv_Session {
 	}
 
 	/**
-	 * Generate a unique customer ID for guests, or return user ID if logged in.
-	 *
-	 * Uses Portable PHP password hashing framework to generate a unique cryptographically strong ID.
+	 * Generates session ids.
 	 *
 	 * @return string
 	 */
 	public function generate_customer_id() {
-		$customer_id = '';
-
-		if ( is_user_logged_in() ) {
-			$customer_id = get_current_user_id();
-		}
-
-		if ( empty( $customer_id ) ) {
-            $customer_id = wp_create_nonce('wpinv-session-customer-id');
-		}
-
-		return $customer_id;
+		require_once ABSPATH . 'wp-includes/class-phpass.php';
+		$hasher      = new PasswordHash( 8, false );
+		return md5( $hasher->get_random_bytes( 32 ) );
 	}
 
 	/**
@@ -276,7 +267,13 @@ class WPInv_Session_Handler extends WPInv_Session {
 	 * @return string
 	 */
 	public function nonce_user_logged_out( $uid ) {
-		return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
+
+		// Check if one of our nonces.
+		if ( substr( $uid, 0, 5 ) === 'wpinv' || substr( $uid, 0, 7 ) === 'getpaid' ) {
+			return $this->has_session() && $this->_customer_id ? $this->_customer_id : $uid;
+		}
+
+		return $uid;
 	}
 
 	/**
@@ -291,12 +288,6 @@ class WPInv_Session_Handler extends WPInv_Session {
 		if ( defined( 'WP_SETUP_CONFIG' ) ) {
 			return array();
 		}
-
-        if ( !is_user_logged_in() ) {
-            if(!wp_verify_nonce( $customer_id, 'wpinv-session-customer-id' )){
-                return array();
-            }
-        }
 
         $key = $this->generate_key($customer_id);
         $value = get_transient($key);
@@ -332,6 +323,3 @@ class WPInv_Session_Handler extends WPInv_Session {
 
 	}
 }
-
-global $wpi_session;
-$wpi_session = new WPInv_Session_Handler();

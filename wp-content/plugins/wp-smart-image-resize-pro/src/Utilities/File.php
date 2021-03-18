@@ -37,4 +37,22 @@ class File
 
     }
 
+        public static function rrmdir( $directory )
+        {
+            foreach ( new \DirectoryIterator( $directory ) as $f ) {
+                if ( $f->isDot() ) {
+                    continue;
+                }
+    
+                if ( $f->isFile() ) {
+                    unlink( $f->getPathname() );
+                } else {
+                    if ( $f->isDir() ) {
+                        static::rrmdir( $f->getPathname() );
+                    }
+                }
+            }
+            rmdir( $directory );
+        }
+
 }

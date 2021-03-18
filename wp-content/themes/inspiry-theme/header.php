@@ -58,7 +58,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <?php 
                         if(is_user_logged_in()){
                             global $current_user; wp_get_current_user();  
-                            ?> <a href="<?php echo get_site_url(); ?>/login/" class="profile-name-value text-decoration-none dark-grey">
+                            ?> <a href="<?php echo get_site_url(); ?>/account-profile/" class="profile-name-value text-decoration-none dark-grey">
                                  <span class="dashicons dashicons-admin-users"></span> <?php echo  $current_user->display_name;?>
                                  <i class="fas fa-chevron-down regular arrow-icon"></i>
                                 <nav>
@@ -73,7 +73,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <?php
                         }
                         else{
-                            ?><a href="<?php echo get_site_url(); ?>/account-profile/" class="login-tag text-decoration-none dark-grey" data-root-url='<?php echo get_home_url()?>/account-profile'>
+                            ?><a href="<?php echo get_site_url(); ?>/account-profile/" class="text-decoration-none dark-grey" data-root-url='<?php echo get_home_url()?>/account-profile'>
                                 <span class="dashicons dashicons-admin-users"></span> LOGIN / REGISTER
                         </a>
                             <?php
@@ -160,6 +160,60 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <?php 
 
     }
-?>
-   
 
+    $items_count = WC()->cart->get_cart_contents_count(); 
+    ?>
+        <div id="mini-cart-count"><?php echo $items_count ? $items_count : '&nbsp;'; ?></div>
+        <div class="cart-popup-container box-shadow">
+			<div class="flex-card">
+
+			
+		<?php
+
+		foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+			$product = $cart_item['data'];
+			$product_id = $cart_item['product_id'];
+			$quantity = $cart_item['quantity'];
+			$price = WC()->cart->get_product_price( $product );
+			$subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+			$link = $product->get_permalink( $cart_item );
+			// Anything related to $product, check $product tutorial
+			$meta = wc_get_formatted_cart_item_data( $cart_item );
+			// echo $product->image_id;
+			// echo $product_id;
+			// echo $product->name;
+			// echo $quantity;
+			?>
+			
+				<div class="product-card">
+					<a href="<?php $link?>" class="rm-txt-dec">
+						<div class="img-container">
+							<img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
+						</div>
+						<div class="title-container">
+
+							<h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php   echo $product->name; ?></h5>
+						</div>
+						
+						<div class="price-container">
+							<h6 class="font-s-regular roboto-font bold">$<?php echo $product->price; ?></h6>
+						</div>
+						<div>
+							
+						</div>
+					</a>
+				</div>
+			
+			<?php
+			
+		}
+		?>
+			</div>
+		</div>
+       
+
+<a class="cart-customlocation" href="<?php echo wc_get_cart_url(); ?>" title="<?php _e( 'View your shopping cart' ); ?>"><?php echo sprintf ( _n( '%d item', '%d items', WC()->cart->get_cart_contents_count() ), WC()->cart->get_cart_contents_count() ); ?> – <?php echo WC()->cart->get_cart_total(); ?></a>
+
+    <?php
+    
+?>

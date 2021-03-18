@@ -1,92 +1,114 @@
 <?php
 /**
- * Contains functions related to Invoicing plugin.
+ * Contains the ajax handlers.
  *
  * @since 1.0.0
  * @package Invoicing
  */
  
-// MUST have WordPress.
-if ( !defined( 'WPINC' ) ) {
-    exit( 'Do NOT access this file directly: ' . basename( __FILE__ ) );
-}
+defined( 'ABSPATH' ) || exit;
 
+/**
+ * WPInv_Ajax class.
+ */
 class WPInv_Ajax {
-    public static function init() {
-        add_action( 'init', array( __CLASS__, 'define_ajax' ), 0 );
-        add_action( 'template_redirect', array( __CLASS__, 'do_wpinv_ajax' ), 0 );
-        self::add_ajax_events();
+
+    /**
+	 * Hook in ajax handlers.
+	 */
+	public static function init() {
+		add_action( 'init', array( __CLASS__, 'define_ajax' ), 0 );
+		add_action( 'template_redirect', array( __CLASS__, 'do_wpinv_ajax' ), 0 );
+		self::add_ajax_events();
     }
 
-    public static function define_ajax() {
-        if ( !empty( $_GET['wpinv-ajax'] ) ) {
-            if ( ! defined( 'DOING_AJAX' ) ) {
-                define( 'DOING_AJAX', true );
-            }
-            if ( ! defined( 'WC_DOING_AJAX' ) ) {
-                define( 'WC_DOING_AJAX', true );
-            }
-            // Turn off display_errors during AJAX events to prevent malformed JSON
-            if ( ! WP_DEBUG || ( WP_DEBUG && ! WP_DEBUG_DISPLAY ) ) {
-                /** @scrutinizer ignore-unhandled */ @ini_set( 'display_errors', 0 );
-            }
-            $GLOBALS['wpdb']->hide_errors();
-        }
-    }
-    
-    public static function do_wpinv_ajax() {
-        global $wp_query;
+    /**
+	 * Set GetPaid AJAX constant and headers.
+	 */
+	public static function define_ajax() {
 
-        if ( !empty( $_GET['wpinv-ajax'] ) ) {
-            $wp_query->set( 'wpinv-ajax', sanitize_text_field( $_GET['wpinv-ajax'] ) );
-        }
+		if ( ! empty( $_GET['wpinv-ajax'] ) ) {
+			getpaid_maybe_define_constant( 'DOING_AJAX', true );
+			getpaid_maybe_define_constant( 'WPInv_DOING_AJAX', true );
+			if ( ! WP_DEBUG || ( WP_DEBUG && ! WP_DEBUG_DISPLAY ) ) {
+				/** @scrutinizer ignore-unhandled */ @ini_set( 'display_errors', 0 );
+			}
+			$GLOBALS['wpdb']->hide_errors();
+		}
 
-        if ( $action = $wp_query->get( 'wpinv-ajax' ) ) {
-            self::wpinv_ajax_headers();
-            do_action( 'wpinv_ajax_' . sanitize_text_field( $action ) );
-            die();
-        }
     }
     
-    private static function wpinv_ajax_headers() {
-        send_origin_headers();
-        /** @scrutinizer ignore-unhandled */ @header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
-        /** @scrutinizer ignore-unhandled */ @header( 'X-Robots-Tag: noindex' );
-        send_nosniff_header();
-        nocache_headers();
-        status_header( 200 );
+    /**
+	 * Send headers for GetPaid Ajax Requests.
+	 *
+	 * @since 1.0.18
+	 */
+	private static function wpinv_ajax_headers() {
+		if ( ! headers_sent() ) {
+			send_origin_headers();
+			send_nosniff_header();
+			nocache_headers();
+			header( 'Content-Type: text/html; charset=' . get_option( 'blog_charset' ) );
+			header( 'X-Robots-Tag: noindex' );
+			status_header( 200 );
+		}
     }
     
+    /**
+	 * Check for GetPaid Ajax request and fire action.
+	 */
+	public static function do_wpinv_ajax() {
+		global $wp_query;
+
+		if ( ! empty( $_GET['wpinv-ajax'] ) ) {
+			$wp_query->set( 'wpinv-ajax', sanitize_text_field( wp_unslash( $_GET['wpinv-ajax'] ) ) );
+		}
+
+		$action = $wp_query->get( 'wpinv-ajax' );
+
+		if ( $action ) {
+			self::wpinv_ajax_headers();
+			$action = sanitize_text_field( $action );
+			do_action( 'wpinv_ajax_' . $action );
+			wp_die();
+		}
+
+    }
+
+    /**
+	 * Hook in ajax methods.
+	 */
     public static function add_ajax_events() {
+
+        // array( 'event' => is_frontend )
         $ajax_events = array(
-            'add_note' => false,
-            'delete_note' => false,
-            'get_states_field' => true,
-            'checkout' => false,
-            'add_invoice_item' => false,
-            'remove_invoice_item' => false,
-            'create_invoice_item' => false,
-            'get_billing_details' => false,
-            'admin_recalculate_totals' => false,
-            'admin_apply_discount' => false,
-            'admin_remove_discount' => false,
-            'check_email' => false,
-            'run_tool' => false,
-            'apply_discount' => true,
-            'remove_discount' => true,
-            'buy_items' => true,
+            'add_note'                    => false,
+            'delete_note'                 => false,
+            'get_states_field'            => true,
+            'get_aui_states_field'        => true,
+            'payment_form'                => true,
+            'get_payment_form'            => true,
+            'get_payment_form_states_field' => true,
+            'get_invoicing_items'         => false,
+            'get_customers'               => false,
+            'get_invoice_items'           => false,
+            'add_invoice_items'           => false,
+            'edit_invoice_item'           => false,
+            'remove_invoice_item'         => false,
+            'get_billing_details'         => false,
+            'recalculate_invoice_totals'  => false,
+            'check_new_user_email'        => false,
+            'run_tool'                    => false,
+            'payment_form_refresh_prices' => true,
         );
 
         foreach ( $ajax_events as $ajax_event => $nopriv ) {
             add_action( 'wp_ajax_wpinv_' . $ajax_event, array( __CLASS__, $ajax_event ) );
-            
-            if ( !defined( 'WPI_AJAX_' . strtoupper( $nopriv ) ) ) {
-                define( 'WPI_AJAX_' . strtoupper( $nopriv ), 1 );
-            }
+            add_action( 'wp_ajax_getpaid_' . $ajax_event, array( __CLASS__, $ajax_event ) );
 
             if ( $nopriv ) {
                 add_action( 'wp_ajax_nopriv_wpinv_' . $ajax_event, array( __CLASS__, $ajax_event ) );
-
+                add_action( 'wp_ajax_nopriv_getpaid_' . $ajax_event, array( __CLASS__, $ajax_event ) );
                 add_action( 'wpinv_ajax_' . $ajax_event, array( __CLASS__, $ajax_event ) );
             }
         }
@@ -137,468 +159,77 @@ class WPInv_Ajax {
         
         die();
     }
-    
-    public static function checkout() {
-        if ( ! defined( 'WPINV_CHECKOUT' ) ) {
-            define( 'WPINV_CHECKOUT', true );
-        }
 
-        wpinv_process_checkout();
-        die(0);
-    }
-    
-    public static function add_invoice_item() {
-        global $wpi_userID, $wpinv_ip_address_country;
-        check_ajax_referer( 'invoice-item', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
-        }
-        
-        $item_id    = sanitize_text_field( $_POST['item_id'] );
-        $invoice_id = absint( $_POST['invoice_id'] );
-        
-        if ( !is_numeric( $invoice_id ) || !is_numeric( $item_id ) ) {
-            die();
-        }
-        
-        $invoice    = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) ) {
-            die();
-        }
-        
-        if ( $invoice->is_paid() || $invoice->is_refunded() ) {
-            die(); // Don't allow modify items for paid invoice.
-        }
-        
-        if ( !empty( $_POST['user_id'] ) ) {
-            $wpi_userID = absint( $_POST['user_id'] ); 
-        }
-
-        $item = new WPInv_Item( $item_id );
-        if ( !( !empty( $item ) && $item->post_type == 'wpi_item' ) ) {
-            die();
-        }
-        
-        // Validate item before adding to invoice because recurring item must be paid individually.
-        if ( !empty( $invoice->cart_details ) ) {
-            $valid = true;
-            
-            if ( $recurring_item = $invoice->get_recurring() ) {
-                if ( $recurring_item != $item_id ) {
-                    $valid = false;
-                }
-            } else if ( wpinv_is_recurring_item( $item_id ) ) {
-                $valid = false;
-            }
-            
-            if ( !$valid ) {
-                $response               = array();
-                $response['success']    = false;
-                $response['msg']        = __( 'You can not add item because recurring item must be paid individually!', 'invoicing' );
-                wp_send_json( $response );
-            }
-        }
-        
-        $checkout_session = wpinv_get_checkout_session();
-        
-        $data                   = array();
-        $data['invoice_id']     = $invoice_id;
-        $data['cart_discounts'] = $invoice->get_discounts( true );
-        
-        wpinv_set_checkout_session( $data );
-        
-        $quantity = wpinv_item_quantities_enabled() && !empty($_POST['qty']) && (int)$_POST['qty'] > 0 ? (int)$_POST['qty'] : 1;
-
-        $args = array(
-            'id'            => $item_id,
-            'quantity'      => $quantity,
-            'item_price'    => $item->get_price(),
-            'custom_price'  => '',
-            'tax'           => 0.00,
-            'discount'      => 0,
-            'meta'          => array(),
-            'fees'          => array()
-        );
-
-        $invoice->add_item( $item_id, $args );
-        $invoice->save();
-        
-        if ( empty( $_POST['country'] ) ) {
-            $_POST['country'] = !empty($invoice->country) ? $invoice->country : wpinv_get_default_country();
-        }
-        if ( empty( $_POST['state'] ) ) {
-            $_POST['state'] = $invoice->state;
-        }
-         
-        $invoice->country   = sanitize_text_field( $_POST['country'] );
-        $invoice->state     = sanitize_text_field( $_POST['state'] );
-        
-        $invoice->set( 'country', sanitize_text_field( $_POST['country'] ) );
-        $invoice->set( 'state', sanitize_text_field( $_POST['state'] ) );
-        
-        $wpinv_ip_address_country = $invoice->country;
-
-        $invoice->recalculate_totals(true);
-        
-        $response                       = array();
-        $response['success']            = true;
-        $response['data']['items']      = wpinv_admin_get_line_items( $invoice );
-        $response['data']['subtotal']   = $invoice->get_subtotal();
-        $response['data']['subtotalf']  = $invoice->get_subtotal(true);
-        $response['data']['tax']        = $invoice->get_tax();
-        $response['data']['taxf']       = $invoice->get_tax(true);
-        $response['data']['discount']   = $invoice->get_discount();
-        $response['data']['discountf']  = $invoice->get_discount(true);
-        $response['data']['total']      = $invoice->get_total();
-        $response['data']['totalf']     = $invoice->get_total(true);
-        
-        wpinv_set_checkout_session($checkout_session);
-        
-        wp_send_json( $response );
-    }
-    
-    public static function remove_invoice_item() {
-        global $wpi_userID, $wpinv_ip_address_country;
-        
-        check_ajax_referer( 'invoice-item', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
-        }
-        
-        $item_id    = sanitize_text_field( $_POST['item_id'] );
-        $invoice_id = absint( $_POST['invoice_id'] );
-        $cart_index = isset( $_POST['index'] ) && $_POST['index'] >= 0 ? $_POST['index'] : false;
-        
-        if ( !is_numeric( $invoice_id ) || !is_numeric( $item_id ) ) {
-            die();
-        }
-
-        $invoice    = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) ) {
-            die();
-        }
-        
-        if ( $invoice->is_paid() || $invoice->is_refunded() ) {
-            die(); // Don't allow modify items for paid invoice.
-        }
-        
-        if ( !empty( $_POST['user_id'] ) ) {
-            $wpi_userID = absint( $_POST['user_id'] ); 
-        }
-
-        $item       = new WPInv_Item( $item_id );
-        if ( !( !empty( $item ) && $item->post_type == 'wpi_item' ) ) {
-            die();
-        }
-        
-        $checkout_session = wpinv_get_checkout_session();
-        
-        $data                   = array();
-        $data['invoice_id']     = $invoice_id;
-        $data['cart_discounts'] = $invoice->get_discounts( true );
-        
-        wpinv_set_checkout_session( $data );
-
-        $args = array(
-            'id'         => $item_id,
-            'quantity'   => 1,
-            'cart_index' => $cart_index
-        );
-
-        $invoice->remove_item( $item_id, $args );
-        $invoice->save();
-        
-        if ( empty( $_POST['country'] ) ) {
-            $_POST['country'] = !empty($invoice->country) ? $invoice->country : wpinv_get_default_country();
-        }
-        if ( empty( $_POST['state'] ) ) {
-            $_POST['state'] = $invoice->state;
-        }
-         
-        $invoice->country   = sanitize_text_field( $_POST['country'] );
-        $invoice->state     = sanitize_text_field( $_POST['state'] );
-        
-        $invoice->set( 'country', sanitize_text_field( $_POST['country'] ) );
-        $invoice->set( 'state', sanitize_text_field( $_POST['state'] ) );
-        
-        $wpinv_ip_address_country = $invoice->country;
-        
-        $invoice->recalculate_totals(true);
-        
-        $response                       = array();
-        $response['success']            = true;
-        $response['data']['items']      = wpinv_admin_get_line_items( $invoice );
-        $response['data']['subtotal']   = $invoice->get_subtotal();
-        $response['data']['subtotalf']  = $invoice->get_subtotal(true);
-        $response['data']['tax']        = $invoice->get_tax();
-        $response['data']['taxf']       = $invoice->get_tax(true);
-        $response['data']['discount']   = $invoice->get_discount();
-        $response['data']['discountf']  = $invoice->get_discount(true);
-        $response['data']['total']      = $invoice->get_total();
-        $response['data']['totalf']     = $invoice->get_total(true);
-        
-        wpinv_set_checkout_session($checkout_session);
-        
-        wp_send_json( $response );
-    }
-    
-    public static function create_invoice_item() {
-        check_ajax_referer( 'invoice-item', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
-        }
-        
-        $invoice_id = absint( $_POST['invoice_id'] );
-
-        // Find the item
-        if ( !is_numeric( $invoice_id ) ) {
-            die();
-        }        
-        
-        $invoice     = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) ) {
-            die();
-        }
-        
-        // Validate item before adding to invoice because recurring item must be paid individually.
-        if ( !empty( $invoice->cart_details ) && $invoice->get_recurring() ) {
-            $response               = array();
-            $response['success']    = false;
-            $response['msg']        = __( 'You can not add item because recurring item must be paid individually!', 'invoicing' );
-            wp_send_json( $response );
-        }        
-        
-        $save_item = wp_unslash( $_POST['_wpinv_quick'] );
-        
-        $meta               = array();
-        $meta['type']       = !empty($save_item['type']) ? sanitize_text_field($save_item['type']) : 'custom';
-        $meta['price']      = !empty($save_item['price']) ? wpinv_sanitize_amount( $save_item['price'] ) : 0;
-        $meta['vat_rule']   = !empty($save_item['vat_rule']) ? sanitize_text_field($save_item['vat_rule']) : 'digital';
-        $meta['vat_class']  = !empty($save_item['vat_class']) ? sanitize_text_field($save_item['vat_class']) : '_standard';
-        
-        $data                   = array();
-        $data['post_title']     = sanitize_text_field($save_item['name']);
-        $data['post_status']    = 'publish';
-        $data['post_excerpt']   = ! empty( $save_item['excerpt'] ) ? wp_kses_post( $save_item['excerpt'] ) : '';
-        $data['meta']           = $meta;
-        
-        $item = new WPInv_Item();
-        $item->create( $data );
-        
-        if ( !empty( $item ) ) {
-            $_POST['item_id']   = $item->ID;
-            $_POST['qty']       = !empty($save_item['qty']) && $save_item['qty'] > 0 ? (int)$save_item['qty'] : 1;
-            
-            self::add_invoice_item();
-        }
-        die();
-    }
-    
+    /**
+     * Retrieves a given user's billing address.
+     */
     public static function get_billing_details() {
-        check_ajax_referer( 'get-billing-details', '_nonce' );
-        
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        // Can the user manage the plugin?
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
             die(-1);
         }
 
-        $user_id            = (int)$_POST['user_id'];
-        $billing_details    = wpinv_get_user_address($user_id);
-        $billing_details    = apply_filters( 'wpinv_fill_billing_details', $billing_details, $user_id );
-        
-        if (isset($billing_details['user_id'])) {
-            unset($billing_details['user_id']);
-        }
-        
-        if (isset($billing_details['email'])) {
-            unset($billing_details['email']);
+        // Do we have a user id?
+        $user_id = $_GET['user_id'];
+
+        if ( empty( $user_id ) || ! is_numeric( $user_id ) ) {
+            die(-1);
         }
 
-        $response                               = array();
-        $response['success']                    = true;
-        $response['data']['billing_details']    = $billing_details;
-        
-        wp_send_json( $response );
-    }
-    
-    public static function admin_recalculate_totals() {
-        global $wpi_userID, $wpinv_ip_address_country;
-        
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
-        }
-        
-        $invoice_id = absint( $_POST['invoice_id'] );        
-        $invoice    = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) ) {
-            die();
-        }
-        
-        $checkout_session = wpinv_get_checkout_session();
-        
-        $data                   = array();
-        $data['invoice_id']     = $invoice_id;
-        $data['cart_discounts'] = $invoice->get_discounts( true );
-        
-        wpinv_set_checkout_session( $data );
-        
-        if ( !empty( $_POST['user_id'] ) ) {
-            $wpi_userID = absint( $_POST['user_id'] ); 
-        }
-        
-        if ( empty( $_POST['country'] ) ) {
-            $_POST['country'] = !empty($invoice->country) ? $invoice->country : wpinv_get_default_country();
-        }
-            
-        $invoice->country = sanitize_text_field( $_POST['country'] );
-        $invoice->set( 'country', sanitize_text_field( $_POST['country'] ) );
-        if ( isset( $_POST['state'] ) ) {
-            $invoice->state = sanitize_text_field( $_POST['state'] );
-            $invoice->set( 'state', sanitize_text_field( $_POST['state'] ) );
-        }
-        
-        $wpinv_ip_address_country = $invoice->country;
-        
-        $invoice = $invoice->recalculate_totals(true);
-        
-        $response                       = array();
-        $response['success']            = true;
-        $response['data']['items']      = wpinv_admin_get_line_items( $invoice );
-        $response['data']['subtotal']   = $invoice->get_subtotal();
-        $response['data']['subtotalf']  = $invoice->get_subtotal(true);
-        $response['data']['tax']        = $invoice->get_tax();
-        $response['data']['taxf']       = $invoice->get_tax(true);
-        $response['data']['discount']   = $invoice->get_discount();
-        $response['data']['discountf']  = $invoice->get_discount(true);
-        $response['data']['total']      = $invoice->get_total();
-        $response['data']['totalf']     = $invoice->get_total(true);
-        
-        wpinv_set_checkout_session($checkout_session);
-        
-        wp_send_json( $response );
-    }
-    
-    public static function admin_apply_discount() {
-        global $wpi_userID;
-        
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
-        }
-        
-        $invoice_id = absint( $_POST['invoice_id'] );
-        $discount_code = sanitize_text_field( $_POST['code'] );
-        if ( empty( $invoice_id ) || empty( $discount_code ) ) {
-            die();
-        }
-        
-        $invoice = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) || ( !empty( $invoice ) && ( $invoice->is_paid() || $invoice->is_refunded() ) ) ) {
-            die();
-        }
-        
-        $checkout_session = wpinv_get_checkout_session();
-        
-        $data                   = array();
-        $data['invoice_id']     = $invoice_id;
-        $data['cart_discounts'] = $invoice->get_discounts( true );
-        
-        wpinv_set_checkout_session( $data );
-        
-        $response               = array();
-        $response['success']    = false;
-        $response['msg']        = __( 'This discount is invalid.', 'invoicing' );
-        $response['data']['code'] = $discount_code;
-        
-        if ( wpinv_is_discount_valid( $discount_code, $invoice->get_user_id() ) ) {
-            $discounts = wpinv_set_cart_discount( $discount_code );
-            
-            $response['success'] = true;
-            $response['msg'] = __( 'Discount has been applied successfully.', 'invoicing' );
-        }  else {
-            $errors = wpinv_get_errors();
-            if ( !empty( $errors['wpinv-discount-error'] ) ) {
-                $response['msg'] = $errors['wpinv-discount-error'];
+        // Fetch the billing details.
+        $billing_details    = wpinv_get_user_address( $user_id );
+        $billing_details    = apply_filters( 'wpinv_ajax_billing_details', $billing_details, $user_id );
+
+        // unset the user id and email.
+        $to_ignore = array( 'user_id', 'email' );
+
+        foreach ( $to_ignore as $key ) {
+            if ( isset( $billing_details[ $key ] ) ) {
+                unset( $billing_details[ $key ] );
             }
-            wpinv_unset_error( 'wpinv-discount-error' );
         }
-        
-        wpinv_set_checkout_session($checkout_session);
-        
-        wp_send_json( $response );
+
+        wp_send_json_success( $billing_details );
+
     }
-    
-    public static function admin_remove_discount() {
-        global $wpi_userID;
-        
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
+
+    /**
+     * Checks if a new users email is valid.
+     */
+    public static function check_new_user_email() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        // Can the user manage the plugin?
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
             die(-1);
         }
-        
-        $invoice_id = absint( $_POST['invoice_id'] );
-        $discount_code = sanitize_text_field( $_POST['code'] );
-        if ( empty( $invoice_id ) || empty( $discount_code ) ) {
-            die();
+
+        // We need an email address.
+        if ( empty( $_GET['email'] ) ) {
+            _e( "Provide the new user's email address", 'invoicing' );
+            exit;
         }
-        
-        $invoice = wpinv_get_invoice( $invoice_id );
-        if ( empty( $invoice ) || ( !empty( $invoice ) && ( $invoice->is_paid() || $invoice->is_refunded() ) ) ) {
-            die();
+
+        // Ensure the email is valid.
+        $email = sanitize_text_field( $_GET['email'] );
+        if ( ! is_email( $email ) ) {
+            _e( 'Invalid email address', 'invoicing' );
+            exit;
         }
-        
-        $checkout_session = wpinv_get_checkout_session();
-        
-        $data                   = array();
-        $data['invoice_id']     = $invoice_id;
-        $data['cart_discounts'] = $invoice->get_discounts( true );
-        
-        wpinv_set_checkout_session( $data );
-        
-        $response               = array();
-        $response['success']    = false;
-        $response['msg']        = NULL;
-        
-        $discounts  = wpinv_unset_cart_discount( $discount_code );
-        $response['success'] = true;
-        $response['msg'] = __( 'Discount has been removed successfully.', 'invoicing' );
-        
-        wpinv_set_checkout_session($checkout_session);
-        
-        wp_send_json( $response );
-    }
-    
-    public static function check_email() {
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        if ( !wpinv_current_user_can_manage_invoicing() ) {
-            die(-1);
+
+        // And it does not exist.
+        if ( email_exists( $email ) ) {
+            _e( 'A user with this email address already exists', 'invoicing' );
+            exit;
         }
-        
-        $email = sanitize_text_field( $_POST['email'] );
-        
-        $response = array();
-        if ( is_email( $email ) && email_exists( $email ) && $user_data = get_user_by( 'email', $email ) ) {
-            $user_id            = $user_data->ID;
-            $user_login         = $user_data->user_login;
-            $display_name       = $user_data->display_name ? $user_data->display_name : $user_login;
-            $billing_details    = wpinv_get_user_address($user_id);
-            $billing_details    = apply_filters( 'wpinv_fill_billing_details', $billing_details, $user_id );
-            
-            if (isset($billing_details['user_id'])) {
-                unset($billing_details['user_id']);
-            }
-            
-            if (isset($billing_details['email'])) {
-                unset($billing_details['email']);
-            }
-            
-            $response['success']                    = true;
-            $response['data']['id']                 = $user_data->ID;
-            $response['data']['name']               = $user_data->user_email;
-            $response['data']['billing_details']    = $billing_details;
-        }
-        
-        wp_send_json( $response );
+
+        wp_send_json_success( true );
     }
     
     public static function run_tool() {
@@ -615,229 +246,598 @@ class WPInv_Ajax {
             do_action( 'wpinv_tool_' . $tool );
         }
     }
-    
-    public static function apply_discount() {
-        global $wpi_userID;
-        
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        
-        $response = array();
-        
-        if ( isset( $_POST['code'] ) ) {
-            $discount_code = sanitize_text_field( $_POST['code'] );
-
-            $response['success']        = false;
-            $response['msg']            = '';
-            $response['data']['code']   = $discount_code;
-            
-            $invoice = wpinv_get_invoice_cart();
-            if ( empty( $invoice->ID ) ) {
-                $response['msg'] = __( 'Invalid checkout request.', 'invoicing' );
-                wp_send_json( $response );
-            }
-
-            $wpi_userID = $invoice->get_user_id();
-
-            if ( wpinv_is_discount_valid( $discount_code, $wpi_userID ) ) {
-                $discount       = wpinv_get_discount_by_code( $discount_code );
-                $discounts      = wpinv_set_cart_discount( $discount_code );
-                $amount         = wpinv_format_discount_rate( wpinv_get_discount_type( $discount->ID ), wpinv_get_discount_amount( $discount->ID ) );
-                $total          = wpinv_get_cart_total( null, $discounts );
-                $cart_totals    = wpinv_recalculate_tax( true );
-            
-                if ( !empty( $cart_totals ) ) {
-                    $response['success']        = true;
-                    $response['data']           = $cart_totals;
-                    $response['data']['code']   = $discount_code;
-                } else {
-                    $response['success']        = false;
-                }
-            } else {
-                $errors = wpinv_get_errors();
-                $response['msg']  = $errors['wpinv-discount-error'];
-                wpinv_unset_error( 'wpinv-discount-error' );
-            }
-
-            // Allow for custom discount code handling
-            $response = apply_filters( 'wpinv_ajax_discount_response', $response );
-        }
-        
-        wp_send_json( $response );
-    }
-    
-    public static function remove_discount() {
-        check_ajax_referer( 'wpinv-nonce', '_nonce' );
-        
-        $response = array();
-        
-        if ( isset( $_POST['code'] ) ) {
-            $discount_code  = sanitize_text_field( $_POST['code'] );
-            $discounts      = wpinv_unset_cart_discount( $discount_code );
-            $total          = wpinv_get_cart_total( null, $discounts );
-            $cart_totals    = wpinv_recalculate_tax( true );
-            
-            if ( !empty( $cart_totals ) ) {
-                $response['success']        = true;
-                $response['data']           = $cart_totals;
-                $response['data']['code']   = $discount_code;
-            } else {
-                $response['success']        = false;
-            }
-            
-            // Allow for custom discount code handling
-            $response = apply_filters( 'wpinv_ajax_discount_response', $response );
-        }
-        
-        wp_send_json( $response );
-    }
-
 
     /**
-     * Lets users buy items via ajax.
-     *
-     * @since 1.0.0
+     * Retrieves the markup for a payment form.
      */
-    public static function buy_items() {
-        $user_id = get_current_user_id();
+    public static function get_payment_form() {
 
-        if ( empty( $user_id ) ) { // If not logged in then lets redirect to the login page
-            wp_send_json( array(
-                'success' => wp_login_url( wp_get_referer() )
-            ) );
+        // Check nonce.
+        check_ajax_referer( 'getpaid_form_nonce' );
+
+        // Is the request set up correctly?
+		if ( empty( $_GET['form'] ) && empty( $_GET['item'] ) ) {
+			echo aui()->alert(
+				array(
+					'type'    => 'warning',
+					'content' => __( 'No payment form or item provided', 'invoicing' ),
+				)
+            );
+            exit;
+        }
+
+        // Payment form or button?
+		if ( ! empty( $_GET['form'] ) ) {
+            getpaid_display_payment_form( urldecode( $_GET['form'] ) );
+		} else if( ! empty( $_GET['invoice'] ) ) {
+		    getpaid_display_invoice_payment_form( urldecode( $_GET['invoice'] ) );
         } else {
-            // Only check nonce if logged in as it could be cached when logged out.
-            if ( ! isset( $_POST['wpinv_buy_nonce'] ) || ! wp_verify_nonce( $_POST['wpinv_buy_nonce'], 'wpinv_buy_items' ) ) {
-                wp_send_json( array(
-                    'error' => __( 'Security checks failed.', 'invoicing' )
-                ) );
-                wp_die();
-            }
+			$items = getpaid_convert_items_to_array( urldecode( $_GET['item'] ) );
+		    getpaid_display_item_payment_form( $items );
+        }
 
-            // allow to set a custom price through post_id
-            $items = $_POST['items'];
-            $related_post_id = isset( $_POST['post_id'] ) ? (int)$_POST['post_id'] : 0;
-            $custom_item_price = $related_post_id ? abs( get_post_meta( $related_post_id, '_wpi_custom_price', true ) ) : 0;
+        exit;
 
-            $cart_items = array();
-            if ( $items ) {
-                $items = explode( ',', $items );
+    }
 
-                foreach( $items as $item ) {
-                    $item_id = $item;
-                    $quantity = 1;
+    /**
+     * Payment forms.
+     *
+     * @since 1.0.18
+     */
+    public static function payment_form() {
 
-                    if ( strpos( $item, '|' ) !== false ) {
-                        $item_parts = explode( '|', $item );
-                        $item_id = $item_parts[0];
-                        $quantity = $item_parts[1];
-                    }
+        // Check nonce.
+        check_ajax_referer( 'getpaid_form_nonce' );
 
-                    if ( $item_id && $quantity ) {
-                        $cart_items_arr = array(
-                            'id'            => (int)$item_id,
-                            'quantity'      => (int)$quantity
-                        );
+        // ... form fields...
+        if ( empty( $_POST['getpaid_payment_form_submission'] ) ) {
+            _e( 'Error: Reload the page and try again.', 'invoicing' );
+            exit;
+        }
 
-                        // If there is a related post id then add it to meta
-                        if ( $related_post_id ) {
-                            $cart_items_arr['meta'] = array(
-                                'post_id'   => $related_post_id
-                            );
-                        }
+        // Process the payment form.
+        $checkout_class = apply_filters( 'getpaid_checkout_class', 'GetPaid_Checkout' );
+        $checkout       = new $checkout_class( new GetPaid_Payment_Form_Submission() );
+        $checkout->process_checkout();
 
-                        // If there is a custom price then set it.
-                        if ( $custom_item_price ) {
-                            $cart_items_arr['custom_price'] = $custom_item_price;
-                        }
+        exit;
+    }
 
-                        $cart_items[] = $cart_items_arr;
-                    }
-                }
-            }
+    /**
+     * Payment forms.
+     *
+     * @since 1.0.18
+     */
+    public static function get_payment_form_states_field() {
 
-            /**
-             * Filter the wpinv_buy shortcode cart items on the fly.
-             *
-             * @param array $cart_items The cart items array.
-             * @param int $related_post_id The related post id if any.
-             * @since 1.0.0
-             */
-            $cart_items = apply_filters( 'wpinv_buy_cart_items', $cart_items, $related_post_id );
+        if ( empty( $_GET['country'] ) || empty( $_GET['form'] ) ) {
+            exit;
+        }
 
-            // Make sure its not in the cart already, if it is then redirect to checkout.
-            $cart_invoice = wpinv_get_invoice_cart();
+        $elements = getpaid_get_payment_form_elements( $_GET['form'] );
 
-            if ( isset( $cart_invoice->items ) && !empty( $cart_invoice->items ) && !empty( $cart_items ) && serialize( $cart_invoice->items ) == serialize( $cart_items ) ) {
-                wp_send_json( array(
-                    'success' =>  $cart_invoice->get_checkout_payment_url()
-                ) );
-                wp_die();
-            }
+        if ( empty( $elements ) ) {
+            exit;
+        }
 
-            // Check if user has invoice with same items waiting to be paid.
-            $user_invoices = wpinv_get_users_invoices( $user_id , 10 , false , 'wpi-pending' );
-            if ( !empty( $user_invoices ) ) {
-                foreach( $user_invoices as $user_invoice ) {
-                    $user_cart_details = array();
-                    $invoice  = wpinv_get_invoice( $user_invoice->ID );
-                    $cart_details = $invoice->get_cart_details();
-
-                    if ( !empty( $cart_details ) ) {
-                        foreach ( $cart_details as $invoice_item ) {
-                            $ii_arr = array();
-                            $ii_arr['id'] = (int)$invoice_item['id'];
-                            $ii_arr['quantity'] = (int)$invoice_item['quantity'];
-
-                            if (isset( $invoice_item['meta'] ) && !empty( $invoice_item['meta'] ) ) {
-                                $ii_arr['meta'] = $invoice_item['meta'];
-                            }
-
-                            if ( isset( $invoice_item['custom_price'] ) && !empty( $invoice_item['custom_price'] ) ) {
-                                $ii_arr['custom_price'] = $invoice_item['custom_price'];
-                            }
-
-                            $user_cart_details[] = $ii_arr;
-                        }
-                    }
-
-                    if ( !empty( $user_cart_details ) && serialize( $cart_items ) == serialize( $user_cart_details ) ) {
-                        wp_send_json( array(
-                            'success' =>  $invoice->get_checkout_payment_url()
-                        ) );
-                        wp_die();
-                    }
-                }
-            }
-
-            // Create invoice and send user to checkout
-            if ( !empty( $cart_items ) ) {
-                $invoice_data = array(
-                    'status'        =>  'wpi-pending',
-                    'created_via'   =>  'wpi',
-                    'user_id'       =>  $user_id,
-                    'cart_details'  =>  $cart_items,
-                );
-
-                $invoice = wpinv_insert_invoice( $invoice_data, true );
-
-                if ( !empty( $invoice ) && isset( $invoice->ID ) ) {
-                    wp_send_json( array(
-                        'success' =>  $invoice->get_checkout_payment_url()
-                    ) );
-                } else {
-                    wp_send_json( array(
-                        'error' => __( 'Invoice failed to create', 'invoicing' )
-                    ) );
-                }
-            } else {
-                wp_send_json( array(
-                    'error' => __( 'Items not valid.', 'invoicing' )
-                ) );
+        $address_fields = array();
+        foreach ( $elements as $element ) {
+            if ( 'address' === $element['type'] ) {
+                $address_fields = $element;
+                break;
             }
         }
 
-        wp_die();
+        if ( empty( $address_fields ) ) {
+            exit;
+        }
+
+        foreach ( $address_fields['fields'] as $address_field ) {
+
+            if ( 'wpinv_state' == $address_field['name'] ) {
+
+                $wrap_class  = getpaid_get_form_element_grid_class( $address_field );
+                $wrap_class  = esc_attr( "$wrap_class getpaid-address-field-wrapper" );
+                $placeholder = empty( $address_field['placeholder'] ) ? '' : esc_attr( $address_field['placeholder'] );
+                $description = empty( $address_field['description'] ) ? '' : wp_kses_post( $address_field['description'] );
+                $value       = is_user_logged_in() ? get_user_meta( get_current_user_id(), '_wpinv_state', true ) : '';
+                $label       = empty( $address_field['label'] ) ? '' : wp_kses_post( $address_field['label'] );
+
+                if ( ! empty( $address_field['required'] ) ) {
+                    $label .= "<span class='text-danger'> *</span>";
+                }
+
+                $html = getpaid_get_states_select_markup (
+                    sanitize_text_field( $_GET['country'] ),
+                    $value,
+                    $placeholder,
+                    $label,
+                    $description,
+                    ! empty( $address_field['required'] ),
+                    $wrap_class,
+                    wpinv_clean( $_GET['name'] )
+                );
+
+                wp_send_json_success( $html );
+                exit;
+
+            }
+
+        }
+    
+        exit;
     }
+
+    /**
+     * Recalculates invoice totals.
+     */
+    public static function recalculate_invoice_totals() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need an invoice.
+        if ( empty( $_POST['post_id'] ) ) {
+            exit;
+        }
+
+        // Fetch the invoice.
+        $invoice = new WPInv_Invoice( trim( $_POST['post_id'] ) );
+
+        // Ensure it exists.
+        if ( ! $invoice->get_id() ) {
+            exit;
+        }
+
+        // Maybe set the country, state, currency.
+        foreach ( array( 'country', 'state', 'currency', 'vat_number', 'discount_code' ) as $key ) {
+            if ( isset( $_POST[ $key ] ) ) {
+                $method = "set_$key";
+                $invoice->$method( sanitize_text_field( $_POST[ $key ] ) );
+            }
+        }
+
+        // Maybe disable taxes.
+        $invoice->set_disable_taxes( ! empty( $_POST['taxes'] ) );
+
+        // Discount code.
+        if ( ! $invoice->is_paid() && ! $invoice->is_refunded() ) {
+            $discount = new WPInv_Discount( $invoice->get_discount_code() );
+            if ( $discount->exists() ) {
+                $invoice->add_discount( getpaid_calculate_invoice_discount( $invoice, $discount ) );
+            } else {
+                $invoice->remove_discount( 'discount_code' );
+            }
+        }
+
+        // Recalculate totals.
+        $invoice->recalculate_total();
+
+        $total = wpinv_price( $invoice->get_total(), $invoice->get_currency() );
+
+        if ( $invoice->is_recurring() && $invoice->is_parent() && $invoice->get_total() != $invoice->get_recurring_total() ) {
+            $recurring_total = wpinv_price( $invoice->get_recurring_total(), $invoice->get_currency() );
+            $total          .= '<small class="form-text text-muted">' . sprintf( __( 'Recurring Price: %s', 'invoicing' ), $recurring_total ) . '</small>';
+        }
+
+        $totals = array(
+            'subtotal' => wpinv_price( $invoice->get_subtotal(), $invoice->get_currency() ),
+            'discount' => wpinv_price( $invoice->get_total_discount(), $invoice->get_currency() ),
+            'tax'      => wpinv_price( $invoice->get_total_tax(), $invoice->get_currency() ),
+            'total'    => $total,
+        );
+
+        $totals = apply_filters( 'getpaid_invoice_totals', $totals, $invoice );
+
+        wp_send_json_success( compact( 'totals' ) );
+    }
+
+    /**
+     * Get items belonging to a given invoice.
+     */
+    public static function get_invoice_items() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need an invoice and items.
+        if ( empty( $_POST['post_id'] ) ) {
+            exit;
+        }
+
+        // Fetch the invoice.
+        $invoice = new WPInv_Invoice( trim( $_POST['post_id'] ) );
+
+        // Ensure it exists.
+        if ( ! $invoice->get_id() ) {
+            exit;
+        }
+
+        // Return an array of invoice items.
+        $items = array();
+
+        foreach ( $invoice->get_items() as $item ) {
+            $items[] = $item->prepare_data_for_invoice_edit_ajax(  $invoice->get_currency(), $invoice->is_renewal()  );
+        }
+
+        wp_send_json_success( compact( 'items' ) );
+    }
+
+    /**
+     * Edits an invoice item.
+     */
+    public static function edit_invoice_item() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need an invoice and item details.
+        if ( empty( $_POST['post_id'] ) || empty( $_POST['data'] ) ) {
+            exit;
+        }
+
+        // Fetch the invoice.
+        $invoice = new WPInv_Invoice( trim( $_POST['post_id'] ) );
+
+        // Ensure it exists and its not been paid for.
+        if ( ! $invoice->get_id() || $invoice->is_paid() || $invoice->is_refunded() ) {
+            exit;
+        }
+
+        // Format the data.
+        $data = wp_unslash( wp_list_pluck( $_POST['data'], 'value', 'field' ) );
+
+        // Ensure that we have an item id.
+        if ( empty( $data['id'] ) ) {
+            exit;
+        }
+
+        // Abort if the invoice does not have the specified item.
+        $item = $invoice->get_item( (int) $data['id'] );
+
+        if ( empty( $item ) ) {
+            exit;
+        }
+
+        // Update the item.
+        $item->set_price( floatval( $data['price'] ) );
+        $item->set_name( sanitize_text_field( $data['name'] ) );
+        $item->set_description( wp_kses_post( $data['description'] ) );
+        $item->set_quantity( intval( $data['quantity'] ) );
+
+        // Add it to the invoice.
+        $error = $invoice->add_item( $item );
+        $alert = false;
+        if ( is_wp_error( $error ) ) {
+            $alert = $error->get_error_message();
+        }
+
+        // Update totals.
+        $invoice->recalculate_total();
+
+        // Save the invoice.
+        $invoice->save();
+
+        // Return an array of invoice items.
+        $items = array();
+
+        foreach ( $invoice->get_items() as $item ) {
+            $items[] = $item->prepare_data_for_invoice_edit_ajax(  $invoice->get_currency()  );
+        }
+
+        wp_send_json_success( compact( 'items', 'alert' ) );
+    }
+
+    /**
+     * Deletes an invoice item.
+     */
+    public static function remove_invoice_item() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need an invoice and an item.
+        if ( empty( $_POST['post_id'] ) || empty( $_POST['item_id'] ) ) {
+            exit;
+        }
+
+        // Fetch the invoice.
+        $invoice = new WPInv_Invoice( trim( $_POST['post_id'] ) );
+
+        // Ensure it exists and its not been paid for.
+        if ( ! $invoice->get_id() || $invoice->is_paid() || $invoice->is_refunded() ) {
+            exit;
+        }
+
+        // Abort if the invoice does not have the specified item.
+        $item = $invoice->get_item( (int) $_POST['item_id'] );
+
+        if ( empty( $item ) ) {
+            exit;
+        }
+
+        $invoice->remove_item( (int) $_POST['item_id'] );
+
+        // Update totals.
+        $invoice->recalculate_total();
+
+        // Save the invoice.
+        $invoice->save();
+
+        // Return an array of invoice items.
+        $items = array();
+
+        foreach ( $invoice->get_items() as $item ) {
+            $items[] = $item->prepare_data_for_invoice_edit_ajax(  $invoice->get_currency()  );
+        }
+
+        wp_send_json_success( compact( 'items' ) );
+    }
+
+    /**
+     * Adds a items to an invoice.
+     */
+    public static function add_invoice_items() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need an invoice and items.
+        if ( empty( $_POST['post_id'] ) || empty( $_POST['items'] ) ) {
+            exit;
+        }
+
+        // Fetch the invoice.
+        $invoice = new WPInv_Invoice( trim( $_POST['post_id'] ) );
+        $alert   = false;
+
+        // Ensure it exists and its not been paid for.
+        if ( ! $invoice->get_id() || $invoice->is_paid() || $invoice->is_refunded() ) {
+            exit;
+        }
+
+        // Add the items.
+        foreach ( $_POST['items'] as $data ) {
+
+            $item = new GetPaid_Form_Item( $data[ 'id' ] );
+
+            if ( is_numeric( $data[ 'qty' ] ) && (float) $data[ 'qty' ] > 0 ) {
+                $item->set_quantity( $data[ 'qty' ] );
+            }
+
+            if ( $item->get_id() > 0 ) {
+                $error = $invoice->add_item( $item );
+
+                if ( is_wp_error( $error ) ) {
+                    $alert = $error->get_error_message();
+                }
+
+            }
+
+        }
+
+        // Save the invoice.
+        $invoice->recalculate_total();
+        $invoice->save();
+
+        // Return an array of invoice items.
+        $items = array();
+
+        foreach ( $invoice->get_items() as $item ) {
+            $items[] = $item->prepare_data_for_invoice_edit_ajax( $invoice->get_currency() );
+        }
+
+        wp_send_json_success( compact( 'items', 'alert' ) );
+    }
+
+    /**
+     * Retrieves items that should be added to an invoice.
+     */
+    public static function get_invoicing_items() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need a search term.
+        if ( empty( $_GET['search'] ) ) {
+            wp_send_json_success( array() );
+        }
+
+        // Retrieve items.
+        $item_args = array(
+            'post_type'      => 'wpi_item',
+            'orderby'        => 'title',
+            'order'          => 'ASC',
+            'posts_per_page' => -1,
+            'post_status'    => array( 'publish' ),
+            's'              => trim( $_GET['search'] ),
+            'meta_query'     => array(
+                array(
+                    'key'       => '_wpinv_type',
+                    'compare'   => '!=',
+                    'value'     => 'package'
+                )
+            )
+        );
+
+        $items = get_posts( apply_filters( 'getpaid_ajax_invoice_items_query_args', $item_args ) );
+        $data  = array();
+
+
+        $is_payment_form = ( ! empty( $_GET['post_id'] ) && 'wpi_payment_form' == get_post_type( $_GET['post_id'] ) );
+
+        foreach ( $items as $item ) {
+            $item      = new GetPaid_Form_Item( $item );
+            $data[] = array(
+                'id'        => (int) $item->get_id(),
+                'text'      => strip_tags( $item->get_name() ),
+                'form_data' => $is_payment_form ? $item->prepare_data_for_use( false ) : '',
+            );
+        }
+
+        wp_send_json_success( $data );
+
+    }
+
+    /**
+     * Retrieves items that should be added to an invoice.
+     */
+    public static function get_customers() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        if ( ! wpinv_current_user_can_manage_invoicing() ) {
+            exit;
+        }
+
+        // We need a search term.
+        if ( empty( $_GET['search'] ) ) {
+            wp_send_json_success( array() );
+        }
+
+        // Retrieve customers.
+    
+        $customer_args = array(
+            'fields'         => array( 'ID', 'user_email', 'display_name' ),
+            'orderby'        => 'display_name',
+            'search'         => sanitize_text_field( $_GET['search'] ),
+        );
+
+        $customers = get_users( apply_filters( 'getpaid_ajax_invoice_customers_query_args', $customer_args ) );
+        $data      = array();
+
+        foreach ( $customers as $customer ) {
+            $data[] = array(
+                'id'        => (int) $customer->ID,
+                'text'      => strip_tags( sprintf( _x( '%1$s (%2$s)', 'user dropdown', 'invoicing' ), $customer->display_name, $customer->user_email ) ),
+            );
+        }
+
+        wp_send_json_success( $data );
+
+    }
+
+    /**
+     * Retrieves the states field for AUI forms.
+     */
+    public static function get_aui_states_field() {
+
+        // Verify nonce.
+        check_ajax_referer( 'wpinv-nonce' );
+
+        // We need a country.
+        if ( empty( $_GET['country'] ) ) {
+            exit;
+        }
+
+        $states = wpinv_get_country_states( sanitize_text_field( $_GET['country'] ) );
+        $state  = isset( $_GET['state'] ) ? sanitize_text_field( $_GET['state'] ) : wpinv_get_default_state();
+        $name   = isset( $_GET['name'] ) ? sanitize_text_field( $_GET['name'] ) : 'wpinv_state';
+        $class  = isset( $_GET['class'] ) ? sanitize_text_field( $_GET['class'] ) : 'form-control-sm';
+
+        if ( empty( $states ) ) {
+
+            $html = aui()->input(
+                array(
+                    'type'        => 'text',
+                    'id'          => 'wpinv_state',
+                    'name'        => $name,
+                    'label'       => __( 'State', 'invoicing' ),
+                    'label_type'  => 'vertical',
+                    'placeholder' => __( 'State', 'invoicing' ),
+                    'class'       => $class,
+                    'value'       => $state,
+                )
+            );
+
+        } else {
+
+            $html = aui()->select(
+                array(
+                    'id'          => 'wpinv_state',
+                    'name'        => $name,
+                    'label'       => __( 'State', 'invoicing' ),
+                    'label_type'  => 'vertical',
+                    'placeholder' => __( 'Select a state', 'invoicing' ),
+                    'class'       => $class,
+                    'value'       => $state,
+                    'options'     => $states,
+                    'data-allow-clear' => 'false',
+                    'select2'          => true,
+                )
+            );
+
+        }
+
+        wp_send_json_success(
+            array(
+                'html'   => $html,
+                'select' => ! empty ( $states )
+            )
+        );
+
+    }
+
+    /**
+     * Refresh prices.
+     *
+     * @since 1.0.19
+     */
+    public static function payment_form_refresh_prices() {
+
+        // Check nonce.
+        check_ajax_referer( 'getpaid_form_nonce' );
+
+        // ... form fields...
+        if ( empty( $_POST['getpaid_payment_form_submission'] ) ) {
+            _e( 'Error: Reload the page and try again.', 'invoicing' );
+            exit;
+        }
+
+        // Load the submission.
+        $submission = new GetPaid_Payment_Form_Submission();
+
+        // Do we have an error?
+        if ( ! empty( $submission->last_error ) ) {
+            echo $submission->last_error;
+            exit;
+        }
+
+        // Prepare the response.
+        $response = new GetPaid_Payment_Form_Submission_Refresh_Prices( $submission );
+        
+        // Filter the response.
+        $response = apply_filters( 'getpaid_payment_form_ajax_refresh_prices', $response->response, $submission );
+
+        wp_send_json_success( $response );
+    }
+
 }
 
 WPInv_Ajax::init();
