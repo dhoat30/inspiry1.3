@@ -79,7 +79,7 @@
     box-sizing: border-box;
     padding: 0;
     margin: 0;
-    color: #3F3F3F;
+    color: #0b0b0b;
     font-family: 'Playfair Display', serif;
 }
 h3{
@@ -283,6 +283,11 @@ textarea::placeholder{
     cursor: pointer;
     font-weight: 500 !important;
 }
+.button:hover {
+  
+    border: 1px solid #0b0b0b;
+    
+}
 
 .btn {
     width: 120px;
@@ -326,13 +331,11 @@ textarea::placeholder{
 }
 
 .btn-dk-green:hover {
-    background-color: white;
-    color: #303030 !important;
-    border: 2px solid #303030 !important;
+    background-color: #0b0b0b;
 }
 
 .btn-dk-green:hover i {
-    color: #303030 !important;
+    background: #0b0b0b;
 }
 
 

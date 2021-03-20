@@ -30,9 +30,9 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.1d68370b68e799224876.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.1d68370b68e799224876.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.1d68370b68e799224876.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.2b790c3cfe22a0e1ee30.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.2b790c3cfe22a0e1ee30.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.2b790c3cfe22a0e1ee30.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -310,16 +310,67 @@ function woocommerce_ajax_add_to_cart() {
        /**
  * Show cart contents / total Ajax
  */
-// add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
+ add_filter( 'woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_fragment' );
 
-// function woocommerce_header_add_to_cart_fragment( $fragments ) {
-// 	global $woocommerce;
+ function woocommerce_header_add_to_cart_fragment( $fragments ) {
+ 	global $woocommerce;
 
-// 	ob_start();
+ 	ob_start();
 
-// 	?>
- 
+ 	?>
+ <div class="cart-popup-container">
+			<div class="flex-card">
+
+			
+                <?php
+
+                foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                    $product = $cart_item['data'];
+                    $product_id = $cart_item['product_id'];
+                    $quantity = $cart_item['quantity'];
+                    $price = WC()->cart->get_product_price( $product );
+                    $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+                    $link = $product->get_permalink( $cart_item );
+                    // Anything related to $product, check $product tutorial
+                    $meta = wc_get_formatted_cart_item_data( $cart_item );
+                    ?>
+			
+				<div class="product-card">
+					<a href="<?php echo $link?>" class="rm-txt-dec">
+						<div class="img-container">
+							<img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
+						</div>
+						<div class="title-container">
+
+							<h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php   echo $product->name; ?></h5>
+						</div>
+						
+						<div class="price-container">
+                        <h6 class="font-s-regular roboto-font bold"><?php echo $subtotal; ?></h6>
+						</div>
+						
+					</a>
+				</div>
+               
+			    <?php
+                
+                }
+                
+                ?>
+			</div>
+      <div class="total-container">
+                <div class="cart-btn">
+                    <a href="<?php echo get_site_url();?>/cart">Cart</a>
+                </div>
+                <div class="total">
+                    <?php echo WC()->cart->total;?>
+                </div>
+            </div>
+            <div class="checkout-btn">
+                <a href="<?php echo get_site_url();?>/checkout">Checkout</a>
+          </div>
+		</div>
 	<?php
-// 	$fragments['.product-card'] = ob_get_clean();
-// 	return $fragments;
-// }
+ 	$fragments['.cart-popup-container'] = ob_get_clean();
+ 	return $fragments;
+ }

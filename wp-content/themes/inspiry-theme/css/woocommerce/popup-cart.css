@@ -36,3 +36,20 @@
     height: 50px;
     object-fit: cover;
 }
+
+
+/*buttons */ 
+
+.cart-popup-container .total-container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    
+}
+.cart-popup-container .total-container>div{
+    width: 40%;
+}
+.cart-popup-container .total-container .total{
+    text-align: right;
+}

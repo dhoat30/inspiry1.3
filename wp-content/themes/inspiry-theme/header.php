@@ -207,9 +207,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 ?>
 			</div>
-            <div>
-                hello
-                <?php echo WC()->cart->total;?>
+            <div class="total-container">
+                <div class="cart-btn">
+                    <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="<?php echo get_site_url();?>/cart">Cart</a>
+                </div>
+                <div class="total roboto-font">
+                    Total: <?php echo WC()->cart->total;?>
+                </div>
+            </div>
+            <div class="checkout-btn">
+                <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
             </div>
 		</div>
 
