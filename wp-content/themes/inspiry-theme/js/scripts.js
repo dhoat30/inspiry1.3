@@ -26,6 +26,7 @@ import SingleDesignBoard from './modules/SingleDesignBoard';
 import WooAccount from './modules/WooAccount'; 
 //image upload 
 import ImageUpload from './modules/ImageUpload';
+import PopUpCart from './modules/PopUpCart'; 
 
 
 setTimeout(function(){
@@ -61,6 +62,7 @@ window.onload = function() {
     const designBoardSinglePage = new DesignBoard();
     const designBoardSaveBtn = new DesignBoardSaveBtn();
     const singleDesignBoard = new SingleDesignBoard();
+    const popUpCart = new PopUpCart();
 
     //let designBoardAjax = new DesignBoardAjax(); 
 
@@ -132,6 +134,7 @@ window.onload = function() {
                     },
                     success: function (response) {
                         console.log("this is a response")
+                        $('.cart-popup-container').slideDown('slow');
                         console.log( response);        
                         if (response.error & response.product_url) {
                             window.location = response.product_url;

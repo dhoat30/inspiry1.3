@@ -83,7 +83,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             <div class="shopping-cart playfair-fonts font-s-regular desktop-visible">
                 <a href="<?php echo get_site_url(); ?>/cart/" class="text-decoration-none dark-grey">
-                     <span class="dashicons-before dashicons-cart"></span> SHOPPING CART
+                     <span class="dashicons-before dashicons-cart"></span> SHOPPING CART <i class="far fa-chevron-down"></i> 
                 </a>
             </div>
             <div class="shopping-cart playfair-fonts font-s-regular mobile-visible">
@@ -162,12 +162,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     }
 
     ?>
-       <?php 
-        for ($x = 1; $x <= 1; $x++){
-
       
-       ?>
-        <div class="cart-popup-container">
+        <div class="cart-popup-container box-shadow">
+            <i class="fal fa-times"></i>
 			<div class="flex-card">
 
 			
@@ -191,11 +188,11 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 						</div>
 						<div class="title-container">
 
-							<h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php   echo $product->name; ?></h5>
+							<h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; ?></h5>
 						</div>
 						
 						<div class="price-container">
-                        <h6 class="font-s-regular roboto-font bold"><?php echo $subtotal; ?></h6>
+                        <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
 						</div>
 						
 					</a>
@@ -207,19 +204,20 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
                 ?>
 			</div>
-            <div class="total-container">
-                <div class="cart-btn">
-                    <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="<?php echo get_site_url();?>/cart">Cart</a>
+            <div class="pop-up-footer">
+                <div class="total-container">
+                    <div class="cart-btn">
+                        <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="<?php echo get_site_url();?>/cart">Cart</a>
+                    </div>
+                    <div class="total roboto-font">
+                        Total: $<?php echo     str_replace(".00", "", (string)number_format (WC()->cart->total, 2, ".", ""));?>
+                    </div>
                 </div>
-                <div class="total roboto-font">
-                    Total: <?php echo WC()->cart->total;?>
+                <div class="checkout-btn">
+                    <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
                 </div>
-            </div>
-            <div class="checkout-btn">
-                <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
             </div>
 		</div>
-
     <?php
-      }
+      
 ?>
