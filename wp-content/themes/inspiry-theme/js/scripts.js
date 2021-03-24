@@ -131,15 +131,19 @@ window.onload = function() {
                     },
                     complete: function (response) {
                         thisbutton.addClass('added').removeClass('loading');
+                        $('.cart-popup-container').show();
                     },
                     success: function (response) {
-                        console.log("this is a response")
-                        $('.cart-popup-container').slideDown('slow');
-                        console.log( response);        
+                        console.log("these is a responses")
+                       // $('.cart-popup-container').show();
+                        //setTimeout(function(){  $('.cart-popup-container').slideUp('slow');}, 3000);
+                              
                         if (response.error & response.product_url) {
                             window.location = response.product_url;
                             return;
                         } else {
+                            console.log(  response.fragments);  
+                          
                             $(document.body).trigger('added_to_cart', [response.fragments, response.cart_hash, thisbutton]);
                         }
                     },

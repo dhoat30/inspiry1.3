@@ -318,8 +318,61 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
   ob_start();
 
   ?>
-  
+ <div class="cart-box">
+                <div class="flex-card">
+
+                
+                        <?php
+
+                        foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                            $product = $cart_item['data'];
+                            $product_id = $cart_item['product_id'];
+                            $quantity = $cart_item['quantity'];
+                            $price = WC()->cart->get_product_price( $product );
+                            $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+                            $link = $product->get_permalink( $cart_item );
+                            // Anything related to $product, check $product tutorial
+                            $meta = wc_get_formatted_cart_item_data( $cart_item );
+                            ?>
+                
+                    <div class="product-card">
+                        <a href="<?php echo $link?>" class="rm-txt-dec">
+                            <div class="img-container">
+                                <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
+                            </div>
+                            <div class="title-container">
+
+                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; ?></h5>
+                            </div>
+                            
+                            <div class="price-container">
+                            <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
+                            </div>
+                            
+                        </a>
+                    </div>
+                
+                    <?php
+                    
+                    }
+                    
+                    ?>
+			    </div>
+                <div class="pop-up-footer">
+                    <div class="total-container">
+                        <div class="cart-btn">
+                            <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="<?php echo get_site_url();?>/cart">Cart</a>
+                        </div>
+                        <div class="total roboto-font">
+                            Total: $<?php echo     str_replace(".00", "", (string)number_format (WC()->cart->total, 2, ".", ""));?>
+                        </div>
+                    </div>
+                    <div class="checkout-btn">
+                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
+                    </div>
+                </div>
+            </div>
  <?php
-  $fragments['.cart-popup-container .box-shadow'] = ob_get_clean();
+  $fragments['.cart-box'] = ob_get_clean();
   return $fragments;
 }

@@ -2,6 +2,7 @@ const $ = jQuery;
 
 class PopUpCart {
     constructor(){
+        
         this.events(); 
     }
 

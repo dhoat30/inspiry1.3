@@ -7,7 +7,7 @@
     top: 50px; 
     right: 0;
     overflow: scroll;
-    padding: 20px 10px;
+    padding: 20px 0;
     z-index: 2000;
     background: white;
     display: none;
@@ -27,7 +27,7 @@
    
 }
 .cart-popup-container .product-card{
-    padding: 10px 20px;
+    padding: 10px 10px;
 }
 .cart-popup-container .product-card a{
     display: flex;
