@@ -44,7 +44,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 global $current_user; wp_get_current_user();  
                 ?>
                     <div class="wishlist">
-               <a href="<?php echo get_home_url().'/bigcommerce-wishlist' ?>" class="text-decoration-none dark-grey">
+               <a href="<?php echo get_home_url().'/wishlist' ?>" class="text-decoration-none dark-grey">
                <span class="dashicons dashicons-heart"></span>
                </a> 
               
@@ -58,7 +58,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <?php 
                         if(is_user_logged_in()){
                             global $current_user; wp_get_current_user();  
-                            ?> <a href="<?php echo get_site_url(); ?>/account-profile/" class="profile-name-value text-decoration-none dark-grey">
+                            ?> <a href="" class="profile-name-value text-decoration-none dark-grey">
                                  <span class="dashicons dashicons-admin-users"></span> <?php echo  $current_user->display_name;?>
                                  <i class="fas fa-chevron-down regular arrow-icon"></i>
                                 <nav>

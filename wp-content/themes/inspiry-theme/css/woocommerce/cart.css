@@ -198,3 +198,19 @@
 .woocommerce a.remove:hover {
     background-color: #303030 !important; 
 }
+
+/* wishlist page */
+.woocommerce .wishlist_table a.add_to_cart.button.alt {
+    border-radius: 1px;
+    padding: 10px !important;
+    display: block !important;
+}
+.woocommerce .wishlist_table a.add_to_cart.button.alt i {
+    color: white !important;
+}
+.yith-wcwl-share ul li a{
+    background-color: rgb(48,48,48) !important;
+}
+.yith-wcwl-share ul li a i{
+    color: white !important;
+}

@@ -79,7 +79,9 @@
 .profile-trigger {
     position: relative;
 }
-
+.top-banner .dashicons-heart{
+    font-size: 20px !important;
+}
 .my-account-nav {
     background-color: #F8F7F3;
     width: 150px;
@@ -94,6 +96,9 @@
 
 .profile-name-value:hover {
     color: #525659;
+}
+.profile-name-value .dashicons-admin-users{ 
+    font-size: 20px !important;
 }
 
 .my-account-nav li a {
@@ -135,7 +140,7 @@
     border-radius: 2px;
 }
 
-@media (max-width:767px) {
+@media (max-width:900px) {
     .top-banner {
         width: 100%;
         padding: 10px 0;
@@ -212,5 +217,11 @@
     }
     .sidebar .is-search-form {
         display: none;
+    }   
+}
+
+@media (min-width:900px){
+    #mega-menu-inspiry_main_menu>li:last-child{
+        display: none !important;
     }
 }
