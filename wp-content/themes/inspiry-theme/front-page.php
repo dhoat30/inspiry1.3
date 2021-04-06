@@ -109,12 +109,12 @@ get_header();
             <div class="boxes">
                 <div>
                     <p class="section-ft-size white center-align"> Creative Kitchen Walls</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/products/brands/boras-tapeter/ ?>"> <i
+                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/boras-tapeter/ ?>"> <i
                             class="fal fa-arrow-left "></i> Shop Borastapeter <i class="fal fa-arrow-up"></i></a>
                 </div>
                 <div>
                     <p class="section-ft-size white center-align"> Good Things Are Coming</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/products/brands/khroma/"> Shop Khroma <i
+                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/khroma"> Shop Khroma <i
                             class="fal fa-arrow-right"></i> <i class="fal fa-arrow-down"></i></a>
                 </div>
             </div>
