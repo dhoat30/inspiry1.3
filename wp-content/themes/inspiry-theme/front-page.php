@@ -114,7 +114,7 @@ get_header();
                 </div>
                 <div>
                     <p class="section-ft-size white center-align"> Good Things Are Coming</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/products/brands/khroma/ ?>"> Shop Khroma <i
+                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/products/brands/khroma/"> Shop Khroma <i
                             class="fal fa-arrow-right"></i> <i class="fal fa-arrow-down"></i></a>
                 </div>
             </div>

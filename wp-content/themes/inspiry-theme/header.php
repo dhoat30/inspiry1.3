@@ -73,7 +73,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             <?php
                         }
                         else{
-                            ?><a href="<?php echo get_site_url(); ?>/account-profile/" class="text-decoration-none dark-grey" data-root-url='<?php echo get_home_url()?>/account-profile'>
+                            ?><a href="<?php echo get_site_url(); ?>/account-profile/" class="text-decoration-none dark-grey regular" data-root-url='<?php echo get_home_url()?>/account-profile'>
                                 <span class="dashicons dashicons-admin-users"></span> LOGIN / REGISTER
                         </a>
                             <?php
@@ -82,7 +82,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                 
             </div>
             <div class="shopping-cart playfair-fonts font-s-regular desktop-visible">
-                <a href="<?php echo get_site_url(); ?>/cart/" class="text-decoration-none dark-grey">
+                <a href="<?php echo get_site_url(); ?>/cart/" class="text-decoration-none dark-grey regular">
                      <span class="dashicons-before dashicons-cart"></span> SHOPPING CART <i class="far fa-chevron-down"></i> 
                 </a>
             </div>
