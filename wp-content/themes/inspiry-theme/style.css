@@ -615,3 +615,7 @@ textarea::placeholder{
 #getpaid-payment-modal .fa-times{
     display: none;
 }
+
+.footer-menu-row a{ 
+    font-family: 'Roboto', sans-serif;
+}

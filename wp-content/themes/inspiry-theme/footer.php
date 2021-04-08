@@ -75,11 +75,24 @@
         <h6 class="column-s-font regular">Get social with us</h6>
         <div class="underline-dg"></div>
         <div class="social-media-container">
-          <a href="https://www.facebook.com/inspiryliveaninspiredlife/" target="_blank"><i
+          <?php 
+           $argsContact = array(
+            'pagename' => 'contact'
+          );
+          $queryContact = new WP_Query( $argsContact );
+          while($queryContact->have_posts()){
+            $queryContact->the_post(); 
+          ?>
+          <a href="<?php echo get_field("facebook");?>" target="_blank"><i
               class="fab fa-facebook-square"></i></a>
-          <a href="" target="_blank"><i class="fab fa-instagram-square"></i></a>
-          <a href="" target="_blank"><i class="fab fa-pinterest-square"></i></a>
-          <a href="" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a href="<?php echo get_field("instagram");?>" target="_blank"><i class="fab fa-instagram-square"></i></a>
+          <a href="<?php echo get_field("pintrest_");?>" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+          <a href="<?php echo get_field("youtube");?>" target="_blank"><i class="fab fa-youtube"></i></a>
+          <?php 
+          
+          }
+          wp_reset_postdata(  );
+          ?>
         </div>
       </div>
 

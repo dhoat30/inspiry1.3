@@ -109,7 +109,7 @@ get_header();
             <div class="boxes">
                 <div>
                     <p class="section-ft-size white center-align"> Creative Kitchen Walls</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/boras-tapeter/ ?>"> <i
+                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/boras-tapeter/"> <i
                             class="fal fa-arrow-left "></i> Shop Borastapeter <i class="fal fa-arrow-up"></i></a>
                 </div>
                 <div>
