@@ -182,3 +182,158 @@ do_action( 'woocommerce_before_cart' ); ?>
 </div>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>
+<script type="text/javascript">
+
+	var products = {};
+
+			<?php 
+					foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+
+						$product = wc_get_product( $cart_item['data']->get_id()); 
+						$term_list = get_the_terms( $product->get_id(), 'product_cat' );
+	    				$term = $term_list[0];
+	    				$variation_id = "No Variation";
+	    				$qty = $cart_item['quantity'];
+
+	    				if( $product->is_type('variable') ) {
+
+	    							foreach($product->get_available_variations() as $variation_values ){
+	    								foreach($variation_values['attributes'] as $key => $attribute_value ){
+	    									$attribute_name = str_replace( 'attribute_', '', $key );
+	    									$default_value = $product->get_variation_default_attribute($attribute_name);
+	    									if( $default_value == $attribute_value ){
+	    										$is_default_variation = true;
+	    									} else {
+	    										$is_default_variation = false;
+	                 				  		 	break; // Stop this loop to start next main lopp
+						               		}
+						           		 }
+						            	if( $is_default_variation ){
+						            		$variation_id = $variation_values['variation_id'];
+						                break; // Stop the main loop
+						            	}
+						        }
+						} //end of variable product type condition
+
+						?>	var thisProduct = {
+								'name': '<?php echo $product -> get_name()?>',   
+	       						'id': '<?php echo $product -> get_id()?>',
+	       						'price': '<?php echo $product -> get_price()?>',
+	     			       		'brand': '<?php echo  $product->get_attribute('pa_brands')?>',
+	                        	'category': '<?php echo $term -> name ?>',
+	       						'variant': '<?php echo $variation_id ?>',
+	       						'list': '<?php woocommerce_page_title(); ?>',
+	       						'quantity': '<?php echo $qty; ?>'
+							}
+
+							products['<?php echo $product -> get_id()?>'] = thisProduct;
+
+
+						<?php
+						
+					}
+			 ?>
+
+
+
+	var removeBtns = document.getElementsByClassName("remove");
+
+	for(var i = 0; i < removeBtns.length; i++) {
+
+		removeBtns[i].addEventListener("click", function(event) {
+
+			var productId = event.currentTarget.getAttribute("data-product_id");
+			var removedProduct = products[productId];
+
+			dataLayer.push({
+					    'event': 'removeFromCart',
+					    'ecommerce': {
+					      'remove': {
+					        'products': [{
+					          'name': removedProduct.name,                  
+					          'id': removedProduct.id,
+					          'price': removedProduct.price,
+					          'brand': removedProduct.brand,
+					          'category': removedProduct.category,
+					          'variant': removedProduct.variant,
+					          'quantity': removedProduct.quantity   
+					         }]
+					       }
+			   		  	}
+			 		 });
+
+			window.location.reload(false); 
+		}); 
+
+	}
+
+</script>
+
+<script type="text/javascript">
+
+			 var placeOrderBtn = document.getElementsByClassName("woo-btn-dk-green")[0];
+
+			 placeOrderBtn.addEventListener("click", function(event) {
+
+			 	dataLayer.push({
+					    'event': 'checkout',
+					    'ecommerce': {
+					      'checkout': {
+					      	'actionField': {'step': 1},
+
+					        'products': [
+
+					        <?php 
+									foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+
+										$product = wc_get_product( $cart_item['data']->get_id()); 
+										$term_list = get_the_terms( $product->get_id(), 'product_cat' );
+					    				$term = $term_list[0];
+					    				$variation_id = "No Variation";
+					    				$qty = $cart_item['quantity'];
+
+					    				if( $product->is_type('variable') ) {
+
+					    							foreach($product->get_available_variations() as $variation_values ){
+					    								foreach($variation_values['attributes'] as $key => $attribute_value ){
+					    									$attribute_name = str_replace( 'attribute_', '', $key );
+					    									$default_value = $product->get_variation_default_attribute($attribute_name);
+					    									if( $default_value == $attribute_value ){
+					    										$is_default_variation = true;
+					    									} else {
+					    										$is_default_variation = false;
+					                 				  		 	break; // Stop this loop to start next main lopp
+										               		}
+										           		 }
+										            	if( $is_default_variation ){
+										            		$variation_id = $variation_values['variation_id'];
+										                break; // Stop the main loop
+										            	}
+										        }
+									} //end of variable product type condition
+
+							?>
+
+					        {
+					          'name': '<?php echo $product -> get_name()?>',                  
+					          'id': '<?php echo $product -> get_id()?>',
+					          'price': '<?php echo $product -> get_price()?>',
+					          'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
+					          'category': '<?php echo $term -> name ?>',
+					          'variant': '<?php echo $variation_id ?>',
+					          'quantity': '<?php echo $qty ?>'  
+					         },
+
+							<?php
+						
+								}
+							 ?>
+
+
+					         ]
+					       }
+			   		  	}
+			 		 });
+			 });
+
+</script>	

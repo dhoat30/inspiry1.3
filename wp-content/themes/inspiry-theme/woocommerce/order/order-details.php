@@ -112,3 +112,61 @@ do_action( 'woocommerce_after_order_details', $order );
 if ( $show_customer_details ) {
 	wc_get_template( 'order/order-details-customer.php', array( 'order' => $order ) );
 }
+?>
+
+<script>
+
+dataLayer.push({
+'event': 'transactionCompleted',
+  'ecommerce': {
+    'purchase': {
+      'actionField': {
+        'id': '<?php echo $order -> get_order_number()?>',                     
+        'affiliation': 'Ecommerce shop',
+        'revenue': '<?php echo $order->get_subtotal()?>',                     
+        'tax': '<?php echo $order -> get_total_tax()?>',
+        'shipping': '<?php echo $order -> calculate_shipping()?>',
+        'coupon': '<?php echo $order-> get_coupon_codes()? $order-> get_coupon_codes()[0]: 'No Coupon' ?>'
+      },
+      'products': [          
+
+      		<?php 
+      			foreach($order-> get_items() as $item) {
+      				$product = $order -> get_product_from_item($item);
+
+      				$term_list = get_the_terms( $product->get_id(), 'product_cat' );
+    				$term = $term_list[0];
+				$variation_id = "No variation";
+    				$variation = wc_get_product($item['variation_id']);
+    				
+
+    				if($variation != null) {
+    					$variation_id = $variation -> get_id();
+    				}
+
+
+
+    				$list = $product->get_categories();; 
+    				$page_title = get_the_title();
+    				$quantity = $item['qty'];
+
+    				?>       {
+    							'name': '<?php echo $product -> get_name()?>',   
+	       						'id': '<?php echo $product -> get_id()?>',
+	       						'price': '<?php echo $product -> get_price()?>',
+	     			       			'brand': '<?php echo  $product->get_attribute('pa_brands')?>',
+	                        			'category': '<?php echo $term -> name ?>',
+	       						'variant': '<?php echo $variation_id ?>',
+	       						'quantity': '<?php echo $quantity ?>'
+	       					},
+
+    				<?php
+
+      			}
+      		?>
+       ]
+    }
+  }
+});
+
+</script>
