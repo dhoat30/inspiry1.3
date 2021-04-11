@@ -41,7 +41,7 @@ get_header();
                     <h3 class="roboto-font center-align white section-ft-size regular">
                         <?php echo get_field('add_subtitle_');?>
                     </h3>
-                    <a class="rm-txt-dec"
+                    <a class="rm-txt-dec front-page-hero-button"
                         href="<?php echo get_field('add_link');?>"><?php echo get_field('add_link_title');?> <i
                             class="fal fa-arrow-right"></i></a>
                 </div>
@@ -109,12 +109,12 @@ get_header();
             <div class="boxes">
                 <div>
                     <p class="section-ft-size white center-align"> Creative Kitchen Walls</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/boras-tapeter/"> <i
+                    <a class="rm-txt-dec shop-borastapeter-button-home" href="<?php echo get_site_url();?>/brands/boras-tapeter/"> <i
                             class="fal fa-arrow-left "></i> Shop Borastapeter <i class="fal fa-arrow-up"></i></a>
                 </div>
                 <div>
                     <p class="section-ft-size white center-align"> Good Things Are Coming</p>
-                    <a class="rm-txt-dec" href="<?php echo get_site_url();?>/brands/khroma"> Shop Khroma <i
+                    <a class="rm-txt-dec shop-khroma-button-home" href="<?php echo get_site_url();?>/brands/khroma"> Shop Khroma <i
                             class="fal fa-arrow-right"></i> <i class="fal fa-arrow-down"></i></a>
                 </div>
             </div>
@@ -167,8 +167,9 @@ get_header();
                 $loving->the_post(); 
 
                 ?>
-        <a class="rm-txt-dec" href="<?php echo get_field('add_link');?>">
+        
             <div class="cards">
+            
                 <div>
                     <picture>
                         <source media="(max-width: 500px)"
@@ -177,11 +178,11 @@ get_header();
                         <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"large"); ?>"
                             alt="Khroma">
                     </picture>
-                    <a class="rm-txt-dec center-align" href="<?php echo get_field('add_link');?>">Shop Now <i
+                    <a class="rm-txt-dec center-align"  id="we-are-loving" href="<?php echo get_field('add_link');?>">Shop Now <i
                             class="fal fa-arrow-right"></i> </a>
                 </div>
             </div>
-        </a>
+    
         <?php 
 
             }
@@ -239,7 +240,7 @@ get_header();
 
 
         <div class="card">
-            <a href="<?php the_permalink();?>">
+            <a href="<?php the_permalink();?>" class="view-project">
                 <div>
                    
                     <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null, 'large');?>" alt="">
@@ -265,7 +266,7 @@ get_header();
                 <br>Request an information pack<br>
                 trade@inspiry.co.nz
             </div>
-            <a href="<?php echo get_site_url();?>/location" class="rm-txt-dec button btn-dk-green">View Trade
+            <a href="<?php echo get_site_url();?>/location" id="view-trade-proffesional" class="rm-txt-dec button btn-dk-green">View Trade
                 Professionals</a>
         </div>
 
@@ -284,7 +285,7 @@ get_header();
 
 
         <div class="card">
-            <img loading="lazy" class="gallery" src="<?php echo get_the_post_thumbnail_url(null, 'medium');?>"
+            <img loading="lazy" class="gallery" src="<?php echo get_the_post_thumbnail_url(null, 'large');?>"
                 alt="Trade Proffesionals">
             <div class="logo">
 

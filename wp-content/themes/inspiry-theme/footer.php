@@ -83,11 +83,11 @@
           while($queryContact->have_posts()){
             $queryContact->the_post(); 
           ?>
-          <a href="<?php echo get_field("facebook");?>" target="_blank"><i
+          <a class="social-icon" href="<?php echo get_field("facebook");?>" target="_blank"><i
               class="fab fa-facebook-square"></i></a>
-          <a href="<?php echo get_field("instagram");?>" target="_blank"><i class="fab fa-instagram-square"></i></a>
-          <a href="<?php echo get_field("pintrest_");?>" target="_blank"><i class="fab fa-pinterest-square"></i></a>
-          <a href="<?php echo get_field("youtube");?>" target="_blank"><i class="fab fa-youtube"></i></a>
+          <a class="social-icon" href="<?php echo get_field("instagram");?>" target="_blank"><i class="fab fa-instagram-square"></i></a>
+          <a class="social-icon" href="<?php echo get_field("pintrest_");?>" target="_blank"><i class="fab fa-pinterest-square"></i></a>
+          <a class="social-icon" href="<?php echo get_field("youtube");?>" target="_blank"><i class="fab fa-youtube"></i></a>
           <?php 
           
           }

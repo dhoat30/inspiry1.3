@@ -1,7 +1,18 @@
 <?php
 
-//gallery 
+//add meta info on archive page
+add_action( 'woocommerce_after_shop_loop_item', 'add_meta_add_to_cart', 10); 
 
+function add_meta_add_to_cart(){
+  global $product; 
+  $productPrice = $product->get_price(); 
+  $productBrand= $product->get_attribute('pa_brands'); 
+  $term_list = get_the_terms( $product->get_id(), 'product_cat' );
+  $term = $term_list[0];
+  echo "<div class='product-meta' data-name='$product->name' data-id='$product->id' data-sku='$product->sku' data-price='$productPrice' data-brand='$productBrand' data-category='$term->name' data-quantity='1'> </div>";
+ 
+}
+//gallery 
 add_action( 'after_setup_theme', 'mytheme_add_woocommerce_support' );
 function mytheme_add_woocommerce_support(){
     add_theme_support( 'wc-product-gallery-zoom' );
