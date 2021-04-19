@@ -30,7 +30,7 @@
                             'post_status' => 'publish',
                             'tax_query' => array(
                                 array(
-                                    'taxonomy' => 'category',
+                                    'taxonomy' => 'blog-category',
                                     'field'    => 'slug',
                                     'terms'    => array('interior-inspiration'),
                                 )
@@ -46,7 +46,7 @@
             ?>      
                 <div class="cards">
                     <div>
-                            <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                            <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                             <div class="font-s-med center-align text-padding"><?php the_title(); ?></div>
                             <div class="font-s-regular roboto-font center-align text-padding"><?php 
                              echo wp_trim_words(get_the_content(), 15) ;?> </div>
@@ -86,7 +86,7 @@
                     <div>   
                             
                             <a class="rm-txt-dec" href="<?php the_permalink();?>">  
-                                <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                                <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                                 <div class="font-s-regular"><?php the_title(); ?></div>
                             </a>
                     </div>
@@ -114,31 +114,31 @@
             
                 <?php 
 
-                            $argsBlog = array(
-                                'post_type' => 'shop-my-fav',
-                                'posts_per_page' => 6,
+                            $argsProduct = array(
+                                'post_type' => 'product',
+                                'posts_per_page' => 5,
                                 'post_status' => 'publish',
                                 'tax_query' => array(
                                     array(
-                                        'taxonomy' => 'favorite',
+                                        'taxonomy' => 'product_cat',
                                         'field'    => 'slug',
-                                        'terms'    => array('wallpaper'),
+                                        'terms'    => array('blog-wallpaper'),
                                     )
                                     ), 
                                     'orderby' => 'date', 
                                     'order' => 'ASC'
                             );
-                            $Blog = new WP_Query( $argsBlog );
+                            $productQuery = new WP_Query( $argsProduct );
 
-                            while($Blog->have_posts()){ 
-                                $Blog->the_post(); 
+                            while($productQuery->have_posts()){ 
+                                $productQuery->the_post(); 
 
                 ?>      
                     <div class="cards">
                         <div>   
                                 
-                                <a class="rm-txt-dec" href="<?php echo get_field('link');?>">  
-                                    <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                                <a class="rm-txt-dec" href="<?php echo get_the_permalink();?>">  
+                                    <img src="<?php echo get_the_post_thumbnail_url(); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                                     <div class="font-s-regular center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
@@ -158,14 +158,14 @@
                 <?php 
 
                             $argsBlog = array(
-                                'post_type' => 'shop-my-fav',
-                                'posts_per_page' => 6,
+                                'post_type' => 'product',
+                                'posts_per_page' => 5,
                                 'post_status' => 'publish',
                                 'tax_query' => array(
                                     array(
-                                        'taxonomy' => 'favorite',
+                                        'taxonomy' => 'product_cat',
                                         'field'    => 'slug',
-                                        'terms'    => array('furniture'),
+                                        'terms'    => array('blog-furniture'),
                                     )
                                     ), 
                                     'orderby' => 'date', 
@@ -181,7 +181,7 @@
                         <div>   
                                 
                                 <a class="rm-txt-dec" href="<?php echo get_field('link');?>">  
-                                    <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                                    <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                                     <div class="font-s-regular center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
@@ -201,14 +201,14 @@
                 <?php 
 
                             $argsBlog = array(
-                                'post_type' => 'shop-my-fav',
-                                'posts_per_page' => 6,
+                                'post_type' => 'product',
+                                'posts_per_page' => 5,
                                 'post_status' => 'publish',
                                 'tax_query' => array(
                                     array(
-                                        'taxonomy' => 'favorite',
+                                        'taxonomy' => 'product_cat',
                                         'field'    => 'slug',
-                                        'terms'    => array('homeware'),
+                                        'terms'    => array('blog-homeware'),
                                     )
                                     ), 
                                     'orderby' => 'date', 
@@ -224,7 +224,7 @@
                         <div>   
                                 
                                 <a class="rm-txt-dec" href="<?php echo get_field('link');?>">  
-                                    <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                                    <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                                     <div class="font-s-regular center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
@@ -266,7 +266,7 @@
                             'post_status' => 'publish',
                             'tax_query' => array(
                                 array(
-                                    'taxonomy' => 'category',
+                                    'taxonomy' => 'blog-category',
                                     'field'    => 'slug',
                                     'terms'    => array('design-inspiration'),
                                 )
@@ -284,7 +284,7 @@
                     <div>   
                             
                             <a class="rm-txt-dec" href="<?php the_permalink();?>">  
-                                <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
+                                <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                                 <div class="font-s-regular"><?php the_title(); ?></div>
                             </a>
                     </div>

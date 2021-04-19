@@ -63,8 +63,7 @@ function register_custom_type2(){
          "all_items" => "All Blogs", 
          "singular_name" => "Blog"
       ), 
-      "menu_icon" => "dashicons-welcome-write-blog",
-      'taxonomies'          => array('category')
+      "menu_icon" => "dashicons-welcome-write-blog"
    )
    );
 
@@ -119,8 +118,21 @@ function wpdocs_register_private_taxonomy() {
    );
     
    register_taxonomy( 'favorite', 'shop-my-fav', $args );
+
+   $argsBlog = array(
+      'label'        => __( 'Blog Categories', 'textdomain' ),
+      'public'       => true,
+      'rewrite'      => true,
+      'hierarchical' => true,
+      'show_in_rest' => true
+  );
+   
+  register_taxonomy( 'blog-category', 'blogs', $argsBlog );
+
 }
 add_action( 'init', 'wpdocs_register_private_taxonomy', 0 );
+
+
 
 
 
