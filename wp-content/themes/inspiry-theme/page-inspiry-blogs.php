@@ -46,7 +46,7 @@
             ?>      
                 <div class="cards">
                     <div>
-                            <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
+                            <img src="<?php echo get_the_post_thumbnail_url(null,"large"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
                             <div class="font-s-med center-align text-padding"><?php the_title(); ?></div>
                             <div class="font-s-regular roboto-font center-align text-padding"><?php 
                              echo wp_trim_words(get_the_content(), 15) ;?> </div>

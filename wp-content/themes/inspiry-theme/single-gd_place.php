@@ -74,17 +74,10 @@ get_header();
                                
                     ?>
 
-<<<<<<< HEAD
-                <div class="design-board-save-btn-container"
-                    data-tracking-data='{"post_id":"<?php the_id();?>","name":"<?php echo get_the_title(get_the_id()); ?>"}'
-                    <?php echo $link_attributes; ?>>
-                    <i data-exists='<?php echo $existStatus?>' class="fal fa-plus open-board-container"></i>
-=======
                 <div class="design-board-save-btn-container" data-tracking-data='{"post_id":"<?php the_id();?>","name":"<?php echo get_the_title(get_the_id()); ?>"}' <?php echo $link_attributes; ?>>
                     <i data-exists='<?php echo $existStatus?>' class="fal fa-plus open-board-container" ></i>
                   
->>>>>>> 5f6fbd0d8da3759c0b6b1518e02d15b7ce109b9d
-                </div>
+                 </div>
                 
                 <div class="header-contact-btn">
                     <?php echo do_shortcode('[gd_ninja_forms form_id="2" text="Contact Form" post_contact="1" output="button"]'); ?>
