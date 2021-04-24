@@ -35,7 +35,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 		 *
 		 * @var string
 		 */
-		public $version = '0.1.43';
+		public $version = '0.1.46';
 
 		/**
 		 * Class textdomain.
@@ -209,7 +209,8 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 				$aui_screens = array(
 					'page',
 					'post',
-					'settings_page_ayecode-ui-settings'
+					'settings_page_ayecode-ui-settings',
+					'appearance_page_gutenberg-widgets'
 				);
 				$screen_ids = apply_filters( 'aui_screen_ids', $aui_screens );
 
@@ -283,6 +284,9 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 				    font-size: 1.3em;
 				    margin: 1em 0
 				}
+				.blocks-widgets-container .bsui *{
+					box-sizing: border-box;
+				}
                 ";
 
 						// @todo, remove once fixed :: fix for this bug https://github.com/WordPress/gutenberg/issues/14377
@@ -308,11 +312,13 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 		 *
 		 * If this remains small then its best to use this than to add another JS file.
 		 */
-		public function inline_script(){
+		public function inline_script() {
+			// Flatpickr calendar locale
+			$flatpickr_locale = self::flatpickr_locale();
+
 			ob_start();
 			?>
 			<script>
-				
 				/**
 				 * An AUI bootstrap adaptation of GreedyNav.js ( by Luke Jackson ).
 				 *
@@ -395,7 +401,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 						}
 
 						// Window listeners
-						jQuery(window).resize(function() {
+						jQuery(window).on("resize",function() {
 							check();
 						});
 
@@ -404,11 +410,55 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 					});
 				}
 
+				function aui_select2_locale() {
+					var aui_select2_params = <?php echo self::select2_locale(); ?>;
+
+					return {
+						'language': {
+							errorLoading: function() {
+								// Workaround for https://github.com/select2/select2/issues/4355 instead of i18n_ajax_error.
+								return aui_select2_params.i18n_searching;
+							},
+							inputTooLong: function(args) {
+								var overChars = args.input.length - args.maximum;
+								if (1 === overChars) {
+									return aui_select2_params.i18n_input_too_long_1;
+								}
+								return aui_select2_params.i18n_input_too_long_n.replace('%item%', overChars);
+							},
+							inputTooShort: function(args) {
+								var remainingChars = args.minimum - args.input.length;
+								if (1 === remainingChars) {
+									return aui_select2_params.i18n_input_too_short_1;
+								}
+								return aui_select2_params.i18n_input_too_short_n.replace('%item%', remainingChars);
+							},
+							loadingMore: function() {
+								return aui_select2_params.i18n_load_more;
+							},
+							maximumSelected: function(args) {
+								if (args.maximum === 1) {
+									return aui_select2_params.i18n_selection_too_long_1;
+								}
+								return aui_select2_params.i18n_selection_too_long_n.replace('%item%', args.maximum);
+							},
+							noResults: function() {
+								return aui_select2_params.i18n_no_matches;
+							},
+							searching: function() {
+								return aui_select2_params.i18n_searching;
+							}
+						}
+					};
+				}
+
 				/**
 				 * Initiate Select2 items.
 				 */
 				function aui_init_select2(){
-					jQuery("select.aui-select2").select2();
+					var select2_args = jQuery.extend({}, aui_select2_locale());
+
+					jQuery("select.aui-select2").select2(select2_args);
 				}
 
 				/**
@@ -488,7 +538,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 				/**
 				 * Initiate tooltips on the page.
 				 */
-				function aui_init_tooltips(){
+				// function aui_init_tooltips(){
 					jQuery('[data-toggle="tooltip"]').tooltip();
 					jQuery('[data-toggle="popover"]').popover();
 					jQuery('[data-toggle="popover-html"]').popover({
@@ -506,8 +556,9 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 				 */
 				$aui_doing_init_flatpickr = false;
 				function aui_init_flatpickr(){
-					if ( jQuery.isFunction(jQuery.fn.flatpickr) && !$aui_doing_init_flatpickr) {
+					if ( typeof jQuery.fn.flatpickr === "function" && !$aui_doing_init_flatpickr) {
 						$aui_doing_init_flatpickr = true;
+						<?php if ( ! empty( $flatpickr_locale ) ) { ?>try{flatpickr.localize(<?php echo $flatpickr_locale; ?>);}catch(err){console.log(err.message);}<?php } ?>
 						jQuery('input[data-aui-init="flatpickr"]:not(.flatpickr-input)').flatpickr();
 					}
 					$aui_doing_init_flatpickr = false;
@@ -716,7 +767,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 				 * Init Multiple item carousels.
 				 */ 
 				function aui_init_carousel_multiple_items(){
-					jQuery(window).resize(function(){
+					jQuery(window).on("resize",function(){
 						jQuery('.carousel-multiple-items').each(function () {
 							aui_carousel_maybe_show_multiple_items(this);
 						});
@@ -767,6 +818,131 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 					});
 
 				}
+
+
+				/**
+				 * Open a lightbox when an embed item is clicked.
+				 */
+				function aui_lightbox_embed($link,ele){
+					ele.preventDefault();
+
+					// remove it first
+					jQuery('.aui-carousel-modal').remove();
+
+					var $modal = '<div class="modal fade aui-carousel-modal bsui" tabindex="-1" role="dialog" aria-labelledby="aui-modal-title" aria-hidden="true"><div class="modal-dialog modal-dialog-centered modal-xl mw-100"><div class="modal-content bg-transparent border-0"><div class="modal-header"><h5 class="modal-title" id="aui-modal-title"></h5></div><div class="modal-body text-center"><i class="fas fa-circle-notch fa-spin fa-3x"></i></div></div></div></div>';
+					jQuery('body').append($modal);
+
+					jQuery('.aui-carousel-modal').modal({
+						//backdrop: 'static'
+					});
+					jQuery('.aui-carousel-modal').on('hidden.bs.modal', function (e) {
+						jQuery("iframe").attr('src', '');
+					});
+
+					$container = jQuery($link).closest('.aui-gallery');
+
+					$clicked_href = jQuery($link).attr('href');
+					$images = [];
+					$container.find('.aui-lightbox-image').each(function() {
+						var a = this;
+						var href = jQuery(a).attr('href');
+						if (href) {
+							$images.push(href);
+						}
+					});
+
+					if( $images.length ){
+						var $carousel = '<div id="aui-embed-slider-modal" class="carousel slide" >';
+
+						// indicators
+						if($images.length > 1){
+							$i = 0;
+							$carousel  += '<ol class="carousel-indicators position-fixed">';
+							$container.find('.aui-lightbox-image').each(function() {
+								$active = $clicked_href == jQuery(this).attr('href') ? 'active' : '';
+								$carousel  += '<li data-target="#aui-embed-slider-modal" data-slide-to="'+$i+'" class="'+$active+'"></li>';
+								$i++;
+
+							});
+							$carousel  += '</ol>';
+						}
+
+
+
+						// items
+						$i = 0;
+						$carousel  += '<div class="carousel-inner">';
+						$container.find('.aui-lightbox-image').each(function() {
+							var a = this;
+
+							$active = $clicked_href == jQuery(this).attr('href') ? 'active' : '';
+							$carousel  += '<div class="carousel-item '+ $active+'"><div>';
+
+
+							// image
+							var css_height = window.innerWidth > window.innerHeight ? '90vh' : 'auto';
+							var img = jQuery(a).find('img').clone().removeClass().addClass('mx-auto d-block w-auto mw-100 rounded').css('height',css_height).get(0).outerHTML;
+							$carousel  += img;
+							// captions
+							if(jQuery(a).parent().find('.carousel-caption').length ){
+								$carousel  += jQuery(a).parent().find('.carousel-caption').clone().removeClass('sr-only').get(0).outerHTML;
+							}
+							$carousel  += '</div></div>';
+							$i++;
+
+						});
+						$container.find('.aui-lightbox-iframe').each(function() {
+							var a = this;
+
+							$active = $clicked_href == jQuery(this).attr('href') ? 'active' : '';
+							$carousel  += '<div class="carousel-item '+ $active+'"><div class="modal-xl mx-auto embed-responsive embed-responsive-16by9">';
+
+
+							// iframe
+							var css_height = window.innerWidth > window.innerHeight ? '95vh' : 'auto';
+							var url = jQuery(a).attr('href');
+							var iframe = '<iframe class="embed-responsive-item" style="height:'+css_height +'" src="'+url+'?rel=0&amp;showinfo=0&amp;modestbranding=1&amp;autoplay=1" id="video" allow="autoplay"></iframe>';
+							var img = iframe ;//.css('height',css_height).get(0).outerHTML;
+							$carousel  += img;
+
+							$carousel  += '</div></div>';
+							$i++;
+
+						});
+						$carousel  += '</div>';
+
+
+						// next/prev indicators
+						if($images.length > 1) {
+							$carousel += '<a class="carousel-control-prev" href="#aui-embed-slider-modal" role="button" data-slide="prev">';
+							$carousel += '<span class="carousel-control-prev-icon" aria-hidden="true"></span>';
+							$carousel += ' <a class="carousel-control-next" href="#aui-embed-slider-modal" role="button" data-slide="next">';
+							$carousel += '<span class="carousel-control-next-icon" aria-hidden="true"></span>';
+							$carousel += '</a>';
+						}
+
+
+						$carousel  += '</div>';
+
+						var $close = '<button type="button" class="close text-white text-right position-fixed" style="font-size: 2.5em;right: 20px;top: 10px; z-index: 1055;" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>';
+
+						jQuery('.aui-carousel-modal .modal-content').html($carousel).prepend($close);
+
+						// enable ajax load
+						//gd_init_carousel_ajax();
+					}
+
+				}
+
+				/**
+				 * Init lightbox embed.
+				 */
+				function aui_init_lightbox_embed(){
+					// Open a lightbox for embeded items
+					jQuery('.aui-lightbox-image, .aui-lightbox-iframe').unbind('click').click(function(ele) {
+						aui_lightbox_embed(this,ele);
+					});
+				}
 				
 
 				/**
@@ -777,7 +953,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 					init_nav_sub_menus();
 					
 					// init tooltips
-					aui_init_tooltips();
+					// aui_init_tooltips();
 
 					// init select2
 					aui_init_select2();
@@ -793,6 +969,9 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 					
 					// init multiple item carousels
 					aui_init_carousel_multiple_items();
+					
+					// init lightbox embeds
+					aui_init_lightbox_embed();
 				}
 
 				// run on window loaded
@@ -1031,7 +1210,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 			?>
 			<div class="wrap">
 				<h1><?php echo $this->name; ?></h1>
-				<p><?php _e("Here you can adjust settings if you are having compatibility issues.","aui");?></p>
+				<p><?php _e("Here you can adjust settings if you are having compatibility issues.",'aui');?></p>
 				<form method="post" action="options.php">
 					<?php
 					settings_fields( 'ayecode-ui-settings' );
@@ -1070,7 +1249,7 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 									for="wpbs-font_size"><?php _e( 'HTML Font Size (px)', 'aui' ); ?></label></th>
 							<td>
 								<input type="number" name="ayecode-ui-settings[html_font_size]" id="wpbs-font_size" value="<?php echo absint( $this->settings['html_font_size']); ?>" placeholder="16" />
-								<p class="description" ><?php _e("Our font sizing is rem (responsive based) here you can set the html font size in-case your theme is setting it too low.","aui");?></p>
+								<p class="description" ><?php _e("Our font sizing is rem (responsive based) here you can set the html font size in-case your theme is setting it too low.",'aui');?></p>
 							</td>
 						</tr>
 
@@ -1652,6 +1831,215 @@ if ( ! class_exists( 'AyeCode_UI_Settings' ) ) {
 			return $output;
 		}
 
+		/**
+		 * Calendar params.
+		 *
+		 * @since 0.1.44
+		 *
+		 * @return array Calendar params.
+		 */
+		public static function calendar_params() {
+			$params = array(
+				'month_long_1' => __( 'January', 'aui' ),
+				'month_long_2' => __( 'February', 'aui' ),
+				'month_long_3' => __( 'March', 'aui' ),
+				'month_long_4' => __( 'April', 'aui' ),
+				'month_long_5' => __( 'May', 'aui' ),
+				'month_long_6' => __( 'June', 'aui' ),
+				'month_long_7' => __( 'July', 'aui' ),
+				'month_long_8' => __( 'August', 'aui' ),
+				'month_long_9' => __( 'September', 'aui' ),
+				'month_long_10' => __( 'October', 'aui' ),
+				'month_long_11' => __( 'November', 'aui' ),
+				'month_long_12' => __( 'December', 'aui' ),
+				'month_s_1' => _x( 'Jan', 'January abbreviation', 'aui' ),
+				'month_s_2' => _x( 'Feb', 'February abbreviation', 'aui' ),
+				'month_s_3' => _x( 'Mar', 'March abbreviation', 'aui' ),
+				'month_s_4' => _x( 'Apr', 'April abbreviation', 'aui' ),
+				'month_s_5' => _x( 'May', 'May abbreviation', 'aui' ),
+				'month_s_6' => _x( 'Jun', 'June abbreviation', 'aui' ),
+				'month_s_7' => _x( 'Jul', 'July abbreviation', 'aui' ),
+				'month_s_8' => _x( 'Aug', 'August abbreviation', 'aui' ),
+				'month_s_9' => _x( 'Sep', 'September abbreviation', 'aui' ),
+				'month_s_10' => _x( 'Oct', 'October abbreviation', 'aui' ),
+				'month_s_11' => _x( 'Nov', 'November abbreviation', 'aui' ),
+				'month_s_12' => _x( 'Dec', 'December abbreviation', 'aui' ),
+				'day_s1_1' => _x( 'S', 'Sunday initial', 'aui' ),
+				'day_s1_2' => _x( 'M', 'Monday initial', 'aui' ),
+				'day_s1_3' => _x( 'T', 'Tuesday initial', 'aui' ),
+				'day_s1_4' => _x( 'W', 'Wednesday initial', 'aui' ),
+				'day_s1_5' => _x( 'T', 'Friday initial', 'aui' ),
+				'day_s1_6' => _x( 'F', 'Thursday initial', 'aui' ),
+				'day_s1_7' => _x( 'S', 'Saturday initial', 'aui' ),
+				'day_s2_1' => __( 'Su', 'aui' ),
+				'day_s2_2' => __( 'Mo', 'aui' ),
+				'day_s2_3' => __( 'Tu', 'aui' ),
+				'day_s2_4' => __( 'We', 'aui' ),
+				'day_s2_5' => __( 'Th', 'aui' ),
+				'day_s2_6' => __( 'Fr', 'aui' ),
+				'day_s2_7' => __( 'Sa', 'aui' ),
+				'day_s3_1' => __( 'Sun', 'aui' ),
+				'day_s3_2' => __( 'Mon', 'aui' ),
+				'day_s3_3' => __( 'Tue', 'aui' ),
+				'day_s3_4' => __( 'Wed', 'aui' ),
+				'day_s3_5' => __( 'Thu', 'aui' ),
+				'day_s3_6' => __( 'Fri', 'aui' ),
+				'day_s3_7' => __( 'Sat', 'aui' ),
+				'day_s5_1' => __( 'Sunday', 'aui' ),
+				'day_s5_2' => __( 'Monday', 'aui' ),
+				'day_s5_3' => __( 'Tuesday', 'aui' ),
+				'day_s5_4' => __( 'Wednesday', 'aui' ),
+				'day_s5_5' => __( 'Thursday', 'aui' ),
+				'day_s5_6' => __( 'Friday', 'aui' ),
+				'day_s5_7' => __( 'Saturday', 'aui' ),
+				'am_lower' => __( 'am', 'aui' ),
+				'pm_lower' => __( 'pm', 'aui' ),
+				'am_upper' => __( 'AM', 'aui' ),
+				'pm_upper' => __( 'PM', 'aui' ),
+				'firstDayOfWeek' => (int) get_option( 'start_of_week' ),
+				'time_24hr' => false,
+				'year' => __( 'Year', 'aui' ),
+				'hour' => __( 'Hour', 'aui' ),
+				'minute' => __( 'Minute', 'aui' ),
+				'weekAbbreviation' => __( 'Wk', 'aui' ),
+				'rangeSeparator' => __( ' to ', 'aui' ),
+				'scrollTitle' => __( 'Scroll to increment', 'aui' ),
+				'toggleTitle' => __( 'Click to toggle', 'aui' )
+			);
+
+			return apply_filters( 'ayecode_ui_calendar_params', $params );
+		}
+
+		/**
+		 * Flatpickr calendar localize.
+		 *
+		 * @since 0.1.44
+		 *
+		 * @return string Calendar locale.
+		 */
+		public static function flatpickr_locale() {
+			$params = self::calendar_params();
+
+			if ( is_string( $params ) ) {
+				$params = html_entity_decode( $params, ENT_QUOTES, 'UTF-8' );
+			} else {
+				foreach ( (array) $params as $key => $value ) {
+					if ( ! is_scalar( $value ) ) {
+						continue;
+					}
+
+					$params[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
+				}
+			}
+
+			$day_s3 = array();
+			$day_s5 = array();
+
+			for ( $i = 1; $i <= 7; $i ++ ) {
+				$day_s3[] = addslashes( $params[ 'day_s3_' . $i ] );
+				$day_s5[] = addslashes( $params[ 'day_s3_' . $i ] );
+			}
+
+			$month_s = array();
+			$month_long = array();
+
+			for ( $i = 1; $i <= 12; $i ++ ) {
+				$month_s[] = addslashes( $params[ 'month_s_' . $i ] );
+				$month_long[] = addslashes( $params[ 'month_long_' . $i ] );
+			}
+
+ob_start();
+if ( 0 ) { ?><script><?php } ?>
+{
+	weekdays: {
+		shorthand: ['<?php echo implode( "','", $day_s3 ); ?>'],
+		longhand: ['<?php echo implode( "','", $day_s5 ); ?>'],
+	},
+	months: {
+		shorthand: ['<?php echo implode( "','", $month_s ); ?>'],
+		longhand: ['<?php echo implode( "','", $month_long ); ?>'],
+	},
+	daysInMonth: [31,28,31,30,31,30,31,31,30,31,30,31],
+	firstDayOfWeek: <?php echo (int) $params[ 'firstDayOfWeek' ]; ?>,
+	ordinal: function (nth) {
+		var s = nth % 100;
+		if (s > 3 && s < 21)
+			return "th";
+		switch (s % 10) {
+			case 1:
+				return "st";
+			case 2:
+				return "nd";
+			case 3:
+				return "rd";
+			default:
+				return "th";
+		}
+	},
+	rangeSeparator: '<?php echo addslashes( $params[ 'rangeSeparator' ] ); ?>',
+	weekAbbreviation: '<?php echo addslashes( $params[ 'weekAbbreviation' ] ); ?>',
+	scrollTitle: '<?php echo addslashes( $params[ 'scrollTitle' ] ); ?>',
+	toggleTitle: '<?php echo addslashes( $params[ 'toggleTitle' ] ); ?>',
+	amPM: ['<?php echo addslashes( $params[ 'am_upper' ] ); ?>','<?php echo addslashes( $params[ 'pm_upper' ] ); ?>'],
+	yearAriaLabel: '<?php echo addslashes( $params[ 'year' ] ); ?>',
+	hourAriaLabel: '<?php echo addslashes( $params[ 'hour' ] ); ?>',
+	minuteAriaLabel: '<?php echo addslashes( $params[ 'minute' ] ); ?>',
+	time_24hr: <?php echo ( $params[ 'time_24hr' ] ? 'true' : 'false' ) ; ?>
+}
+<?php if ( 0 ) { ?></script><?php } ?>
+<?php
+			$locale = ob_get_clean();
+
+			return apply_filters( 'ayecode_ui_flatpickr_locale', trim( $locale ) );
+		}
+
+		/**
+		 * Select2 JS params.
+		 *
+		 * @since 0.1.44
+		 *
+		 * @return array Select2 JS params.
+		 */
+		public static function select2_params() {
+			$params = array(
+				'i18n_select_state_text'    => esc_attr__( 'Select an option&hellip;', 'aui' ),
+				'i18n_no_matches'           => _x( 'No matches found', 'enhanced select', 'aui' ),
+				'i18n_ajax_error'           => _x( 'Loading failed', 'enhanced select', 'aui' ),
+				'i18n_input_too_short_1'    => _x( 'Please enter 1 or more characters', 'enhanced select', 'aui' ),
+				'i18n_input_too_short_n'    => _x( 'Please enter %item% or more characters', 'enhanced select', 'aui' ),
+				'i18n_input_too_long_1'     => _x( 'Please delete 1 character', 'enhanced select', 'aui' ),
+				'i18n_input_too_long_n'     => _x( 'Please delete %item% characters', 'enhanced select', 'aui' ),
+				'i18n_selection_too_long_1' => _x( 'You can only select 1 item', 'enhanced select', 'aui' ),
+				'i18n_selection_too_long_n' => _x( 'You can only select %item% items', 'enhanced select', 'aui' ),
+				'i18n_load_more'            => _x( 'Loading more results&hellip;', 'enhanced select', 'aui' ),
+				'i18n_searching'            => _x( 'Searching&hellip;', 'enhanced select', 'aui' )
+			);
+
+			return apply_filters( 'ayecode_ui_select2_params', $params );
+		}
+
+		/**
+		 * Select2 JS localize.
+		 *
+		 * @since 0.1.44
+		 *
+		 * @return string Select2 JS locale.
+		 */
+		public static function select2_locale() {
+			$params = self::select2_params();
+
+			foreach ( (array) $params as $key => $value ) {
+				if ( ! is_scalar( $value ) ) {
+					continue;
+				}
+
+				$params[ $key ] = html_entity_decode( (string) $value, ENT_QUOTES, 'UTF-8' );
+			}
+
+			$locale = json_encode( $params );
+
+			return apply_filters( 'ayecode_ui_select2_locale', trim( $locale ) );
+		}
 	}
 
 	/**

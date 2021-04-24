@@ -87,7 +87,7 @@
                 'id': postID
             },
             complete:()=>{
-                $('.project-save-form-section .loader').hide();
+                $('.project-save-form-section .custom-loader').hide();
             },
             success: (response)=>{
                 console.log(response)
@@ -148,7 +148,7 @@
 
         console.log(title + description + statusCheck + postID)
         e.preventDefault();
-        $('.project-save-form-section .loader').show();
+        $('.project-save-form-section .custom-loader').show();
 
        
         $.ajax({
@@ -165,7 +165,7 @@
 
             },
             complete:()=>{
-                $('.project-save-form-section .loader').hide();
+                $('.project-save-form-section .custom-loader').hide();
             },
             success: (response)=>{
                 console.log(response)
@@ -213,7 +213,7 @@
         }
        
         e.preventDefault();
-        $('.project-save-form-section .loader').show();
+        $('.project-save-form-section .custom-loader').show();
 
        
         $.ajax({
@@ -229,7 +229,7 @@
 
             },
             complete:()=>{
-                $('.project-save-form-section .loader').hide();
+                $('.project-save-form-section .custom-loader').hide();
             },
             success: (response)=>{
                 console.log(response)
@@ -357,7 +357,7 @@
     
 
         //show loader icon
-        $(e.target).closest('.board-list-item').find('.loader').addClass('loader--visible');
+        $(e.target).closest('.board-list-item').find('.custom-loader').addClass('loader--visible');
         $.ajax({
             beforeSend: (xhr)=>{
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
@@ -371,7 +371,7 @@
                 'status': boardPostStatus
             },
             complete: () =>{
-                $(e.target).closest('.board-list-item').find('.loader').removeClass('loader--visible');
+                $(e.target).closest('.board-list-item').find('.custom-loader').removeClass('loader--visible');
             },
             success: (response)=>{
                 console.log('this is a success area')
@@ -387,7 +387,7 @@
             error: (response)=>{
                 console.log('this is an error');
                 console.log(response)
-                $(e.target).closest('.board-list-item').find('.loader').removeClass('loader--visible');
+                $(e.target).closest('.board-list-item').find('.custom-loader').removeClass('loader--visible');
 
             }
         });
@@ -400,7 +400,7 @@
        
         let boardID = $(e.target).attr('data-pinid');
        console.log(boardID);
-       $(e.target).html('<div class="loader" style="display:block;"></div> ');
+       $(e.target).html('<div class="custom-loader" style="display:block;"></div> ');
 
       $.ajax({
        beforeSend: (xhr)=>{
@@ -434,7 +434,7 @@
    
        let pinID = $(e.target).attr('data-pinid')
 
-       $(e.target).html('<div class="loader" style="display:block;"></div> ');
+       $(e.target).html('<div class="custom-loader" style="display:block;"></div> ');
 
 
      
@@ -486,7 +486,7 @@
         }
        
         e.preventDefault();
-        $('.project-save-form-section .loader').show();
+        $('.project-save-form-section .custom-loader').show();
 
        
         $.ajax({
@@ -502,7 +502,7 @@
 
             },
             complete:()=>{
-                $('.project-save-form-section .loader').hide();
+                $('.project-save-form-section .custom-loader').hide();
             },
             success: (response)=>{
                 console.log(response)

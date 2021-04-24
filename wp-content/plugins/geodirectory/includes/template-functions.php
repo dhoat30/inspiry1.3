@@ -247,6 +247,10 @@ if ( $wp_query->max_num_pages <= 1 && empty($args['preview']) ) {
 	if ($gd_advanced_pagination != '') {
 		global $posts_per_page, $wpdb, $paged;
 
+		if ( empty( $posts_per_page ) ) {
+			$posts_per_page = get_option( 'posts_per_page' );
+		}
+
 		$post_type = !empty($args['preview']) ? 'gd_place' : geodir_get_current_posttype();
 		$listing_type_name =  geodir_get_post_type_plural_label($post_type);
 		if (geodir_is_page('archive') || geodir_is_page('search')) {
@@ -337,18 +341,22 @@ if ( $wp_query->max_num_pages <= 1 && empty($args['preview']) ) {
 /**
  * Display loop actions such as sort order and listing view type.
  */
-function geodir_loop_actions($args = array()) {
-	do_action( 'geodir_before_loop_actions' );
+function geodir_loop_actions( $args = array() ) {
 	$design_style = geodir_design_style();
-	$template = $design_style ? $design_style."/loop/actions.php" : "loop/actions.php";
+
+	do_action( 'geodir_before_loop_actions', $args );
+
+	$template = $design_style ? $design_style . "/loop/actions.php" : "loop/actions.php";
 
 	// wrap class
-	$wrap_class = geodir_build_aui_class($args);
+	$wrap_class = geodir_build_aui_class( $args );
 
 	echo geodir_get_template_html( $template, array(
 		'wrap_class' => $wrap_class,
+		'args' => $args,
 	) );
-	do_action( 'geodir_after_loop_actions' );
+
+	do_action( 'geodir_after_loop_actions', $args );
 }
 
 /**
@@ -692,16 +700,29 @@ add_action( 'template_redirect', 'geodir_template_redirect' );
  * @package GeoDirectory
  *
  */
-function geodir_list_view_select() {
-
+function geodir_list_view_select( $post_type, $args = array() ) {
 	$design_style = geodir_design_style();
-	$template = $design_style ? $design_style."/loop/select-layout.php" : "loop/select-layout.php";
-	echo geodir_get_template_html( $template );
 
+	$layouts = geodir_get_layout_options( true );
+
+	// Hide layouts.
+	if ( ! empty( $args ) && ! empty( $args['hide_layouts'] ) && is_array( $args['hide_layouts'] ) ) {
+		foreach ( $args['hide_layouts'] as $hide_layout ) {
+			if ( isset( $layouts[ $hide_layout ] ) ) {
+				unset( $layouts[ $hide_layout ] );
+			}
+		}
+	}
+
+	$template = $design_style ? $design_style . "/loop/select-layout.php" : "loop/select-layout.php";
+
+	echo geodir_get_template_html( $template, array(
+		'post_type' => $post_type,
+		'layouts' => $layouts,
+		'args' => $args
+	) );
 }
-
-add_action( 'geodir_extra_loop_actions', 'geodir_list_view_select', 8 );
-
+add_action( 'geodir_extra_loop_actions', 'geodir_list_view_select', 8, 2 );
 
 /**
  * Output the listing archive image
@@ -809,11 +830,12 @@ add_filter( 'geodir_listing_listview_ul_extra_class', 'geodir_listing_listview_u
  * @since  2.0.0
  * @package GeoDirectory
  *
+ * @param array $args Loop arguments.
  */
-function geodir_extra_loop_actions() {
+function geodir_extra_loop_actions( $args = array() ) {
 	$post_type = geodir_get_current_posttype();
 
-	do_action( 'geodir_extra_loop_actions', $post_type );
+	do_action( 'geodir_extra_loop_actions', $post_type, $args );
 }
 
 /**

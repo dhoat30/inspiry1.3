@@ -179,6 +179,7 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Plugin' ) ) :
             require_once WP_SIR_DIR . 'src/Process_Media_Library_Upload.php';
             require_once WP_SIR_DIR . 'src/Utilities/Backup.php';
             require_once WP_SIR_DIR . 'src/Admin.php';
+            require_once WP_SIR_DIR . 'src/Media_Library.php';
 
             if ( extension_loaded( 'fileinfo' ) ) {
                 Image_Editor::get_instance()->run();

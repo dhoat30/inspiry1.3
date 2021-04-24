@@ -23,7 +23,7 @@
 
   /*loader*/ 
 
-.loader {
+.custom-loader {
   border: 5px solid #f3f3f3;
   border-radius: 50% !important;
   border-top: 5px solid #C09F93;

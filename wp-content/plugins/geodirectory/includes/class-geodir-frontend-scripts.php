@@ -338,13 +338,12 @@ class GeoDir_Frontend_Scripts {
 			/**
 			 * On unload page do some cleaning so back button cache does not store these values.
 			 */
-			window.onunload = function(){
+			jQuery(window).on("beforeunload", function(e) {
 				if(jQuery('.sgeo_lat').length ){
 					jQuery('.sgeo_lat').val('');
 					jQuery('.sgeo_lon').val('');
 				}
-			};
-
+			});
 		</script>
 		<?php
 	}
@@ -376,7 +375,7 @@ class GeoDir_Frontend_Scripts {
 	 */
 	private static function register_script( $handle, $path, $deps = array( 'jquery' ), $version = GEODIRECTORY_VERSION, $in_footer = true ) {
 		self::$scripts[] = $handle;
-		if ( $handle == 'select2' && wp_script_is( 'select2', 'registered' ) && !geodir_design_style() ) {
+		if ( $handle == 'select2' && wp_script_is( 'select2', 'registered' ) && ! geodir_design_style() ) {
 			wp_deregister_script( 'select2' ); // Fix conflict with select2 basic version loaded via 3rd party plugins.
 		}
 		wp_register_script( $handle, $path, $deps, $version, $in_footer );

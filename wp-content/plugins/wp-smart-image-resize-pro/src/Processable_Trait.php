@@ -15,7 +15,10 @@ trait Processable_Trait
      *
      * @return bool
      */
-    function isProcessable( $image_id, $imageMeta )
+    public function isProcessable( $image_id, $imageMeta ){
+        return apply_filters('wp_sir_is_image_processable', $this->_isProcessable($image_id, $imageMeta), $image_id);
+    }
+    function _isProcessable( $image_id, $imageMeta )
     {
         
         $cache = wp_cache_get( 'processable_image_' . $image_id, 'wp_sir_cache' );

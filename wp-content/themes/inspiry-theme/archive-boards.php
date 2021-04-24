@@ -168,7 +168,7 @@ get_header();
                                                     <button type="button" class="btn cancel-btns"> Cancel</button>
                                                     <button type="button" class="btn btn-dk-green archive-update-btn"> Save</button>
                                                   
-                                                    <div class="loader"></div>
+                                                    <div class="custom-loader"></div>
                                                 </div>
                                             </form>
                                         </div>
@@ -207,7 +207,7 @@ get_header();
                                                 <button type="button" class="btn cancel-btns"> Cancel</button>
                                                 <button type="submit" class="btn btn-dk-green archive-save-btn"> Save</button>
                                               
-                                                <div class="loader"></div>
+                                                <div class="custom-loader"></div>
                                             </div>
                                         </form>
                                     </div>

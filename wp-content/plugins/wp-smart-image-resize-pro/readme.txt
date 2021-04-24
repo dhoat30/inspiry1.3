@@ -2,13 +2,13 @@
 Contributors: nlemsieh
 Tags: WooCommerce product image resize, fix image crop, resize, image, picture resize, image crop, image resize without cropping, image resize, resize thumbnails, resize images in WooCommerce
 Requires at least: 4.0
-Tested up to: 5.6
+Tested up to: 5.7
 WC requires at least: 3.0
-WC tested up to: 5.0
+WC tested up to: 5.2
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl.html
 Requires PHP: 5.6
-Stable tag: 1.4.9
+Stable tag: 1.5.0
 
 
 Make WooCommerce products images the same size and uniform without cropping.
@@ -52,6 +52,18 @@ Make sure PHP extension `fileinfo` is enabled.
 2. Settings page.
 
 == Changelog ==
+
+= 1.5.0 =
+
+* Filter processed images in the media library toolbar
+* Add filter `wp_sir_serve_webp_images`
+* Improve Whitespace trimming tool  
+
+
+= 1.4.10 =
+
+* Declare compatibility with WooCommerce (v5.2)
+
 
 = 1.4.9 =
 
@@ -274,7 +286,7 @@ Initial release of Smart Image Resize Pro
 
  == Upgrade Notice ==
  
-  = 1.4.3.1 =
+  = 1.4.11 =
 
-* Moved the license activation form to the plugin settings page under the "Manage License" tab.
+* Now you can filter processed images in the media library toolbar.
 

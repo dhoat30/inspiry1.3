@@ -26,6 +26,7 @@ if ( !function_exists( 'wp_sir_get_settings' ) ) {
                         'woocommerce_single',
                         'woocommerce_thumbnail',
                         'woocommerce_gallery_thumbnail',
+                        'thumbnail'
                     ] );
                 } else {
                     return in_array( $sizeName, [ 'thumbnail', 'medium', 'medium_large', 'large' ] );

@@ -10,13 +10,48 @@ class Filter_Processable_Regenerate_Thumbnails extends Base_Filter
 
     public function listen()
     {
-        add_filter( 'rest_attachment_query', [ $this, 'filterProcessableImages' ], 99, 2 );
+        add_filter( 'rest_attachment_query', [ $this, 'filter' ], 99, 2 );
+        add_filter( 'rest_attachment_query', [ $this, 'add_start_id' ], 100, 2 );
     }
 
+    public function add_start_id($args, $request){
+
+        if ( !wp_sir_get_settings()[ 'enable' ] ) {
+            return $args;
+        }
+
+        if ( !$request->get_param( 'is_regeneratable' ) ) {
+            return $args;
+        }
+        
+        if( empty( $args['post__in'] ) ){
+            return $args;
+        }
+        
+        $referer = wp_get_referer();
+        if( !$referer ){
+          return $args;
+        }
+
+        $referer = parse_url($referer,PHP_URL_QUERY);
+        parse_str($referer, $params);
+
+        if( empty( $params['start_id'] ) ){
+            return $args;
+        }
+
+        $start_id = (int)$params['start_id'];
+
+        $args['post__in'] = array_filter($args['post__in'], function($id) use($start_id){
+               return $id >= $start_id;
+        });
+
+        return $args;
+    }
     /**
      * TODO: handle '_processed_at' flag when a post type or tax is no longer processable.
      */
-    public function findProcessableImages()
+    public function filter_processable_images_hook()
     {
         global $wpdb;
 
@@ -54,15 +89,14 @@ class Filter_Processable_Regenerate_Thumbnails extends Base_Filter
 
     }
 
-    /**
+      /**
      * Filter out processable images
      *
      * @param array $args
      * @param \WP_REST_Request $request
      * @return array|null
      */
-    public function filterProcessableImages( $args, $request )
-    {
+    public function filter($args, $request ){
         if ( !wp_sir_get_settings()[ 'enable' ] ) {
             return $args;
         }
@@ -76,10 +110,25 @@ class Filter_Processable_Regenerate_Thumbnails extends Base_Filter
             return $args;
         }
 
-        try {
+        $image_ids = $this->filter_processable_images();
 
+        if ( empty( $image_ids ) ) {
+            $image_ids = [ -1 ];
+        }
+
+        $args[ 'post__in' ] = $image_ids;
+
+        return $args;
+
+    }
+
+  
+    public function filter_processable_images()
+    {
+        try {
+       
             if ( !has_filter( 'wp_sir_is_attached_to' ) ) {
-                $image_ids = $this->findProcessableImages();
+                $image_ids = $this->filter_processable_images_hook();
             } else {
                 global $wpdb;
 
@@ -87,17 +136,13 @@ class Filter_Processable_Regenerate_Thumbnails extends Base_Filter
 
                 $image_ids = $wpdb->get_col( $sql );
                 $image_ids = array_filter( $image_ids, 'wp_sir_is_processable' );
+                
             }
 
-            if ( empty( $image_ids ) ) {
-                $image_ids = [ -1 ];
-            }
-
-            $args[ 'post__in' ] = $image_ids;
+           
         } catch ( Exception $e ) {
-
         }
-        return $args;
+        return $image_ids;
     }
 
 }

@@ -123,6 +123,13 @@ class GetPaid_Payment_Form_Submission {
 	 */
 	public $last_error = null;
 
+	/**
+	 * The last error code.
+	 *
+	 * @var string
+	 */
+	public $last_error_code = null;
+
     /**
 	 * Class constructor.
 	 *
@@ -181,8 +188,12 @@ class GetPaid_Payment_Form_Submission {
 				call_user_func_array( $processor, array( &$this ) );
 			}
 
+		} catch( GetPaid_Payment_Exception $e ) {
+			$this->last_error      = $e->getMessage();
+			$this->last_error_code = $e->getErrorCode();
 		} catch ( Exception $e ) {
-			$this->last_error = $e->getMessage();
+			$this->last_error      = $e->getMessage();
+			$this->last_error_code = $e->getCode();
 		}
 
 		// Fired when we are done processing a submission.
@@ -264,8 +275,31 @@ class GetPaid_Payment_Form_Submission {
 			throw new Exception( __( 'This invoice is already paid for.', 'invoicing' ) );
 		}
 
-		$this->payment_form->set_items( $invoice->get_items() );
 		$this->payment_form->invoice = $invoice;
+		if ( ! $this->payment_form->is_default() ) {
+
+			$items    = array();
+			$item_ids = array();
+	
+			foreach ( $invoice->get_items() as $item ) {
+				if ( ! in_array( $item->get_id(), $item_ids ) ) {
+					$item_ids[] = $item->get_id();
+					$items[]    = $item;
+				}
+			}
+	
+			foreach ( $this->payment_form->get_items() as $item ) {
+				if ( ! in_array( $item->get_id(), $item_ids ) ) {
+					$item_ids[] = $item->get_id();
+					$items[]    = $item;
+				}
+			}
+	
+			$this->payment_form->set_items( $items );
+	
+		} else {
+			$this->payment_form->set_items( $invoice->get_items() );
+		}
 
 		$this->country = $invoice->get_country();
 		$this->state   = $invoice->get_state();

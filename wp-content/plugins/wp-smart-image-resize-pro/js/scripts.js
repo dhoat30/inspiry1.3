@@ -113,6 +113,7 @@ var WP_SIR_UTIL = {
   }
 
 
+  // Toggle the Trim option settings.
   $('#wp-sir-enable-trim').on('change', function () {
     if ($(this).is(':checked')) {
       $('#wp-sir-trim-feather-wrap').removeClass('hidden');
@@ -122,4 +123,53 @@ var WP_SIR_UTIL = {
       $('#wp-sir-trim-tolerance-wrap').addClass('hidden');
     }
   }).change();
+
+
+
+// Add filter to Media Library (grid view)
+
+if( sir_vars ){
+  var SIR_MediaLibraryTaxonomyFilter = wp.media.view.AttachmentFilters.extend({
+    id: 'media-attachment-sir-filter',
+    createFilters() {
+      this.filters = {
+        all: {
+          text: sir_vars.filter_strings.all,
+          props: { _filter: 'all' },
+          priority: 10,
+        },
+        processed: {
+          text: sir_vars.filter_strings.processed,
+          props: { _filter: 'processed' },
+          priority: 20,
+        },
+        unprocessed: {
+          text: sir_vars.filter_strings.unprocessed,
+          props: { _filter: 'unprocessed' },
+          priority: 30,
+        },
+      };
+    },
+  });
+
+  var SIR_AttachmentsBrowser = wp.media.view.AttachmentsBrowser;
+  wp.media.view.AttachmentsBrowser = wp.media.view.AttachmentsBrowser.extend({
+    createToolbar() {
+      // Make sure to load the original toolbar
+      SIR_AttachmentsBrowser.prototype.createToolbar.call(this);
+      this.toolbar.set(
+        'SIR_MediaLibraryTaxonomyFilter',
+        new SIR_MediaLibraryTaxonomyFilter({
+          controller: this.controller,
+          model: this.collection.props,
+          priority: -75,
+        }).render()
+      );
+    },
+  });
+
+}
+
 })(jQuery);
+
+

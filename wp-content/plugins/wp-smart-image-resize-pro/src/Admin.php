@@ -463,7 +463,7 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Settings' ) ) :
                 <?php
                 if(wp_sir_is_woocommerce_activated()): ?>
                     <br>
-                    Default: woocommerce_single, woocommerce_thumbnail, woocommerce_gallery_thumbnail
+                    Default: woocommerce_single, woocommerce_thumbnail, woocommerce_gallery_thumbnail, thumbnail
                 <?php endif;?>
             </p>
             <?php

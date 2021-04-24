@@ -369,6 +369,11 @@ jQuery(function($) {
     // bounce the map markers
     geodir_animate_markers();
 
+    // Bounce the map markers on lazy load map
+    $(window).on('geodirMapAllScriptsLoaded', function() {
+        geodir_animate_markers();
+    });
+
     // fix accessibility issues
     $('.geodir-sort-by[name="sort_by"], #geodir_my_favourites[name="geodir_my_favourites"], #geodir_my_listings[name="geodir_my_listings"], #geodir_add_listing[name="geodir_add_listing"]').on("change", function(e) {
         if ($(this).val()) window.location = $(this).val();
@@ -1158,7 +1163,7 @@ function init_read_more(){
 function gd_delete_post($post_id){
     var message = geodir_params.my_place_listing_del;
     if (confirm(message)) {
-
+        jQuery('.post-' + $post_id + '[data-post-id="' + $post_id + '"] .gd_user_action.delete_link').addClass('opacity-2');
         jQuery.ajax({
             url: geodir_params.ajax_url,
             type: 'POST',
@@ -1170,9 +1175,8 @@ function gd_delete_post($post_id){
             },
             timeout: 20000,
             success: function(data) {
-
                 if(data.success){
-                    lity('<div class="gd-notification gd-success"><i class="fas fa-check-circle"></i> '+ data.data.message +'</div>');
+                    aui_modal("",'<div class="gd-notification gd-success"><i class="fas fa-check-circle"></i> '+ data.data.message +'</div>','',true);
                     jQuery('.post-' + $post_id + '[data-post-id="' + $post_id + '"]').fadeOut();
                     if (data.data.redirect_to && jQuery('body').hasClass('single') && jQuery('body').hasClass('postid-' + $post_id)) {
                         setTimeout(function() {
@@ -1180,8 +1184,9 @@ function gd_delete_post($post_id){
                         }, 3000);
                     }
                 }else{
-                    lity('<div class="gd-notification gd-error"><i class="fas fa-exclamation-circle"></i> '+ data.data.message +'</div>');
+                    aui_modal("",'<div class="gd-notification gd-error"><i class="fas fa-exclamation-circle"></i> '+ data.data.message +'</div>','',true);
                 }
+                jQuery('.post-' + $post_id + '[data-post-id="' + $post_id + '"] .gd_user_action.delete_link').removeClass('opacity-2');
             }
         });
 

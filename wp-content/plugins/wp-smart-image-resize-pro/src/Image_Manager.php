@@ -2,7 +2,6 @@
 
 namespace WP_Smart_Image_Resize;
 
-use Exception;
 use Intervention\Image\ImageManager;
 use WP_Smart_Image_Resize\Utilities\Env;
 

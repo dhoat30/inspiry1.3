@@ -191,6 +191,13 @@ class GeoDir_Compatibility {
 		if ( wp_doing_ajax() ) {
 			add_action( 'admin_init', array( __CLASS__, 'ajax_admin_init' ), 5 );
 		}
+
+		add_filter( 'geodir_link_to_lightbox_attrs', array( __CLASS__, 'link_to_lightbox_attrs' ), 10, 1 );
+
+		// Borlabs Cookie setting
+		if ( defined( 'BORLABS_COOKIE_VERSION' ) ) {
+			add_filter( 'geodir_get_settings_general', array( __CLASS__, 'borlabs_cookie_setting' ), 20, 3 );
+		}
 	}
 
 	/**
@@ -219,7 +226,7 @@ class GeoDir_Compatibility {
 				$parent_theme = wp_get_theme( $parent_theme->Template );
 			}
 
-			if ( ! empty( $parent_theme ) && version_compare( $parent_theme->Version, '1.7', '<' ) ) {
+			if ( ! empty( $parent_theme ) && version_compare( $parent_theme->Version, '1.1.7', '<' ) ) {
 				add_action( 'admin_notices', array( __CLASS__, 'notice_aui_disabled' ) );
 				$settings_link = admin_url("admin.php?page=gd-settings&tab=general&section=developer");
 				$aui_disabled_notice = sprintf( __("Listimia theme works best with GeoDirectory legacy styles, please set legacy styles %shere%s","geodirectory"),"<a href='$settings_link'>","</a>");
@@ -751,6 +758,7 @@ class GeoDir_Compatibility {
 			 || ( defined( 'PORTO_VERSION' ) ) // Porto
 			 || ( function_exists( 'wpbf_theme_setup' ) && ( empty( $meta_key ) || strpos( $meta_key, 'wpbf_' ) === 0 ) ) // Page Builder Framework
 			 || ( function_exists( 'generateblocks_do_activate' ) && strpos( $meta_key, '_generateblocks_' ) === 0 ) // GenerateBlocks plugin
+			 || ( defined( 'US_CORE_VERSION' ) && ( strpos( $meta_key, '_us_' ) === 0 || strpos( $meta_key, 'us_' ) === 0 || strpos( $meta_key, '_wpb_' ) === 0 ) ) // UpSolution Core plugin
 			 ) && geodir_is_gd_post_type( get_post_type( $object_id ) ) ) {
 			if ( geodir_is_page( 'detail' ) ) {
 				$template_page_id = geodir_details_page_id( get_post_type( $object_id ) );
@@ -1654,6 +1662,23 @@ class GeoDir_Compatibility {
 
 			add_action( 'wp_enqueue_scripts', array( __CLASS__, 'generateblocks_enqueue_dynamic_css' ) );
 			add_action( 'wp_head', array( __CLASS__, 'generateblocks_print_inline_css' ) );
+		}
+
+		// UpSolution Core plugin
+		if ( defined( 'US_CORE_VERSION' ) && geodir_is_geodir_page() ) {
+			add_filter( 'us_get_page_area_id', array( __CLASS__, 'us_get_page_area_id' ), 10, 2 );
+		}
+
+		// Oxygen plugin
+		if ( defined( 'CT_VERSION' ) ) {
+			add_filter( 'geodir_get_template', array( __CLASS__, 'oxygen_override_template' ), 11, 5 );
+			add_filter( 'geodir_get_template_part', array( __CLASS__, 'oxygen_override_template_part' ), 11, 3 );
+		}
+
+		// Borlabs Cookie Integration
+		if ( defined( 'BORLABS_COOKIE_VERSION' ) &&  ! is_admin() && geodir_get_option( 'borlabs_cookie' ) ) {
+			add_filter( 'geodir_lazy_load_map', array( __CLASS__, 'borlabs_cookie_setup' ), 999, 1 );
+			add_filter( 'wp_super_duper_widget_output', array( __CLASS__, 'borlabs_cookie_wrap' ), 999, 4 );
 		}
 	}
 
@@ -3265,5 +3290,271 @@ class GeoDir_Compatibility {
 	 */
 	public static function et_theme_builder_template_setting_validate_gd_search( $type, $subtype, $id, $setting ) {
 		return geodir_is_page( 'search' );
+	}
+
+	/**
+	 * Filter UpSolution Core page area id.
+	 *
+	 * @since 2.1.0.11
+	 *
+	 * @param int $area_id Page area id.
+	 * @param string $area Page area.
+	 * @return int Page area id.
+	 */
+	public static function us_get_page_area_id( $area_id, $area = 'none' ) {
+		$postID = self::gd_page_id();
+
+		if ( ! $postID || $area == 'none' ) {
+			return $area_id;
+		}
+
+		$area_id = usof_meta( 'us_' . $area . '_id', $postID );
+
+		// Reset Pages defaults
+		if ( $area_id == '__defaults__' ) {
+			$area_id = us_get_option( $area . '_id', '' );
+		}
+
+		// If you have WPML or Polylang plugins then check the translations
+		if ( has_filter( 'us_tr_object_id' ) && is_numeric( $area_id ) ) {
+			$area_id = (int) apply_filters( 'us_tr_object_id', $area_id );
+		}
+
+		return $area_id;
+	}
+
+	/**
+	 * Get the geodirectory templates theme path.
+	 *
+	 * @since 2.1.0.11
+	 *
+	 * @return string Template path.
+	 */
+	public static function get_theme_template_path() {
+		$template = get_template();
+		$theme_root = get_theme_root( $template );
+
+		$theme_template_path = $theme_root . '/' . $template . '/' . untrailingslashit( geodir_get_theme_template_dir_name() );
+
+		return $theme_template_path;
+	}
+
+	/**
+	 * Oxygen locate theme template.
+	 *
+	 * @since 2.1.0.11
+	 *
+	 * @param string $template The template.
+	 * @return string The theme template.
+	 */
+	public static function oxygen_locate_template( $template ) {
+		$located = '';
+
+		if ( ! $template ) {
+			return $located;
+		}
+
+		$has_filter = has_filter( 'template', 'ct_oxygen_template_name' );
+
+		// Remove template filter
+		if ( $has_filter ) {
+			remove_filter( 'template', 'ct_oxygen_template_name' );
+		}
+
+		$_located = self::get_theme_template_path() . '/' . $template;
+
+		if ( file_exists( $_located ) ) {
+			$located = $_located;
+		}
+
+		// Add template filter
+		if ( $has_filter ) {
+			add_filter( 'template', 'ct_oxygen_template_name' );
+		}
+
+		return $located;
+	}
+
+	/**
+	 * Oxygen override theme template.
+	 *
+	 * @since 2.1.0.11
+	 *
+	 * @param string $located Located template.
+	 * @param string $template_name Template name.
+	 * @param array $located Template args.
+	 * @param string $template_path Template path.
+	 * @param string $default_path Template default path.
+	 * @return string Located template.
+	 */
+	public static function oxygen_override_template( $located, $template_name, $args, $template_path, $default_path ) {
+		if ( $_located = self::oxygen_locate_template( $template_name ) ) {
+			$located = $_located;
+		}
+
+		return $located;
+	}
+
+	/**
+	 * Oxygen override theme template part.
+	 *
+	 * @since 2.1.0.11
+	 *
+	 * @param string $template The template.
+	 * @param string $slug Template slug.
+	 * @param string $name Template name.
+	 * @return string Located template part.
+	 */
+	public static function oxygen_override_template_part( $template, $slug, $name ) {
+		if ( ! $slug && ! $name ) {
+			return $template;
+		}
+
+		$_template = '';
+
+		if ( $name ) {
+			// Look in yourtheme/geodirectory/slug-name.php
+			$_template = self::oxygen_locate_template( "{$slug}-{$name}.php" );
+		} else {
+			// Look in yourtheme/geodirectory/slug.php
+			$_template = self::oxygen_locate_template( "{$slug}.php" );
+		}
+
+		if ( $_template ) {
+			return $_template;
+		}
+
+		// Get default slug-name.php
+		if ( $name && file_exists( geodir_get_templates_dir() . "/{$slug}-{$name}.php" ) ) {
+			$_template = geodir_get_templates_dir() . "/{$slug}-{$name}.php";
+		} else if ( ! $name && file_exists( geodir_get_templates_dir() . "/{$slug}.php" ) ) {
+			$_template = geodir_get_templates_dir() . "/{$slug}.php";
+		}
+
+		if ( $_template ) {
+			return $_template;
+		}
+
+		// Look in yourtheme/geodirectory/slug.php
+		$_template = self::oxygen_locate_template( "{$slug}.php" );
+
+		if ( $_template ) {
+			$template = $_template;
+		}
+
+		return $template;
+	}
+
+	/**
+	 * Add attributes to the lightbox link element.
+	 *
+	 * @since 2.1.0.12
+	 *
+	 * @param string $attrs Attributes.
+	 * @return string Attributes.
+	 */
+	public static function link_to_lightbox_attrs( $attrs = '' ) {
+		// Elementor disable lightbox.
+		if( defined( 'ELEMENTOR_VERSION' ) ) {
+			$attrs .= ' data-elementor-open-lightbox="no"';
+		}
+
+		return $attrs;
+	}
+
+	/**
+	 * Borlabs Cookie map setting.
+	 *
+	 * @since 2.1.0.13
+	 *
+	 * @param array $settings General settings.
+	 * @return array General settings.
+	 */
+	public static function borlabs_cookie_setting( $settings ) {
+		$_settings = array();
+
+		foreach ( $settings as $key => $setting ) {
+			$_settings[] = $setting;
+
+			if ( ! empty( $setting['id'] ) && $setting['id'] == 'map_cache' ) {
+				$_settings[] = array(
+					'name' => __( 'Borlabs Cookie Integration', 'geodirectory'),
+					'desc' => __( 'Enable Borlabs Cookie integration for GeoDirecotry maps.', 'geodirectory' ),
+					'id' => 'borlabs_cookie',
+					'type' => 'checkbox',
+					'default' => '0',
+					'desc_tip' => false,
+					'advanced' => true
+				);
+			}
+		}
+
+		return $_settings;
+	}
+
+	/**
+	 * Borlabs Cookie map id.
+	 *
+	 * @since 2.1.0.13
+	 *
+	 * @return string Map id.
+	 */
+	public static function borlabs_cookie_id() {
+		if ( GeoDir_Maps::active_map() == 'osm' ) {
+			$content_id = 'openstreetmap'; // OpenStreetMap
+		} else if ( GeoDir_Maps::active_map() == 'none' ) {
+			$content_id = ''; // None
+		} else {
+			$content_id = 'googlemaps'; // Google Maps
+		}
+
+		return $content_id;
+	}
+
+	/**
+	 * Borlabs Cookie set lazy load map.
+	 *
+	 * @since 2.1.0.13
+	 *
+	 * @param string $lazy_load Lazy load type.
+	 * @return string Filtered lazy load map.
+	 */
+	public static function borlabs_cookie_setup( $lazy_load = '' ) {
+		if ( $lazy_load != 'click' && ( $cookie_id = self::borlabs_cookie_id() ) ) {
+			$contentBlockerData = BorlabsCookie\Cookie\Frontend\ContentBlocker::getInstance()->getContentBlockerData( $cookie_id );
+
+			// Apply when content blocker is active.
+			if ( ! empty( $contentBlockerData ) && ! BorlabsCookie\Cookie\Frontend\Cookies::getInstance()->checkConsent( $cookie_id ) ) {
+				$lazy_load = 'click';
+			}
+		}
+
+		return $lazy_load;
+	}
+
+	/**
+	 * Wrap map content by Borlabs Cookie.
+	 *
+	 * @since 2.1.0.13
+	 *
+	 * @param string $output Map widget content.
+	 * @return array $instance Widget instance.
+	 * @param array $args Widget args.
+	 * @return array $super_duper Super Duper class.
+	 * @return string Map widget content.
+	 */
+	public static function borlabs_cookie_wrap( $output, $instance, $args, $super_duper ) {
+		if ( $output != '' && ! empty( $super_duper->options['base_id'] ) && in_array( $super_duper->options['base_id'], array( 'gd_map' ) ) && ( $cookie_id = self::borlabs_cookie_id() ) ) {
+			$contentBlockerData = BorlabsCookie\Cookie\Frontend\ContentBlocker::getInstance()->getContentBlockerData( $cookie_id );
+
+			// Apply when content blocker is active.
+			if ( ! empty( $contentBlockerData ) && ! BorlabsCookie\Cookie\Frontend\Cookies::getInstance()->checkConsent( $cookie_id ) ) {
+				$script = geodir_lazy_load_map() == 'click' ? '<script type="text/javascript">jQuery(function($){$(".geodir-lazyload-div").trigger("click");});</script>' : '';
+
+				$output = do_shortcode( '[borlabs-cookie id="' . $cookie_id . '" type="content-blocker"]' . $output . $script . '[/borlabs-cookie]' );
+			}
+		}
+
+		return $output;
 	}
 }

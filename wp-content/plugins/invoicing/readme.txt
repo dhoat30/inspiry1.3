@@ -4,7 +4,7 @@ Donate link: https://www.ko-fi.com/stiofan
 Tags:  payments, invoice, invoicing, Recurring payments, Paypal, Stripe, credit card payments, buy now button, checkout form, payments form builder,
 Requires at least: 4.9
 Tested up to: 5.7
-Stable tag: 2.1.7
+Stable tag: 2.2.4
 License: GPLv3
 License URI: http://www.gnu.org/licenses/gpl-3.0.html
 
@@ -48,7 +48,7 @@ GetPaid can be used as a payment system with a checkout page by any plugin.
 * Authorize.Net (built-in) - Accept credit card payments (single or recurring) via Authorize.Net.
 * Worldpay (built-in) - Accept credit card payments via Worldpay.
 * Pre Bank Transfer (built-in) - Instruct users how to send you a bank transfer which you can then later mark as paid.
-* [Stripe](https://wpgetpaid.com/downloads/stripe-payment-gateway/) - Accept credit card payments (single or recurring) directly on your website via Stripe.
+* [Stripe](https://wordpress.org/plugins/getpaid-stripe-payments/) - Accept credit card payments (single or recurring) directly on your website via Stripe.
 * [PayPal Pro](https://wpgetpaid.com/downloads/paypal-pro-payment-gateway/) - Accept Paypal and credit card payments (single or recurring) directly on your website.
 * [PayFast](https://wpgetpaid.com/downloads/payfast-payment-gateway/) - Accept payments via PayFast.
 * [Cheque Payment](https://wpgetpaid.com/downloads/cheque-payment-gateway/)  - Accept payments via Cheques
@@ -132,6 +132,54 @@ Automatic updates should seamlessly work. We always suggest you backup up your w
 9. Single invoice view page.
 
 == Changelog ==
+
+= 2.2.4 =
+* Authorize.NET improvements - ADDED
+* Payment gateways can now only be activated in their respective settings sections - CHANGED
+* Add discount field to default (and new payment) forms by default - CHANGED
+* Hide discount field if there is no published discount code - CHANGED
+* Customers in Canada, Vietnam, Australia, Singapore, Nigeria, Brazil, South Korea, and India are no longer no longer required to provide a VAT number if "Require VAT number" is enabled - CHANGED
+
+= 2.2.3 =
+* Invoice paid hooks not fired - FIXED
+
+= 2.2.2 =
+* Ability to manually set an invoice's payment date - ADDED
+* Do not update customer names when their billing details change - CHANGED
+* Support for non-query string webhook URLs - Authorize.NET no longer accepts query strings in webhook URLs - ADDED
+* Display discount code errors below the discount field - ADDED
+
+= 2.2.1 =
+* Add note for successful notification emails - ADDED
+* Link to remote subscription from the subscriptions page - ADDED
+* Ability to manually update a subscription's profile id - ADDED
+* Site admins can now view other user's suscriptions on the frontend - ADDED
+* Show subscription bill times on invoices and subscriptions - ADDED
+* Trigger js event when form state changes - ADDED
+* Reload page until payment is processed - ADDED
+
+= 2.2.0 =
+* Ability to set logo width and height - ADDED
+* Flat amount discount code applies to each item instead of the total - FIXED
+* Ability to programmatically link a payment form and an invoice - ADDED
+
+= 2.1.10 =
+* Non-overidden GetPaid templates not working on Oxygen pagebuilder - FIXED
+
+= 2.1.9 =
+* Rename improperly named gateways in invoices table - FIXED
+* Oxygen pagebuilder custom templates not working - FIXED
+* Existing invoices with wrong VAT numbers not payable unless a valid VAT number is provided - FIXED
+* Use a datepicker to set the due date - CHANGED
+* PayPal sometimes shows incorrect totals - FIXED
+* Invoices with discount codes do not automatically add the discount code to the payment form - FIXED
+
+= 2.1.8 =
+* Sometimes invoice user not changeable for manual invoices - FIXED
+* Improve invoice creation customer searches
+* Improve invoice creation item searches
+* Wildcard information not shown when editing some email templates - FIXED
+* Ability to manually add a discount to a quote - ADDED
 
 = 2.1.7 =
 * Lots of customers causes the invoices screen to hang - FIXED

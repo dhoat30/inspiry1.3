@@ -53,24 +53,24 @@
     },
     {
         "name": "ayecode/wp-ayecode-ui",
-        "version": "0.1.43",
-        "version_normalized": "0.1.43.0",
+        "version": "0.1.46",
+        "version_normalized": "0.1.46.0",
         "source": {
             "type": "git",
             "url": "https://github.com/AyeCode/wp-ayecode-ui.git",
-            "reference": "3606edd468c8a502df34237d0ac9e3470f2ad08d"
+            "reference": "8b9825d9fe52f6da57302358df1a920eec3bace3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/AyeCode/wp-ayecode-ui/zipball/3606edd468c8a502df34237d0ac9e3470f2ad08d",
-            "reference": "3606edd468c8a502df34237d0ac9e3470f2ad08d",
+            "url": "https://api.github.com/repos/AyeCode/wp-ayecode-ui/zipball/8b9825d9fe52f6da57302358df1a920eec3bace3",
+            "reference": "8b9825d9fe52f6da57302358df1a920eec3bace3",
             "shasum": ""
         },
         "require": {
             "composer/installers": "~1.0",
             "php": ">=5.3.0"
         },
-        "time": "2021-02-24T08:24:26+00:00",
+        "time": "2021-04-07T17:56:42+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -202,17 +202,17 @@
     },
     {
         "name": "ayecode/wp-super-duper",
-        "version": "1.0.23",
-        "version_normalized": "1.0.23.0",
+        "version": "1.0.24",
+        "version_normalized": "1.0.24.0",
         "source": {
             "type": "git",
             "url": "https://github.com/AyeCode/wp-super-duper.git",
-            "reference": "9473c0b7cf3ef4c32374222994a3e4613cdaeb48"
+            "reference": "4eaa2f6f6e1a29ff71f7fdbd694892d7479ef754"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/AyeCode/wp-super-duper/zipball/9473c0b7cf3ef4c32374222994a3e4613cdaeb48",
-            "reference": "9473c0b7cf3ef4c32374222994a3e4613cdaeb48",
+            "url": "https://api.github.com/repos/AyeCode/wp-super-duper/zipball/4eaa2f6f6e1a29ff71f7fdbd694892d7479ef754",
+            "reference": "4eaa2f6f6e1a29ff71f7fdbd694892d7479ef754",
             "shasum": ""
         },
         "require": {
@@ -224,7 +224,7 @@
             "squizlabs/php_codesniffer": "^3.2",
             "wp-coding-standards/wpcs": "*"
         },
-        "time": "2020-12-10T15:55:09+00:00",
+        "time": "2021-02-24T10:37:16+00:00",
         "type": "library",
         "installation-source": "dist",
         "autoload": {
@@ -259,12 +259,12 @@
         "source": {
             "type": "git",
             "url": "https://github.com/composer/installers.git",
-            "reference": "98b34f8ab3558bee5caa7c07efbab3f5bd7663ab"
+            "reference": "0f4a400e1c678d2650c5c27cce9e534cc3305c2a"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/composer/installers/zipball/98b34f8ab3558bee5caa7c07efbab3f5bd7663ab",
-            "reference": "98b34f8ab3558bee5caa7c07efbab3f5bd7663ab",
+            "url": "https://api.github.com/repos/composer/installers/zipball/0f4a400e1c678d2650c5c27cce9e534cc3305c2a",
+            "reference": "0f4a400e1c678d2650c5c27cce9e534cc3305c2a",
             "shasum": ""
         },
         "require": {
@@ -282,7 +282,7 @@
             "symfony/phpunit-bridge": "^4.2 || ^5",
             "symfony/process": "^2.3"
         },
-        "time": "2021-02-02T15:00:11+00:00",
+        "time": "2021-04-05T08:39:13+00:00",
         "type": "composer-plugin",
         "extra": {
             "class": "Composer\\Installers\\Plugin",
@@ -360,6 +360,7 @@
             "majima",
             "mako",
             "mediawiki",
+            "miaoxing",
             "modulework",
             "modx",
             "moodle",

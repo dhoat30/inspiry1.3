@@ -56,7 +56,7 @@ get_header();
                                     <button type="submit" class="save-btn btn btn-dk-green archive-save-btn">
                                         Upload</button>
 
-                                    <div class="loader"></div>
+                                    <div class="custom-loader"></div>
                                 </div>
                             </form>
                         </div>

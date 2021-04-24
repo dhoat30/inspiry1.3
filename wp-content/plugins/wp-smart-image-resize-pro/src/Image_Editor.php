@@ -168,12 +168,12 @@ if ( ! class_exists( '\WP_Smart_Image_Resize\Image_Editor' ) ) :
                 @set_time_limit( 0 );
 
                 $imageMeta->setMimeType( $image->mime() );
-
-                $image->filter( new Trim_Filter( $imageMeta ) );
-
+               
                 
                 $image->filter( new CreateWebP_Filter( $imageMeta->getOriginalFullPath( 'webp' ) ) );
                 
+
+                $image->filter( new Trim_Filter( $imageMeta ) );
 
                 $imageMeta->setBackup();
 

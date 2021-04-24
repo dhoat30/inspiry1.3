@@ -825,7 +825,19 @@ function geodir_cf_text($html,$location,$cf,$p='',$output=''){
                         return '';// dont output blank prices
                     }
                     $value = geodir_currency_format_number( $value, $cf );
+                } else if ( isset( $cf['data_type'] ) && $cf['data_type'] == 'INT' ) {
+                    if ( ceil( $value ) > 0 ) {
+                        $value = geodir_cf_format_number( $value, $cf );
+                    }
+                } else if ( isset( $cf['data_type'] ) && ( $cf['data_type'] == 'FLOAT' || $cf['data_type'] == 'DECIMAL' ) ) {
+                    if ( ceil( $value ) > 0 ) {
+                        $value = geodir_cf_format_decimal( $value, $cf );
+                    }
                 }
+            }
+
+            if ( $cf['htmlvar_name'] == 'service_distance' && ! empty( $value ) ) {
+                $value = geodir_show_distance( $value );
             }
 
             // Return stripped value.

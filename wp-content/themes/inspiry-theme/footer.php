@@ -140,7 +140,7 @@
         <?php 
                                                             
                                                         the_title();?>
-        <div class="loader"></div>
+        <div class="custom-loader"></div>
 
       </li>
 
@@ -180,7 +180,7 @@
             <button type="button" class="cancel-btn btn"> Cancel</button>
             <button type="submit" class="save-btn btn btn-dk-green archive-save-btn"> Save</button>
 
-            <div class="loader"></div>
+            <div class="custom-loader"></div>
           </div>
         </form>
       </div>

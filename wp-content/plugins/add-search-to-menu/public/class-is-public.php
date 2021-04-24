@@ -379,7 +379,7 @@ class IS_Public
                 $q['s'] = preg_replace( '/\\b(' . implode( '|', $stopwords ) . ')\\b/', '', $q['s'] );
                 $query->query_vars['s'] = trim( preg_replace( '/\\s\\s+/', ' ', str_replace( "\n", " ", $q['s'] ) ) );
                 
-                if ( empty($query->query_vars['s']) ) {
+                if ( empty($query->query_vars['s']) || 1 == strlen( $query->query_vars['s'] ) && preg_match( '/[^a-zA-Z\\d]/', $query->query_vars['s'] ) ) {
                     $query->is_home = false;
                     $query->is_404 = true;
                     $query->set( 'post__in', array( 9999999999 ) );

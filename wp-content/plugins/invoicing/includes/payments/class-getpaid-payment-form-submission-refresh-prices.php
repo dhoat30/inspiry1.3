@@ -38,6 +38,7 @@ class GetPaid_Payment_Form_Submission_Refresh_Prices {
 		$this->add_discounts( $submission );
 		$this->add_taxes( $submission );
 		$this->add_gateways( $submission );
+		$this->add_data( $submission );
 
 	}
 
@@ -197,7 +198,7 @@ class GetPaid_Payment_Form_Submission_Refresh_Prices {
 			$markup       .= "<small class='form-text'>$name : $amount</small>";
 		}
 
-		if ( wpinv_display_individual_tax_rates() ) {
+		if ( wpinv_display_individual_tax_rates() && ! empty( $taxes ) ) {
 			$this->response['texts']['.getpaid-form-cart-totals-total-tax'] = $markup;
 		}
 
@@ -262,6 +263,28 @@ class GetPaid_Payment_Form_Submission_Refresh_Prices {
 		}
 
     	return max( 0, $standardadized_price );
+
+	}
+
+	/**
+	 * Adds data to a response for submission refresh prices.
+	 *
+	 * @param GetPaid_Payment_Form_Submission $submission
+	 */
+	public function add_data( $submission ) {
+
+		$this->response = array_merge(
+			$this->response,
+			array(
+				'js_data' => apply_filters(
+					'getpaid_submission_js_data',
+					array(
+						'is_recurring' => $this->response['has_recurring'],
+					),
+					$submission
+				)
+			)
+		);
 
 	}
 

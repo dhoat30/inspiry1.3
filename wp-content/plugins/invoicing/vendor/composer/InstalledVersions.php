@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '78277f1999221a9d2aa36ed867119bc4dd9b9ba5',
+    'reference' => '9c927243c25ee910689e3996f51ee54ad348da50',
     'name' => 'ayecode/invoicing',
   ),
   'versions' => 
@@ -40,16 +40,16 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '78277f1999221a9d2aa36ed867119bc4dd9b9ba5',
+      'reference' => '9c927243c25ee910689e3996f51ee54ad348da50',
     ),
     'ayecode/wp-ayecode-ui' => 
     array (
-      'pretty_version' => '0.1.43',
-      'version' => '0.1.43.0',
+      'pretty_version' => '0.1.46',
+      'version' => '0.1.46.0',
       'aliases' => 
       array (
       ),
-      'reference' => '3606edd468c8a502df34237d0ac9e3470f2ad08d',
+      'reference' => '8b9825d9fe52f6da57302358df1a920eec3bace3',
     ),
     'ayecode/wp-font-awesome-settings' => 
     array (

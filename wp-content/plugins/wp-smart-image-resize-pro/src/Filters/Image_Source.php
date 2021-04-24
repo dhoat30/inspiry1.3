@@ -23,6 +23,9 @@ class Image_Source extends Base_Filter
 
     function serveWebP()
     {
+        if(! apply_filters('wp_sir_serve_webp_images', true ) ){
+            return;
+        }
         add_filter( 'wp_get_attachment_image_src', [ $this, 'replaceSrcWebpExtension' ], (PHP_INT_MAX-1), 4 );
         add_filter( 'wp_calculate_image_srcset_meta', [ $this, 'replaceWebPExtensionSrcsetMetadata' ], (PHP_INT_MAX-1), 4 );
         add_filter( 'wp_get_attachment_url', [ $this, 'replaceWebPAttachmentUrlEextension' ], (PHP_INT_MAX-1), 2 );
@@ -30,6 +33,9 @@ class Image_Source extends Base_Filter
 
     function replaceWebPAttachmentUrlEextension( $url, $imageId ){
 
+        if(! apply_filters('wp_sir_attachment_url_webp', false) ){
+            return $url;
+        }
         try{
             if( wp_attachment_is_image( $imageId ) ){
                 list( $url ) = $this->replaceSrcWebpExtension([ $url ], $imageId, 'full', false);

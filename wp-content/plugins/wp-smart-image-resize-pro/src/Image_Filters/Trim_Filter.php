@@ -28,7 +28,7 @@ class Trim_Filter implements FilterInterface
      *
      * @param $image Image
      */
-    private function setNewDimensions( $image )
+    private function set_new_dimensions( $image )
     {
         $this->imageMeta->setMetaItem( '_trimmed_width', $image->getWidth() );
         $this->imageMeta->setMetaItem( '_trimmed_height', $image->getHeight() );
@@ -48,7 +48,7 @@ class Trim_Filter implements FilterInterface
             // Chances the trim feature was re-disabled.
             // In this case, we need revert to original dimensions
             // to prevent zoomed image from being stretshed.
-            $this->setNewDimensions( $image );
+            $this->set_new_dimensions( $image );
 
             return $image;
         }
@@ -57,40 +57,21 @@ class Trim_Filter implements FilterInterface
             /** @var Imagick $core */
             $core = is_object( $image->getCore() ) ? ( clone $image->getCore() ) : null;
 
-            $feather = (int)apply_filters( 'wp_sir_trim_feather', intval( $settings[ 'trim_feather' ] ) );
+            $feather = (int)apply_filters( 'wp_sir_trim_feather',  (int)$settings[ 'trim_feather' ] );
 
             $color = sanitize_hex_color( $settings[ 'bg_color' ] ) ?: null;
 
-            $tolerance = (int)apply_filters( 'wp_sir_trim_tolerance', intval($settings[ 'trim_tolerance' ]));
+            $tolerance = (int)apply_filters( 'wp_sir_trim_tolerance', (int)$settings[ 'trim_tolerance' ] );
 
             $image->trim( null, null, $tolerance );
 
-            $this->addBorder( $image, $feather );
+            if ( $this->is_blank_image( $image) ) {
+                    $this->retry_trim_imagick($image, $core);
+            }
 
-            /*
-             * Retry trimming if `Image::trim()` failed for Imagick.
-             * @experimental
-             */
-            if ( $this->isBlankImage( $image, $feather ) && Env::imagick_loaded() && $core instanceof Imagick ) {
-                $core->trimImage( 0 );
+            $this->border_image($image, $feather, $color);
 
-                // Let imagick set new width and height.
-                $core->setImagePage( 0, 0, 0, 0 );
-
-                // Add a border if present.
-                if ( $feather > 0 ) {
-
-                    if ( ! $color ) {
-                        $image->setCore( $core );
-                        $this->addBorder( $image, $feather );
-
-                    } else {
-                        $core->borderImage( $color, $feather, $feather );
-                        $image->setCore( $core );
-                    }
-                }
-
-            } elseif ( is_object( $core ) ) {
+            if( is_object( $core ) ){
                 $core->destroy();
             }
 
@@ -99,42 +80,40 @@ class Trim_Filter implements FilterInterface
 
         // Change to new dimensions
         // or revert to original ones. 
-        $this->setNewDimensions( $image );
+        $this->set_new_dimensions( $image );
 
         return $image;
     }
 
-    /**
-     * @param $image Image
-     * @param $feather
-     *
-     * @return array Array{width,height}
-     */
-    private function getCanvasSize( $image, $feather )
-    {
-        return [
-            ( $image->getWidth() + ( $feather * 2 ) ),
-            ( $image->getHeight() + ( $feather * 2 ) ),
-        ];
+    function retry_trim_imagick(&$image, $core_origin){
+
+        if( ! ( Env::imagick_loaded() && $core_origin instanceof Imagick ) ){
+            return;
+        }
+
+        $core_origin->trimImage( 0 );
+        $core_origin->setImagePage( 0, 0, 0, 0 );
+        $image->setCore( $core_origin );
     }
 
-    private function addBorder( &$image, $feather )
+  
+    private function border_image( &$image, $feather, $color )
     {
-
-        $blankImage = $this->isBlankImage( $image, $feather );
-
-        if ( $feather > 0 && ! $blankImage ) {
-            list( $w, $h ) = $this->getCanvasSize( $image, $feather );
-            $image->resizeCanvas( $w, $h, 'center' );
+ 
+        if ( $feather && ! $this->is_blank_image( $image ) ) {
+            if( $color ){
+                $image->resizeCanvas( $feather, $feather, 'center', true, $color);
+            }else{
+                $image->resizeCanvas( $feather, $feather, 'center', true);
+            }
         }
     }
 
-    private function isBlankImage( $image, $feather )
+    private function is_blank_image( $image)
     {
-        $trimedWidth  = max( 1, $image->getWidth() - $feather * 2 );
-        $trimedHeight = max( 1, $image->getHeight() - $feather * 2 );
-
-        return ( $trimedWidth === 1 || $trimedHeight === 1 );
+        $trimed_width  = max( 1, $image->getWidth());
+        $trimed_height = max( 1, $image->getHeight());
+        return ( $trimed_width === 1 || $trimed_height === 1 );
     }
 
 }

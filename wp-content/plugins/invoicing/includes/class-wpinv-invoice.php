@@ -159,7 +159,7 @@ class WPInv_Invoice extends GetPaid_Data {
 			$this->set_id( $invoice_id );
 		} elseif ( is_string( $invoice ) && $invoice_id = self::get_invoice_id_by_field( $invoice, 'transaction_id' ) ) {
 			$this->set_id( $invoice_id );
-		}else {
+		} else {
 			$this->set_object_read( true );
 		}
 
@@ -1939,21 +1939,21 @@ class WPInv_Invoice extends GetPaid_Data {
 				$old_status = 'wpi-pending';
 			}
 
-		}
+			if ( $old_status !== $new_status ) {
+				$this->status_transition = array(
+					'from'   => ! empty( $this->status_transition['from'] ) ? $this->status_transition['from'] : $old_status,
+					'to'     => $new_status,
+					'note'   => $note,
+					'manual' => (bool) $manual_update,
+				);
 
-		if ( true === $this->object_read && $old_status !== $new_status ) {
-			$this->status_transition = array(
-				'from'   => ! empty( $this->status_transition['from'] ) ? $this->status_transition['from'] : $old_status,
-				'to'     => $new_status,
-				'note'   => $note,
-				'manual' => (bool) $manual_update,
-			);
+				if ( $manual_update ) {
+					do_action( 'getpaid_' . $this->object_type .'_edit_status', $this->get_id(), $new_status );
+				}
 
-			if ( $manual_update ) {
-				do_action( 'getpaid_' . $this->object_type .'_edit_status', $this->get_id(), $new_status );
+				$this->maybe_set_date_paid();
+
 			}
-
-			$this->maybe_set_date_paid();
 
 		}
 
@@ -3378,6 +3378,14 @@ class WPInv_Invoice extends GetPaid_Data {
             unset( $discounts[ $discount ] );
             $this->set_prop( 'discounts', $discounts );
         }
+
+		if ( 'discount_code' == $discount ) {
+			foreach ( $this->get_items() as $item ) {
+				$item->item_discount           = 0;
+				$item->recurring_item_discount = 0;
+			}
+		}
+
     }
 
     /**
@@ -3517,8 +3525,8 @@ class WPInv_Invoice extends GetPaid_Data {
 			foreach ( $this->get_items() as $item ) {
 				$rates    = getpaid_get_item_tax_rates( $item, $this->get_country(), $this->get_state() );
 				$rates    = getpaid_filter_item_tax_rates( $item, $rates );
-				$taxes    = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item->get_id(), $item->get_sub_total(), $this->get_discount_code(), false ), $rates );
-				$r_taxes  = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item->get_id(), $item->get_recurring_sub_total(), $this->get_discount_code(), true ), $rates );
+				$taxes    = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item, false ), $rates );
+				$r_taxes  = getpaid_calculate_item_taxes( getpaid_get_taxable_amount( $item, true ), $rates );
 				foreach ( $taxes as $name => $amount ) {
 					$recurring = isset( $r_taxes[ $name ] ) ? $r_taxes[ $name ] : 0;
 					$tax       = getpaid_prepare_item_tax( $item, $name, $amount, $recurring );

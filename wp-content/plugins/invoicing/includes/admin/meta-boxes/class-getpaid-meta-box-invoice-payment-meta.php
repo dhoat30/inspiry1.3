@@ -83,31 +83,12 @@ class GetPaid_Meta_Box_Invoice_Payment_Meta {
                         // If the invoice is paid...
                         if ( $invoice->is_paid() || $invoice->is_refunded() ) {
 
-                            // Payment date.
-                            echo aui()->input(
-                                array(
-                                    'type'        => 'datepicker',
-                                    'id'          => 'wpinv_date_completed',
-                                    'name'        => 'date_completed',
-                                    'label'       => __( 'Payment Date:', 'invoicing' ),
-                                    'label_type'  => 'vertical',
-                                    'placeholder' => 'YYYY-MM-DD 00:00',
-                                    'class'       => 'form-control-sm',
-                                    'value'       => $invoice->get_date_completed( 'edit' ),
-                                    'extra_attributes' => array(
-                                        'data-enable-time' => 'true',
-                                        'data-time_24hr'   => 'true',
-                                        'data-allow-input' => 'true',
-                                    ),
-                                )
-                            );
-
                             // Gateway.
                             echo aui()->input(
                                 array(
                                     'type'        => 'text',
                                     'id'          => 'wpinv_gateway',
-                                    'name'        => 'wpinv_gateway',
+                                    'name'        => '',
                                     'label'       => __( 'Gateway:', 'invoicing' ),
                                     'label_type'  => 'vertical',
                                     'class'       => 'form-control-sm',
@@ -155,20 +136,6 @@ class GetPaid_Meta_Box_Invoice_Payment_Meta {
                             );
 
                         } else {
-
-                            // Apply a discount.
-                            echo aui()->input(
-                                array(
-                                    'type'        => 'text',
-                                    'id'          => 'wpinv_discount_code',
-                                    'name'        => 'wpinv_discount_code',
-                                    'label'       => __( 'Discount Code:', 'invoicing' ),
-                                    'placeholder' => __( 'Apply Discount', 'invoicing' ),
-                                    'label_type'  => 'vertical',
-                                    'class'       => 'form-control-sm',
-                                    'value'       => $invoice->get_discount_code( 'edit' ),
-                                )
-                            );
 
                             if ( 'wpi_invoice' == $invoice->get_post_type() ) {
 

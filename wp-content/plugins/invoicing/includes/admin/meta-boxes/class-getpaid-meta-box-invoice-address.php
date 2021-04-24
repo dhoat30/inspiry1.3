@@ -288,6 +288,7 @@ class GetPaid_Meta_Box_Invoice_Address {
                         </div>
                     </div>
 
+                    <?php do_action( 'getpaid_after_metabox_invoice_address', $invoice ); ?>
             </div>
         <?php
     }
@@ -309,7 +310,7 @@ class GetPaid_Meta_Box_Invoice_Address {
                 'email_cc'             => isset( $_POST['wpinv_cc'] ) ? wpinv_clean( $_POST['wpinv_cc'] ) : null,
                 'disable_taxes'        => isset( $_POST['disable_taxes'] ),
                 'currency'             => isset( $_POST['wpinv_currency'] ) ? wpinv_clean( $_POST['wpinv_currency'] ) : null,
-                'gateway'              => isset( $_POST['wpinv_gateway'] ) ? wpinv_clean( $_POST['wpinv_gateway'] ) : null,
+                'gateway'              => ( $invoice->needs_payment() && isset( $_POST['wpinv_gateway'] ) ) ? wpinv_clean( $_POST['wpinv_gateway'] ) : null,
                 'address'              => isset( $_POST['wpinv_address'] ) ? wpinv_clean( $_POST['wpinv_address'] ) : null,
                 'vat_number'           => isset( $_POST['wpinv_vat_number'] ) ? wpinv_clean( $_POST['wpinv_vat_number'] ) : null,
                 'company'              => isset( $_POST['wpinv_company'] ) ? wpinv_clean( $_POST['wpinv_company'] ) : null,
@@ -322,6 +323,7 @@ class GetPaid_Meta_Box_Invoice_Address {
                 'last_name'            => isset( $_POST['wpinv_last_name'] ) ? wpinv_clean( $_POST['wpinv_last_name'] ) : null,
                 'author'               => isset( $_POST['post_author_override'] ) ? wpinv_clean( $_POST['post_author_override'] ) : null,
                 'date_created'         => isset( $_POST['date_created'] ) ? wpinv_clean( $_POST['date_created'] ) : null,
+                'date_completed'       => isset( $_POST['wpinv_date_completed'] ) ? wpinv_clean( $_POST['wpinv_date_completed'] ) : null,
                 'due_date'             => isset( $_POST['wpinv_due_date'] ) ? wpinv_clean( $_POST['wpinv_due_date'] ) : null,
                 'number'               => isset( $_POST['wpinv_number'] ) ? wpinv_clean( $_POST['wpinv_number'] ) : null,
                 'status'               => isset( $_POST['wpinv_status'] ) ? wpinv_clean( $_POST['wpinv_status'] ) : null,
@@ -362,12 +364,30 @@ class GetPaid_Meta_Box_Invoice_Address {
             }
         }
 
+        // Do not send new invoice notifications.
+        $GLOBALS['wpinv_skip_invoice_notification'] = true;
+
         // Save the invoice.
         $invoice->save();
+
+        // Undo do not send new invoice notifications.
+        $GLOBALS['wpinv_skip_invoice_notification'] = false;
 
         // (Maybe) send new user notification.
         if ( ! empty( $user ) && is_numeric( $user ) && apply_filters( 'getpaid_send_new_user_notification', true ) ) {
             wp_send_new_user_notifications( $user, 'user' );
+        }
+
+        if ( ! empty( $_POST['send_to_customer'] ) && ! $invoice->is_draft() ) {
+
+            $sent = getpaid()->get( 'invoice_emails' )->user_invoice( $invoice, true );
+
+            if ( $sent ) {
+                getpaid_admin()->show_success( __( 'Invoice was successfully sent to the customer', 'invoicing' ) );
+            } else {
+                getpaid_admin()->show_error( __( 'Could not send the invoice to the customer', 'invoicing' ) );
+            }
+
         }
 
         // Fires after an invoice is saved.

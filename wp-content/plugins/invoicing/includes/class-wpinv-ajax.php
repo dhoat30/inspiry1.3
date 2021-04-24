@@ -726,7 +726,8 @@ class WPInv_Ajax {
         $customer_args = array(
             'fields'         => array( 'ID', 'user_email', 'display_name' ),
             'orderby'        => 'display_name',
-            'search'         => sanitize_text_field( $_GET['search'] ),
+            'search'         => '*' . sanitize_text_field( $_GET['search'] ) . '*',
+            'search_columns' => array( 'user_login', 'user_email', 'display_name' ),
         );
 
         $customers = get_users( apply_filters( 'getpaid_ajax_invoice_customers_query_args', $customer_args ) );
@@ -825,13 +826,17 @@ class WPInv_Ajax {
 
         // Do we have an error?
         if ( ! empty( $submission->last_error ) ) {
-            echo $submission->last_error;
-            exit;
+            wp_send_json_error(
+                array(
+                    'code'  => $submission->last_error_code,
+                    'error' => $submission->last_error
+                )
+            );
         }
 
         // Prepare the response.
         $response = new GetPaid_Payment_Form_Submission_Refresh_Prices( $submission );
-        
+
         // Filter the response.
         $response = apply_filters( 'getpaid_payment_form_ajax_refresh_prices', $response->response, $submission );
 
