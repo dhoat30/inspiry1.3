@@ -8,10 +8,14 @@ class SingleDesignBoards {
     events() {
         $('.action-btn-container .share').on('click', () => {
             $('.action-btn-container .share-icons').show();
+            $('.action-btn-container .share').siblings('.overlay').show();
+
         })
 
         $('.action-btn-container .share-icons .fa-times').on('click', () => {
             $('.action-btn-container .share-icons').hide();
+            $('.action-btn-container .share').siblings('.overlay').hide();
+
         })
 
         //single card share board
@@ -21,8 +25,13 @@ class SingleDesignBoards {
 
     showCardShareContainer(e) {
         $(e.target).closest('.pin-options-container').siblings('.share-icon-container').show();
+        $(e.target).closest('.pin-options-container').siblings('.overlay').show();
+
+        $(e.targer).closest('.pin-options-container').siblings('.share-icon-container').find('.overlay').show();
         $(e.target).closest('.pin-options-container').siblings('.share-icon-container').find('.close-icon').on('click', () => {
             $('.share-icon-container').hide();
+            $(e.target).closest('.pin-options-container').siblings('.overlay').hide();
+
         })
     }
 }

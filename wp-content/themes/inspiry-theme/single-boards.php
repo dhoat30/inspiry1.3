@@ -16,14 +16,18 @@ get_header();
             <div class='action-btn-container'>
                 <button class="share btn btn-dk-green-border font-s-regular"><i class="fal fa-share-alt"></i>
                     Share</button>
-                <div class="share-icons box-shadow">
-                    <i class="fal fa-times"></i>
-                    <h2 class="roboto-font font-s-medium medium">Share this board</h2>
-                    <div class="underline underline-bg margin-elements"></div>
-                    <div>
-                        <?php echo do_shortcode('[Sassy_Social_Share]');?>
-                    </div>
+                <div class="overlay share-box-overlay"></div>
 
+                <div class="share-icons box-shadow">
+                    
+           
+                        <i class="fal fa-times"></i>
+                        <h2 class="roboto-font font-s-medium regular">Share this board</h2>
+                        <div class="underline underline-bg margin-elements"></div>
+                        <div>
+                            <?php echo do_shortcode('[Sassy_Social_Share]');?>
+                        </div>
+                    
                 </div>
             </div>
             <?php
@@ -114,7 +118,8 @@ get_header();
 
 
                 </div>
-
+                
+                <div class="overlay share-box-overlay"></div>
                 <div class="share-icon-container box-shadow">
                     <div class="roboto-font regular font-s-med"> Share this pin </div>
                     <div class="underline"></div>
