@@ -172,7 +172,7 @@ font-weight: 300;
 
 /*related product section*/ 
 .single-product .related{
-    margin-top: 50px;
+    margin: 50px 10px 0 10px;
     padding: 50px 0 0;
     border-top: 1px solid #e0e3e9;
 } 
@@ -182,7 +182,7 @@ font-weight: 300;
     margin-top: 50px;
 }
 .single-product .related .product{
-    width: 200px !important;
+    width: 20% !important;
     display: flex;
     flex-direction: column;
     justify-content: space-between;

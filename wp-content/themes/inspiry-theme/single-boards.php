@@ -65,10 +65,6 @@ get_header();
             </div>
         </div>
 
-
-
-
-
         <div class="board-flex">
 
             <?php 

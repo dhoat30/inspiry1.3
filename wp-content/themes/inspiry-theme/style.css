@@ -75,6 +75,7 @@
 /*footer*/
 
 @import "css/contact.css";
+
 * {
     box-sizing: border-box;
     padding: 0;
@@ -576,7 +577,11 @@ textarea::placeholder{
     left: -115px;
 }
 
-
+@media(max-width: 900px){
+    .tooltips{
+        display: none !important;
+    }
+}
 /*bread crumb*/
 
 #breadcrumbs a:hover {
