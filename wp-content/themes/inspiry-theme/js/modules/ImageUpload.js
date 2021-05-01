@@ -13,7 +13,13 @@ class ImageUpload {
                 $('.overlay').hide();
             })
             //save a photo
-        $('#upload-image').submit(this.imageProcessor)
+        $('#upload-image').submit(this.imageProcessor); 
+
+        $('.design-board-single-card .thumbnail').on('click', (e)=>{
+            let img =  $('.design-board-single-card .lightbox-image'); 
+            img.show();
+            img.attr('src', img.attr('data-src'));
+        })
     }
 
     showContainer(e) {

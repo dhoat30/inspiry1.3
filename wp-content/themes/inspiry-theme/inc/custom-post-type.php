@@ -12,6 +12,22 @@ add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
 
 function register_custom_type2(){ 
+    //brand logo
+    register_post_type("brand-logo", array(
+      "supports" => array("title", 'thumbnail'), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Brand Logos", 
+         "add_new_item" => "Add New Brand Logo", 
+         "edit_item" => "Edit Brand Logo", 
+         "all_items" => "All Brand Logos", 
+         "singular_name" => "Brand Logo"
+      ), 
+      "menu_icon" => "dashicons-images-alt2"
+   )
+   ); 
 
    //sliders psot type
    register_post_type("sliders", array(

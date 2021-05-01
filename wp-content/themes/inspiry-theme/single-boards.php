@@ -83,7 +83,7 @@ get_header();
                 ?>
 
 
-            <div class="board-card">
+            <div class="board-card design-board-single-card">
 
                 <i class="fas fa-ellipsis-h option-icon"></i>
                 <div class="pin-options-container box-shadow">
@@ -129,27 +129,43 @@ get_header();
                 </div>
 
                 
-                <a href="<?php echo get_the_permalink(get_field('saved_project_id')); ?>">
-                    <div class="thumbnail">
-
-                        <?php 
+                <?php 
                         //check if the image id exists
                         if(get_field('saved_image_id')){
-                            $img =  wp_get_attachment_image_src(get_field('saved_image_id'), 'large');
+                            $imgSmall =  wp_get_attachment_image_src(get_field('saved_image_id'), 'large');
+                            $imgFull = wp_get_attachment_image_src(get_field('saved_image_id'), 'full');
                             ?>
-                        <img src="<?php echo $img[0] ?>" alt="<?php echo get_the_title();?>">
-                        <?php
+                        <div class="thumbnail">
+                            <img src="<?php echo $imgSmall[0] ?>" alt="<?php echo get_the_title();?>" class="event-image">
+                            <img src="" data-src="<?php echo $imgFull[0]?>" alt="<?php echo get_the_title();?>" class="lightbox-image">
+                        </div>
+                        <div class="title font-s-regular rm-txt-dec">
+                            <?php echo get_the_title(get_field('saved_project_id')); ?>
+                        </div>
+
+                    <?php
                         }
                         else{
-                            echo get_the_post_thumbnail( get_field('saved_project_id'), 'post-thumbnail');
+                            
+                           ?>
+                            <a href="<?php echo get_the_permalink(get_field('saved_project_id')); ?>">
+                                <div class="thumbnail">
+                                    <?php 
+                                    echo get_the_post_thumbnail( get_field('saved_project_id'), 'post-thumbnail');
+                                    ?>
+                                </div>
+                                <div class="title font-s-regular rm-txt-dec">
+                                    <?php echo get_the_title(get_field('saved_project_id')); ?>
+                                </div>
 
+                            </a>
+                           <?php 
                         }
                         ?>
-                    </div>
-                    <div class="title font-s-regular rm-txt-dec">
-                        <?php echo get_the_title(get_field('saved_project_id')); ?></div>
 
-                </a>
+                
+
+            
 
             </div>
 

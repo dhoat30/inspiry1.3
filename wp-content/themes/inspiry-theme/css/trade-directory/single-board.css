@@ -206,3 +206,16 @@
 
 
 /*share container*/
+
+/* lightbox */
+.design-board-single-card .lightbox-image{
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100% !important ;
+    max-width: 1000px;
+    height: auto !important;
+    z-index: 1002;
+    display: none;
+}

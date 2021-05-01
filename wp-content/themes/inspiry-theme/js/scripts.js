@@ -116,3 +116,4 @@ const wishlistAjax = new WishlistAjax();
 const warranty = new Warranty();
 const wallpaperCalc = new WallpaperCalc();
 const laybuy = new LayBuy();
+
