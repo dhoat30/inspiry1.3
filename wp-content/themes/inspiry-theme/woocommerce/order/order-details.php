@@ -112,7 +112,10 @@ do_action( 'woocommerce_after_order_details', $order );
 if ( $show_customer_details ) {
 	wc_get_template( 'order/order-details-customer.php', array( 'order' => $order ) );
 }
-?>
+
+// condition to check order status in order to send data to google analytics 
+if(!$order->has_status( 'failed' )){
+	?>
 
 <script>
 
@@ -170,3 +173,8 @@ dataLayer.push({
 });
 
 </script>
+
+	<?php 
+}
+
+?>

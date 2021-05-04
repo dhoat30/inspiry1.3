@@ -32,7 +32,7 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
       wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.4c341e6c03082b4678f0.js'), NULL, '1.0', true);
       wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.4c341e6c03082b4678f0.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.4c341e6c03082b4678f0.css'));
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.aebecbb789db7969773b.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -333,16 +333,69 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                             $link = $product->get_permalink( $cart_item );
                             // Anything related to $product, check $product tutorial
                             $meta = wc_get_formatted_cart_item_data( $cart_item );
+                           
                             ?>
-                
+
+                            <!-- gtag manager data -->
+                            <script type="text/javascript">
+
+                            var placeOrderBtn = document.getElementsByClassName("checkout-btn-header")[0];
+
+                            placeOrderBtn.addEventListener("click", function(event) {
+
+                                dataLayer.push({
+                                    'event': 'checkout',
+                                    'ecommerce': {
+                                        'checkout': {
+                                            'actionField': {'step': 1},
+
+                                            'products': [
+
+                                            {
+                                                'name': '<?php echo $product -> get_name()?>',                  
+                                                'id': '<?php echo $product -> get_id()?>',
+                                                'price': '<?php echo $product -> get_price()?>',
+                                                'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
+                                                            'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
+                                                            foreach ($terms as $term) {
+                                                                $product_cat_id = $term->term_id;
+                                                                
+                                                                echo get_the_category_by_ID($product_cat_id);
+                                                                echo ","; 
+                                                                break;
+                                                            } ?>',
+                                                'variant': 'none',
+                                                'quantity': '<?php echo $quantity; ?>'  
+                                                },
+
+                                            <?php
+                                        
+                                               
+                                            ?>
+
+
+                                            ]
+                                        }
+                                            }
+                                    });
+                            });
+
+                            </script>	       
+
+                    <!-- front end cart items cards -->
                     <div class="product-card">
                         <a href="<?php echo $link?>" class="rm-txt-dec">
+                            
                             <div class="img-container">
                                 <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
                             </div>
                             <div class="title-container">
 
-                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; ?></h5>
+                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; 
+                                
+                                
+                                ?> 
+                                </h5>
                             </div>
                             
                             <div class="price-container">
@@ -368,7 +421,7 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                         </div>
                     </div>
                     <div class="checkout-btn">
-                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
+                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/checkout">Checkout</a>
                     </div>
                 </div>
             </div>

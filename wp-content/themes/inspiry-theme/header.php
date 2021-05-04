@@ -180,16 +180,69 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             $link = $product->get_permalink( $cart_item );
                             // Anything related to $product, check $product tutorial
                             $meta = wc_get_formatted_cart_item_data( $cart_item );
+                           
                             ?>
-                
+
+                            <!-- gtag manager data -->
+                            <script type="text/javascript">
+
+                            var placeOrderBtn = document.getElementsByClassName("checkout-btn-header")[0];
+
+                            placeOrderBtn.addEventListener("click", function(event) {
+
+                                dataLayer.push({
+                                    'event': 'checkout',
+                                    'ecommerce': {
+                                        'checkout': {
+                                            'actionField': {'step': 1},
+
+                                            'products': [
+
+                                            {
+                                                'name': '<?php echo $product -> get_name()?>',                  
+                                                'id': '<?php echo $product -> get_id()?>',
+                                                'price': '<?php echo $product -> get_price()?>',
+                                                'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
+                                                            'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
+                                                            foreach ($terms as $term) {
+                                                                $product_cat_id = $term->term_id;
+                                                                
+                                                                echo get_the_category_by_ID($product_cat_id).",";
+                                                             
+                                                                break;
+                                                            } ?>',
+                                                'variant': 'none',
+                                                'quantity': '<?php echo $quantity; ?>'  
+                                                },
+
+                                            <?php
+                                        
+                                               
+                                            ?>
+
+
+                                            ]
+                                        }
+                                            }
+                                    });
+                            });
+
+                            </script>	       
+
+                    <!-- front end cart items cards -->
                     <div class="product-card">
                         <a href="<?php echo $link?>" class="rm-txt-dec">
+                            
                             <div class="img-container">
                                 <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
                             </div>
                             <div class="title-container">
 
-                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; ?></h5>
+                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; 
+                                
+                                
+                                ?> 
+                                </h5>
                             </div>
                             
                             <div class="price-container">
@@ -215,7 +268,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         </div>
                     </div>
                     <div class="checkout-btn">
-                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align" href="<?php echo get_site_url();?>/checkout">Checkout</a>
+                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/checkout">Checkout</a>
                     </div>
                 </div>
             </div>
