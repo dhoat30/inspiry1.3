@@ -76,8 +76,10 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 								if (  ! $product_permalink ) {
 									echo $thumbnail; // PHPCS: XSS ok.
+								
 								} else {
 									printf( '<a href="%s">%s</a>', esc_url( $product_permalink ), $thumbnail ); // PHPCS: XSS ok.
+									
 								}
 								?>
 								<?php

@@ -360,8 +360,8 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                                                             foreach ($terms as $term) {
                                                                 $product_cat_id = $term->term_id;
                                                                 
-                                                                echo get_the_category_by_ID($product_cat_id);
-                                                                echo ","; 
+                                                                echo get_the_category_by_ID($product_cat_id).",";
+                                                             
                                                                 break;
                                                             } ?>',
                                                 'variant': 'none',
@@ -384,25 +384,52 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
 
                     <!-- front end cart items cards -->
                     <div class="product-card">
-                        <a href="<?php echo $link?>" class="rm-txt-dec">
+                        <?php 
+
+                                // condition to check if the product is simple
+                        if($product->name == "Free Sample"){
+                                    // pulling information of an original product in a form of an objec†
+                        $originalProduct = wc_get_product( $cart_item["free_sample"] );
+                        
+                        ?>
+                        <a href="<?php echo get_the_permalink($originalProduct->get_id()); ?>" class="rm-txt-dec">
                             
                             <div class="img-container">
-                                <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
+                                <img src="<?php echo wp_get_attachment_image_url( $originalProduct->image_id, 'woocommerce_thumbnail' );?>" alt="<?php echo $originalProduct->get_name()?>">
                             </div>
                             <div class="title-container">
-
-                                <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name; 
-                                
-                                
-                                ?> 
-                                </h5>
+                                    <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
+                                    ?> )
+                                    </h5>
                             </div>
                             
                             <div class="price-container">
                             <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
                             </div>
-                            
                         </a>
+
+                        <?php
+                        }
+                        else{
+                            ?>
+                            <a href="<?php echo $link?>" class="rm-txt-dec">
+                                
+                                <div class="img-container">
+                                    <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
+                                </div>
+                                <div class="title-container">
+                                        <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name
+                                        ?> 
+                                        </h5>
+                                </div>
+                                
+                                <div class="price-container">
+                                <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
+                                </div>
+                            </a>
+                            <?php
+                        }
+                        ?>
                     </div>
                 
                     <?php
@@ -424,7 +451,6 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                         <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/checkout">Checkout</a>
                     </div>
                 </div>
-            </div>
  <?php
   $fragments['.cart-box'] = ob_get_clean();
   return $fragments;

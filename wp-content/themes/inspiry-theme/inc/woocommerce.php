@@ -174,7 +174,10 @@ add_action('woocommerce_after_single_product_summary', 'add_container_closing_di
 add_action('woocommerce_single_product_summary', function(){
     global $post, $product; 
     $category = wp_strip_all_tags($product->get_categories());
-    if($category == 'Wallpaper'){
+    $CategoryWallpaper = "Wallpaper";
+    $categoryFabric = "Fabric"; 
+
+    if(strpos($category, $CategoryWallpaper)){
       
         echo '<div class="product-page-btn-container">
         <a class="sizing-calculator-button"><i class="far fa-calculator" aria-hidden="true"></i> Wallpaper Calculator</a>       
@@ -183,7 +186,7 @@ add_action('woocommerce_single_product_summary', function(){
      //add calculator body 
      add_action('add_calculator_body', 'calculator_body');
     }
-    if (strpos($category, 'Fabric')) { 
+    if (strpos($category, $categoryFabric )) { 
       echo '<div class="product-page-btn-container">
       <a class="sizing-calculator-button"><i class="far fa-calculator" aria-hidden="true"></i> Fabric Calculator</a>       
    </div>'; 
@@ -424,7 +427,7 @@ function bbloomer_add_free_sample_add_cart() {
       <?php 
         if (strstr($_SERVER['SERVER_NAME'], 'localhost')) {
       ?>
-      <button type="submit" name="add-to-cart" value="14441" class="button btn-dk-green-border btn-full-width margin-top">ORDER FREE SAMPLE</button>
+      <button type="submit" name="add-to-cart" value="14862" class="button btn-dk-green-border btn-full-width margin-top">ORDER FREE SAMPLE</button>
       <?php
         }
 
@@ -465,7 +468,32 @@ function bbloomer_alter_cart_item_name( $product_name, $cart_item, $cart_item_ke
    }
    return $product_name;
 }
+
+
+
+// define the woocommerce_cart_item_thumbnail callback 
+function filter_woocommerce_cart_item_thumbnail( $product_get_image, $cart_item, $cart_item_key ) { 
+  // make filter magic happen here... 
+  if($cart_item["free_sample"]){
+    $product = wc_get_product( $cart_item["free_sample"] );
+    $product_get_image = '<img';
+    $product_get_image .= ' src="' .  wp_get_attachment_image_url( $product->image_id, 'woocommerce_thumbnail' ). '"';
+    $product_get_image .= ' class="' . $class . '"';
+    $product_get_image .= ' />';
+    return $product_get_image; 
+  }
+  else{
+    return $product_get_image; 
+  }
+ 
+}; 
+       
+// filter for sample images on a cart page
+add_filter( 'woocommerce_cart_item_thumbnail', 'filter_woocommerce_cart_item_thumbnail', 10, 3 ); 
   
+
+
+
 // -------------------------
 // 4. Add "Free Sample" product name to order meta
 // Note: this will show on thank you page, emails and orders
