@@ -147,6 +147,8 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
         </div>
 
     </section>
+
+
 <?php 
 
 //hide join trade in navbar if the user is logged in 
@@ -167,24 +169,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             <i class="fal fa-times"></i>
             <div class="cart-box">
                 <div class="flex-card">
-            <!-- gtag manager data -->
-            <script type="text/javascript">
-
-            var placeOrderBtn = document.getElementsByClassName("checkout-btn-header");
-            console.log(placeOrderBtn)
-
-            placeOrderBtn.addEventListener("click", function(event) {
-
-                dataLayer.push({
-                    'event': 'checkout',
-                    'ecommerce': {
-                        'checkout': {
-                            'actionField': {'step': 1},
-                        
-
-                        
-                            'products': [
-                            
                         <?php
 
                         foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
@@ -198,39 +182,6 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             $meta = wc_get_formatted_cart_item_data( $cart_item );
                            
                             ?>
-
-                            
-
-                                            {
-                                                'name': '<?php echo $product -> get_name()?>',                  
-                                                'id': '<?php echo $product -> get_id()?>',
-                                                'price': '<?php echo $product -> get_price()?>',
-                                                'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
-                                                            'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
-                                                            foreach ($terms as $term) {
-                                                                $product_cat_id = $term->term_id;
-                                                                
-                                                                echo get_the_category_by_ID($product_cat_id).",";
-                                                             
-                                                                break;
-                                                            } ?>',
-                                                'variant': 'none',
-                                                'quantity': '<?php echo $quantity; ?>'  
-                                                },
-
-                                        
-
-
-                                            ]
-                                        }
-                                        }
-                                            }
-                                    })
-                            })
-                            }
-
-                            </script>	       
-
                     <!-- front end cart items cards -->
                     <div class="product-card">
                         <?php 
@@ -303,6 +254,61 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
 			
 		</div>
+
+
+
+    <!-- gtag manager data -->
+    <script type="text/javascript">
+console.log('it is working now')
+var placeOrderBtn = document.getElementsByClassName("checkout-btn-header");
+
+placeOrderBtn.addEventListener("click", function(event) {
+   
+    dataLayer.push({
+        'event': 'checkout',
+        'ecommerce': {
+            'checkout': {
+                'actionField': {'step': 1},
+                'products': [
     <?php
-      
-?>
+      foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+        $product = $cart_item['data'];
+        $product_id = $cart_item['product_id'];
+        $quantity = $cart_item['quantity'];
+        $price = WC()->cart->get_product_price( $product );
+        $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+        $link = $product->get_permalink( $cart_item );
+        // Anything related to $product, check $product tutorial
+        $meta = wc_get_formatted_cart_item_data( $cart_item );
+       
+        ?>
+                        {
+                            'name': '<?php echo $product -> get_name()?>',                  
+                            'id': '<?php echo $product -> get_id()?>',
+                            'price': '<?php echo $product -> get_price()?>',
+                            'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
+                                        'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
+                                        foreach ($terms as $term) {
+                                            $product_cat_id = $term->term_id;
+                                            
+                                            echo get_the_category_by_ID($product_cat_id).",";
+                                         
+                                            break;
+                                        } ?>',
+                            'variant': 'none',
+                            'quantity': '<?php echo $quantity; ?>'  
+                            },
+
+
+                            <?php
+                  }    
+                           
+                    ?>
+                        ]
+                    }
+                    }
+                        }
+                })
+        })
+        }
+        </script>	

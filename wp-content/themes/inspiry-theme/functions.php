@@ -320,8 +320,6 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
   ?>
  <div class="cart-box">
                 <div class="flex-card">
-
-                
                         <?php
 
                         foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
@@ -335,53 +333,6 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                             $meta = wc_get_formatted_cart_item_data( $cart_item );
                            
                             ?>
-
-                            <!-- gtag manager data -->
-                            <script type="text/javascript">
-
-                            var placeOrderBtn = document.getElementsByClassName("checkout-btn-header")[0];
-
-                            placeOrderBtn.addEventListener("click", function(event) {
-
-                                dataLayer.push({
-                                    'event': 'checkout',
-                                    'ecommerce': {
-                                        'checkout': {
-                                            'actionField': {'step': 1},
-
-                                            'products': [
-
-                                            {
-                                                'name': '<?php echo $product -> get_name()?>',                  
-                                                'id': '<?php echo $product -> get_id()?>',
-                                                'price': '<?php echo $product -> get_price()?>',
-                                                'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
-                                                            'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
-                                                            foreach ($terms as $term) {
-                                                                $product_cat_id = $term->term_id;
-                                                                
-                                                                echo get_the_category_by_ID($product_cat_id).",";
-                                                             
-                                                                break;
-                                                            } ?>',
-                                                'variant': 'none',
-                                                'quantity': '<?php echo $quantity; ?>'  
-                                                },
-
-                                            <?php
-                                        
-                                               
-                                            ?>
-
-
-                                            ]
-                                        }
-                                            }
-                                    });
-                            });
-
-                            </script>	       
-
                     <!-- front end cart items cards -->
                     <div class="product-card">
                         <?php 
@@ -451,6 +402,7 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                         <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/checkout">Checkout</a>
                     </div>
                 </div>
+            </div>
  <?php
   $fragments['.cart-box'] = ob_get_clean();
   return $fragments;
