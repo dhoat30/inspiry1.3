@@ -117,10 +117,28 @@ function register_custom_type2(){
    )
    );
 
+      // typrewriter effect 
+
+   register_post_type("typewriter_effect", array(
+      "supports" => array("title"), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Typewriter Effect Titles", 
+         "add_new_item" => "Add New Typewriter Effect Title", 
+         "edit_item" => "Edit Typewriter Effect Title", 
+         "all_items" => "All Typewriter Effect Titles", 
+         "singular_name" => "Typewriter Effect Title"
+      ), 
+      "menu_icon" => "dashicons-welcome-write-blog"
+   )
+   );
   
 }
 
 add_action("init", "register_custom_type2"); 
+
 
 
 
@@ -145,11 +163,16 @@ function wpdocs_register_private_taxonomy() {
    
   register_taxonomy( 'blog-category', 'blogs', $argsBlog );
 
+//   taxonomy for Typewriter effect
+$argsTypewriter = array(
+   'label'        => __( 'Typewriter Categories', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'hierarchical' => true,
+   'show_in_rest' => true
+);
+
+register_taxonomy( 'typewriter-effect', 'typewriter_effect', $argsTypewriter );
+
 }
 add_action( 'init', 'wpdocs_register_private_taxonomy', 0 );
-
-
-
-
-
-

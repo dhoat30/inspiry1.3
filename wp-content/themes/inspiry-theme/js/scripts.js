@@ -28,7 +28,11 @@ import WooAccount from './modules/WooAccount';
 import ImageUpload from './modules/ImageUpload';
 import PopUpCart from './modules/PopUpCart'; 
 
+// trade directory
+import TradeDirectory from './modules/TradeDirectory'; 
 
+
+// owl carousel 
 setTimeout(function(){
     $('.flex-control-thumbs').addClass('owl-carousel');
     $('.owl-carousel').owlCarousel({
@@ -63,6 +67,9 @@ window.onload = function() {
     const designBoardSaveBtn = new DesignBoardSaveBtn();
     const singleDesignBoard = new SingleDesignBoard();
     const popUpCart = new PopUpCart();
+
+    //trade directory page 
+    const tradeDirectory = new TradeDirectory();
 
     //let designBoardAjax = new DesignBoardAjax(); 
 
@@ -117,3 +124,50 @@ const warranty = new Warranty();
 const wallpaperCalc = new WallpaperCalc();
 const laybuy = new LayBuy();
 
+
+// typewriter effect
+document.addEventListener('DOMContentLoaded',function(event){
+    // array with texts to type in typewriter
+    // get json array from a title on a web page
+    let jsonArray = $('.trade-directory-hero-section h1').attr( 'data-title'); 
+    let dataText = JSON.parse(jsonArray);
+
+   
+    // type one text in the typwriter
+    // keeps calling itself until the text is finished
+    function typeWriter(text, i, fnCallback) {
+      // chekc if text isn't finished yet
+      if (i < (text.length)) {
+        // add next character to h1
+       document.querySelector("h1").innerHTML = text.substring(0, i+1) +'<span aria-hidden="true"></span>';
+  
+        // wait for a while and call this function again for next character
+        setTimeout(function() {
+          typeWriter(text, i + 1, fnCallback)
+        }, 100);
+      }
+      // text finished, call callback if there is a callback function
+      else if (typeof fnCallback == 'function') {
+        // call callback after timeout
+        setTimeout(fnCallback, 700);
+      }
+    }
+    // start a typewriter animation for a text in the dataText array
+     function StartTextAnimation(i) {
+       if (typeof dataText[i] == 'undefined'){
+          setTimeout(function() {
+            StartTextAnimation(0);
+          }, 1000);
+       }
+       // check if dataText[i] exists
+      if (i < dataText[i].length) {
+        // text exists! start typewriter animation
+       typeWriter(dataText[i], 0, function(){
+         // after callback (and whole text has been animated), start next text
+         StartTextAnimation(i + 1);
+       });
+      }
+    }
+    // start the text animation
+    StartTextAnimation(0);
+  });

@@ -628,3 +628,7 @@ textarea::placeholder{
 
 /* lightbox for design board */
 
+/* temprary hidden  */
+.desktop-warranty {
+    display: none !important;
+}
