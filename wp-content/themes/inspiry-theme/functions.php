@@ -32,7 +32,7 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
       wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.4ebbc48bcae35ab8abdd.js'), NULL, '1.0', true);
       wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.4ebbc48bcae35ab8abdd.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.4ebbc48bcae35ab8abdd.css'));
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.aebecbb789db7969773b.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -406,4 +406,34 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
  <?php
   $fragments['.cart-box'] = ob_get_clean();
   return $fragments;
+}
+
+// add to cart ajax slider down
+add_action( 'wp_footer', 'trigger_for_ajax_add_to_cart' );
+function trigger_for_ajax_add_to_cart() {
+    ?>
+        <script type="text/javascript">
+     
+            (function($){
+                $('body').on( 'added_to_cart', function(){
+                    // Testing output on browser JS console
+                    console.log('added_to_cart'); 
+                    // Your code goes here
+                    $('.cart-popup-container').slideDown();
+                    $('.header .shopping-cart a i').toggleClass('fa-chevron-up');
+                    setTimeout(function(){  $('.cart-popup-container').slideUp('slow');}, 3000);
+
+                   // $('.cart-popup-container .fa-times').on('click', closeCart)
+
+                      
+                });
+            })(jQuery);
+
+            // function openCart
+            //       function closeCart(){
+            //           $('.cart-popup-container').slideUp('slow')
+            //           $('.header .shopping-cart a i').removeClass('fa-chevron-up');
+            //       }
+        </script>
+    <?php
 }
