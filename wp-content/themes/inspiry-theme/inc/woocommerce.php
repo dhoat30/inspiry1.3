@@ -58,7 +58,9 @@ function add_facetwp_filters(){
         echo do_shortcode('[facetwp facet="colour_family"]'); 
         echo do_shortcode('[facetwp facet="pattern"]'); 
         echo do_shortcode('[facetwp facet="composition"]'); 
-        echo do_shortcode('[facetwp facet="sho"]'); 
+        echo do_shortcode('[facetwp facet="availability"]');
+        echo do_shortcode('[facetwp facet="sho"]');
+
         echo '<button class="facet-reset-btn" onclick="FWP.reset()">Reset All Filter</button>'; 
     echo '</div>';
 }
@@ -505,6 +507,7 @@ function bbloomer_save_posted_field_into_order( $itemID, $values ) {
       $product = wc_get_product( $values['free_sample'] );
       $product_name = $product->get_name();
       wc_add_order_item_meta( $itemID, 'Free sample for', $product_name );
+      wc_add_order_item_meta( $itemID, 'SKU', $product->get_sku() );
     }
 }
 
@@ -517,4 +520,15 @@ function wc_reg_for_menus( $register, $name = '' ) {
      if ( $name == 'pa_brand' ) $register = true;
      return $register;
 }
+
+//loop title 
+function start_title_wrapper(){
+  echo '<div class="loop-title-container"> '; 
+}
+add_action('woocommerce_shop_loop_item_title', 'start_title_wrapper', 1, 1); 
+
+function close_title_wrapper(){
+  echo '</div>';
+}
+add_action('woocommerce_shop_loop_item_title', 'close_title_wrapper', 20, 1); 
 

@@ -1,32 +1,19 @@
 <?php 
 get_header(); 
 
-  while(have_posts()){
-    the_post(); 
+
     ?>
 
 
     <section class="trade-directory-page">
         <!--hero section  -->
-        <section class="hero-section trade-directory-hero-section beige-color-bc row-padding">
+        <section class="hero-section trade-directory-hero-section beige-color-bc">
             <div class="row-container hero-container">
                 <h3 class="column-s-font dark-grey regular">Trade Directory</h3>
-                <?php 
-                    $argsTypewriter = array(
-                        'post_type' => 'typewriter_effect', 
-                        'posts_per_page' => -1
-                    );
-                    $typewriterEffect = new WP_Query( $argsTypewriter );
-                       
-                        $titleArray = array_map('get_the_title', $typewriterEffect->posts);
-                        
-                        ?>
-                        <h1 class="dark-grey lg-font-sz" data-title='<?php  echo json_encode($titleArray);?>'>Hallo, Wij zijn Occhio!</h1>
+               
+                        <h1 class="dark-grey lg-font-sz" ></h1>
 
-                        <?php
-                
-                    wp_reset_postdata(); 
-                ?>
+                  
             </div>
         </section>
         <!-- main content section  -->
@@ -101,13 +88,41 @@ get_header();
                 <?php echo do_shortcode('[facetwp facet="pager_"]'); ?>
             </div>
         </section>
+
+        <section class="typewriter-query-container">
+            <?php 
+                    $argsTypewriter = array(
+                        'post_type' => 'typewriter_effect', 
+                        'posts_per_page' => -1,
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'typewriter-effect',
+                                'field'    => 'slug',
+                                'terms'    => array( 'trade-directory-page'),
+                            )
+                            ),
+                    );
+                    $typewriterEffect = new WP_Query( $argsTypewriter );
+                       
+                        $titleArray = array_map('get_the_title', $typewriterEffect->posts);
+                        
+                        ?>
+                        <div data-title='<?php  echo json_encode($titleArray);?>'></div>
+
+                        <?php
+                    while($typewriterEffect->have_posts()){
+                        $typewriterEffect->the_post();
+                    }
+                    wp_reset_postdata();
+                ?>  
+        </section>
     </section>
 
                     
                   
 
     <?php
-}
+
 
 get_footer();
 ?>

@@ -129,7 +129,7 @@ const laybuy = new LayBuy();
 document.addEventListener('DOMContentLoaded',function(event){
     // array with texts to type in typewriter
     // get json array from a title on a web page
-    let jsonArray = $('.trade-directory-hero-section h1').attr( 'data-title'); 
+    let jsonArray = $('.typewriter-query-container div').attr( 'data-title'); 
     let dataText = JSON.parse(jsonArray);
 
    

@@ -37,7 +37,7 @@ get_header();
             <div class="slide" style='background: url("<?php echo get_the_post_thumbnail_url(null,"large"); ?>") no-repeat
                                         center top/cover;'>
                 <div class="content">
-                    <h1 class="lg-font-sz center-align regular"><?php the_title();?></h1>
+                    <h2 class="lg-font-sz center-align regular white"><?php the_title();?></h2>
                     <h3 class="roboto-font center-align white section-ft-size regular">
                         <?php echo get_field('add_subtitle_');?>
                     </h3>
@@ -293,7 +293,7 @@ get_header();
                                 $variable =  do_shortcode('[gd_post_meta key="logo" show="value-raw" no_wrap="1" alignment="left"]');
                                 $variable = substr($variable, 0, strpos($variable, "|"));
                                 ?>
-                <img loading="lazy" src="<?php echo  $variable?>" alt="">
+                <img loading="lazy" src="<?php echo  $variable?>" alt="<?php the_title();  ?>">
             </div>
             <div class="font-s-med center-align regular light-grey"><?php the_title();  ?></div>
 

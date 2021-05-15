@@ -1,6 +1,4 @@
-.trade-directory-page{
 
-}
 .trade-directory{ 
     display: flex;
     flex-direction: row;
@@ -20,7 +18,9 @@
 }
 
 
-
+.project-page .card{
+    margin: 0 2vw 100px 0 !important;
+}
 .trade-directory .main-cards .facetwp-template{ 
     display: flex;
     flex-direction: row;
@@ -32,7 +32,7 @@
 .trade-directory .main-cards .facetwp-template .card{ 
     width: 22%;
     height: 22vw;
-    margin: 0 2vw 5vw 0;
+    margin: 0 2vw 5vw 0 ;
     transition: 800ms;
     transition-timing-function: ease-in-out;
     position: relative;
@@ -61,6 +61,13 @@
     width: 90%;
     height: auto;
 }
+.project-page .logo img{
+    height: 20vw !important;
+    width: 100% !important;
+    object-fit: cover;
+ }
+
+ 
 @media (max-width:1100px) and (min-width: 780px){ 
     .trade-directory>div:nth-child(1){ 
         width: 100%;
@@ -79,6 +86,11 @@
     .trade-directory .sidebar{
         display: none;
     }
+    .project-page .logo img{
+        height: 35vw !important;
+        width: 100% !important;
+        object-fit: cover;
+     }
 
 }
 @media (max-width:780px) and (min-width:550px){ 
@@ -96,6 +108,11 @@
     .trade-directory .main-cards .flex .logo{ 
         height: 50vw;
     }
+    .project-page .logo img{
+        height: 50vw !important;
+        width: 100% !important;
+        object-fit: cover;
+     }
 
 }
 @media (max-width:550px){ 
@@ -113,9 +130,14 @@
     .trade-directory .main-cards .flex .logo{ 
         height: 100vw;
     }
+    .project-page .logo img{
+        height: 100vw !important;
+        width: 100% !important;
+        object-fit: cover;
+     }
 
 }
-@media (max-width: 1300px) and (min-width:1100px) {
+@media (max-width: 1400px) and (min-width:1100px) {
     .trade-directory .main-cards .flex .card{ 
         width: 30%;
         height: 30vw;
@@ -124,18 +146,29 @@
     .trade-directory .main-cards .flex .logo{ 
         height: 30vw;
     }
+    .project-page .logo img{
+        height: 30vw !important;
+        width: 100% !important;
+        object-fit: cover;
+     }
 }
 
 
 
 @media (max-width: 350px){ 
     .trade-directory .main-cards .flex .card{ 
-        width: 260px;
+        width: 30%;
+        height: 100vw;
+        margin: 0 2vw 100px 0;
     }
     .trade-directory .main-cards .flex .logo{ 
-        height: 250px;
-      
+        height: 100vw;
     }
+    .project-page .logo img{
+        height: 100vw !important;
+        width: 100% !important;
+        object-fit: cover;
+     }
     
 }
 .trade-directory .main-cards .flex .card .link .website-link{ 
@@ -224,10 +257,11 @@ text-decoration: underline;
     display: none;
 }
 .trade-directory .sidebar .facetwp-radio{
-    margin: 0 0 10px 0;
+    margin: 0 0 15px 0;
     color: #484848;
     font-family: 'Roboto', sans-serif;
     font-weight: 300 !important;
+    line-height: 1.5em;
 }
 .trade-directory .sidebar .facetwp-radio:hover{
     color: rgb(152, 152, 152) !important;
@@ -311,5 +345,5 @@ text-decoration: underline;
     justify-content: flex-start;
     align-items: flex-end;
     display: flex;
-    
+    padding: 20px 0;
 }

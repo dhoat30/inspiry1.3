@@ -30,7 +30,7 @@ get_header();
                     <a href="<?php the_permalink(); ?>">
                       <div class="logo">
 
-                              <img src="<?php echo  get_the_post_thumbnail_url( $postID, 'large'); ?>" alt="<?php the_title();?>">
+                              <img src="<?php echo  get_the_post_thumbnail_url( get_the_id(), 'large'); ?>" alt="<?php the_title();?>">
                         </div>
                       </a>
                       <div class="link">
@@ -38,17 +38,17 @@ get_header();
                           //remove http://
                           $urlStr = geodir_get_post_meta($postID, 'website', true);
                           if(strpos($urlStr, 'https://')){
-                            $urlStr = str_replace('https://', "", $urlStr); 
+                            $newUrl = str_replace('https://', "", $urlStr); 
                           }
                           else{
-                            $urlStr = str_replace('http://', "", $urlStr);
+                            $newUrl = str_replace('http://', "", $urlStr);
                           }
                           
                           
                         ?>
                         <a class="rm-txt-dec website-link" target="_blank" href="<?php echo $urlStr;?>">
                         <i class="fal fa-external-link-alt"></i>
-                          <?php  echo $urlStr;?> 
+                          <?php  echo $newUrl;?> 
                         </a>
                         
 

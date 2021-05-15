@@ -10,8 +10,7 @@ get_header();
 
 <div>
 
-    <div class="trade-hero">
-        <img src="<?php  echo get_the_post_thumbnail_url( $postID, 'full' )  ?> " alt="<?php echo get_the_title();?>">
+    <div class="trade-hero" style='background: url(" <?php echo get_the_post_thumbnail_url( $postID, "large" ) ?>")'>
     </div>
 
 
