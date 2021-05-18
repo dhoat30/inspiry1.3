@@ -394,15 +394,16 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
 			    </div>
                 <div class="pop-up-footer">
                     <div class="total-container">
-                        <div class="cart-btn">
-                            <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="<?php echo get_site_url();?>/cart">Cart</a>
-                        </div>
+                        
                         <div class="total roboto-font">
                             Total: $<?php echo     str_replace(".00", "", (string)number_format (WC()->cart->total, 2, ".", ""));?>
                         </div>
                     </div>
+                    <div class="cont-shopping">
+                            <a class="rm-txt-dec button btn-dk-green-border btn-full-width center-align" href="#">Continue Shopping</a>
+                        </div>
                     <div class="checkout-btn">
-                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/checkout">Checkout</a>
+                        <a class="rm-txt-dec button btn-dk-green btn-full-width center-align checkout-btn-header" href="<?php echo get_site_url();?>/cart">Checkout</a>
                     </div>
                 </div>
             </div>

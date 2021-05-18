@@ -64,3 +64,7 @@
 .cart-popup-container .total-container .total {
   text-align: left;
 }
+
+.cart-popup-container .cont-shopping {
+  margin: 10px 0 10px 0;
+}

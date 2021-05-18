@@ -8,6 +8,7 @@ class PopUpCart {
 
     events() {
         $('.header .shopping-cart .cart-items-header').on('click', this.openCart)
+        $('.cart-popup-container .cont-shopping a').on('click', this.openCart)
         // $('.cart-popup-container .fa-times').on('click', this.closeCart)
         $(document).on('click', '.single_add_to_cart_button', this.ajaxAddToCart)
         // remove item from cart ajax 
