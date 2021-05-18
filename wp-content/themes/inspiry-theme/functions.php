@@ -30,9 +30,9 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.4ebbc48bcae35ab8abdd.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.4ebbc48bcae35ab8abdd.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.aebecbb789db7969773b.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.9352f97424d69b58a267.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.9352f97424d69b58a267.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.9352f97424d69b58a267.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -357,6 +357,7 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                             <div class="price-container">
                             <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
                             </div>
+                            <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
                         </a>
 
                         <?php
@@ -377,6 +378,8 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                                 <div class="price-container">
                                 <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
                                 </div>
+                                
+                                <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
                             </a>
                             <?php
                         }
@@ -416,24 +419,56 @@ function trigger_for_ajax_add_to_cart() {
      
             (function($){
                 $('body').on( 'added_to_cart', function(){
-                    // Testing output on browser JS console
-                    console.log('added_to_cart'); 
+                
                     // Your code goes here
                     $('.cart-popup-container').slideDown();
                     $('.header .shopping-cart a i').toggleClass('fa-chevron-up');
                     setTimeout(function(){  $('.cart-popup-container').slideUp('slow');}, 3000);
 
                    // $('.cart-popup-container .fa-times').on('click', closeCart)
-
+                
                       
                 });
             })(jQuery);
 
-            // function openCart
-            //       function closeCart(){
-            //           $('.cart-popup-container').slideUp('slow')
-            //           $('.header .shopping-cart a i').removeClass('fa-chevron-up');
-            //       }
+          
         </script>
     <?php
 }
+
+// show cart item number in the header on add to cart
+add_filter('woocommerce_add_to_cart_fragments', 'woocommerce_header_add_to_cart_item_fragment');
+
+function woocommerce_header_add_to_cart_item_fragment( $fragments ) {
+    global $woocommerce;
+
+    ob_start();
+
+    ?>
+    <span class="cart-item-count">Cart (<?php echo WC()->cart->get_cart_contents_count(); ?>)</span>
+    <?php
+
+    $fragments['span.cart-item-count'] = ob_get_clean();
+
+    return $fragments;
+
+}
+
+// remove item from cart pop up 
+function remove_item_from_cart() {
+    $cart = WC()->instance()->cart;
+    $id = $_POST['product_id'];
+    $cart_id = $cart->generate_cart_id($id);
+    $cart_item_id = $cart->find_product_in_cart($cart_id);
+
+    if($cart_item_id){
+       $cart->set_quantity($cart_item_id, 0);
+       return true;
+    } 
+    return false;
+    }
+
+    add_action('wp_ajax_remove_item_from_cart', 'remove_item_from_cart');
+    add_action('wp_ajax_nopriv_remove_item_from_cart', 'remove_item_from_cart');
+
+    // update count after removing item from cart
