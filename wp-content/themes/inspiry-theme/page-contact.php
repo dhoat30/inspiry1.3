@@ -4,7 +4,6 @@ get_header();
   while(have_posts()){
     the_post(); 
     ?>
-
     <div class="body-contaienr contact-page">
         <img class="hero-section-img" alt="Contact us" src="<?php echo  get_site_url();?>/wp-content/uploads/2020/11/CONTACT-PAGE.jpg">
         <div class="row-container contact-us-page">

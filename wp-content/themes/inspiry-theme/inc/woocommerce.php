@@ -532,3 +532,33 @@ function close_title_wrapper(){
 }
 add_action('woocommerce_shop_loop_item_title', 'close_title_wrapper', 20, 1); 
 
+// product price formating 
+
+add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
+
+// add shippping provider]
+
+/**
+ * wc_shipment_tracking_add_custom_provider
+ *
+ * Adds custom provider to shipment tracking
+ * Change the country name, the provider name, and the URL (it must include the %1$s)
+ * Add one provider per line
+*/
+
+add_filter( 'wc_shipment_tracking_get_providers' , 'wc_shipment_tracking_add_custom_provider' );
+
+function wc_shipment_tracking_add_custom_provider( $providers ) {
+	
+	$providers['New Zealand']['Courier Post NZ'] = 'https://www.nzpost.co.nz/tools/tracking?trackid=';
+	return $providers;
+	
+}
+
+// default shipping provider
+add_filter( 'woocommerce_shipment_tracking_default_provider', 'custom_woocommerce_shipment_tracking_default_provider' );
+
+function custom_woocommerce_shipment_tracking_default_provider( $provider ) {
+	$provider = 'Courier Post NZ'; 
+	return $provider;
+}

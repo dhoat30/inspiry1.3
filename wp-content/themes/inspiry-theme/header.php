@@ -165,7 +165,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
       
         <div class="cart-popup-container box-shadow">
             
-            <div class="cart-box">
+        <div class="cart-box">
                 <div class="flex-card">
                         <?php
 
@@ -202,7 +202,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                             </div>
                             
                             <div class="price-container">
-                            <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
+                            <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity) ?></h6>
                             </div>
                             <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
                         </a>
@@ -223,7 +223,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 </div>
                                 
                                 <div class="price-container">
-                                <h6 class="font-s-regular roboto-font bold">$<?php echo $product->price * $quantity; ?></h6>
+                                <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity); ?></h6>
                                 </div>
                                 
                                 <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
@@ -243,7 +243,9 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                     <div class="total-container">
                         
                         <div class="total roboto-font">
-                            Total: $<?php echo     str_replace(".00", "", (string)number_format (WC()->cart->total, 2, ".", ""));?>
+                            Total: $<?php 
+                            $totalAmount = str_replace(".00", "", (string)number_format (WC()->cart->total, 2, ".", ""));
+                            echo number_format($totalAmount); ?>
                         </div>
                     </div>
                     <div class="cont-shopping">

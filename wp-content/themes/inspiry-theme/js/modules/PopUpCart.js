@@ -8,7 +8,7 @@ class PopUpCart {
 
     events() {
         $('.header .shopping-cart .cart-items-header').on('click', this.openCart)
-        $('.cart-popup-container .cont-shopping a').on('click', this.openCart)
+        $(document).on('click', '.cart-box .cont-shopping a', this.closeCart)
         // $('.cart-popup-container .fa-times').on('click', this.closeCart)
         $(document).on('click', '.single_add_to_cart_button', this.ajaxAddToCart)
         // remove item from cart ajax 
@@ -42,6 +42,8 @@ class PopUpCart {
             }
         });
     }
+
+    //close cart
 
     // open cart
     openCart(event) {
@@ -85,9 +87,8 @@ class PopUpCart {
 
             },
             success: function (response) {
-                console.log("these is a responses")
                 $('.cart-popup-container').slideDown();
-                setTimeout(function () { $('.cart-popup-container').slideUp('slow'); }, 3000);
+                // setTimeout(function () { $('.cart-popup-container').slideUp('slow'); }, 3000);
 
                 if (response.error & response.product_url) {
                     window.location = response.product_url;
