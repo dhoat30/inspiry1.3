@@ -546,19 +546,15 @@ add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
  * Add one provider per line
 */
 
-add_filter( 'wc_shipment_tracking_get_providers' , 'wc_shipment_tracking_add_custom_provider' );
+// add_filter( 'wc_shipment_tracking_get_providers' , 'wc_shipment_tracking_add_custom_provider' );
 
-function wc_shipment_tracking_add_custom_provider( $providers ) {
+// function wc_shipment_tracking_add_custom_provider( $providers ) {
 	
-	$providers['New Zealand']['Courier Post NZ'] = 'https://www.nzpost.co.nz/tools/tracking?trackid=';
-	return $providers;
+// 	$providers['New Zealand']['Mainfreight'] = 'https://www.mainfreight.com/en-nz/tracking?trackingnumber=';
+//   $providers['New Zealand']['Toll'] = 'http://fasttracker-nz.tollgroup.com/?track=';
+//   $providers['New Zealand']['Toll'] = 'http://fasttracker-nz.tollgroup.com/?track=';
+
+// 	return $providers;
 	
-}
+// }
 
-// default shipping provider
-add_filter( 'woocommerce_shipment_tracking_default_provider', 'custom_woocommerce_shipment_tracking_default_provider' );
-
-function custom_woocommerce_shipment_tracking_default_provider( $provider ) {
-	$provider = 'Courier Post NZ'; 
-	return $provider;
-}

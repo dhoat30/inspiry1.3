@@ -24,10 +24,35 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
-<?php /* translators: %s: Customer first name */ ?>
-<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
-<p><?php esc_html_e( 'We have finished processing your order.', 'woocommerce' ); ?></p>
-<?php
+<!-- body  -->
+<?php 
+
+	$tracking = $order->get_meta('_wc_shipment_tracking_items'); 
+
+?>
+<div class="body max-width padding">
+        <div class="text-content">
+            <!-- change the status here -->
+            <h1 class="title playfair-fonts">Your Inspiry order has shipped.</h1>
+            <div class="divider">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2021/05/delivery-truck.png" alt="delivery">
+            </div>
+            
+            <!-- tracking number -->
+            <h2 class="subtitle playfair-fonts">Your tracking number is <?php     print_r($tracking[0]['tracking_number']); ?></h2>
+            
+            <!-- only for when item is shipped  -->
+            
+            <?php 
+            // create a tracking url 
+                    $trackingUrl = $tracking[0]['custom_tracking_link']; 
+                
+            ?>
+            <h3 class="paragraph playfair-fonts">Use this link to track your package: <a class="playfair-fonts" href="<?php echo $trackingUrl;?>" target="_blank">Track  </a></h3>
+        </div>
+    </div>
+
+	<?php 
 
 /*
  * @hooked WC_Emails::order_details() Shows the order details table.
@@ -35,7 +60,7 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
  * @hooked WC_Structured_Data::output_structured_data() Outputs structured data.
  * @since 2.5.0
  */
-do_action( 'woocommerce_email_order_details_custom', $order, $sent_to_admin, $plain_text, $email );
+do_action( 'woocommerce_email_order_details', $order, $sent_to_admin, $plain_text, $email );
 
 /*
  * @hooked WC_Emails::order_meta() Shows order meta data.

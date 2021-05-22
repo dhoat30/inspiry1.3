@@ -52,13 +52,15 @@ if ( ! defined( 'ABSPATH' ) ) {
 				);
 
 				$tab = 'settings';
-				switch ( $_GET['tab'] ) {
-					case 'menu-search':
-						$tab = 'menu-search';
-						break;
-					case 'analytics':
-						$tab = 'analytics';
-						break;
+				if ( isset( $_GET['tab'] ) ) {
+					switch ( $_GET['tab'] ) {
+						case 'menu-search':
+							$tab = 'menu-search';
+							break;
+						case 'analytics':
+							$tab = 'analytics';
+							break;
+					}
 				}
 				$url = esc_url( menu_page_url( 'ivory-search-settings', false ) );
 				?>

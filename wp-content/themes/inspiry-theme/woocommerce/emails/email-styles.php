@@ -18,212 +18,293 @@
 if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
-
-// Load colors.
-$bg        = get_option( 'woocommerce_email_background_color' );
-$body      = get_option( 'woocommerce_email_body_background_color' );
-$base      = get_option( 'woocommerce_email_base_color' );
-$base_text = wc_light_or_dark( $base, '#202020', '#ffffff' );
-$text      = get_option( 'woocommerce_email_text_color' );
-
-// Pick a contrasting color for links.
-$link_color = wc_hex_is_light( $base ) ? $base : $base_text;
-
-if ( wc_hex_is_light( $body ) ) {
-	$link_color = wc_hex_is_light( $base ) ? $base_text : $base;
-}
-
-$bg_darker_10    = wc_hex_darker( $bg, 10 );
-$body_darker_10  = wc_hex_darker( $body, 10 );
-$base_lighter_20 = wc_hex_lighter( $base, 20 );
-$base_lighter_40 = wc_hex_lighter( $base, 40 );
-$text_lighter_20 = wc_hex_lighter( $text, 20 );
-$text_lighter_40 = wc_hex_lighter( $text, 40 );
-
-// !important; is a gmail hack to prevent styles being stripped if it doesn't like something.
-// body{padding: 0;} ensures proper scale/positioning of the email in the iOS native email app.
 ?>
-body {
-	padding: 0;
+
+/* email template */
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  color: #0b0b0b;
+}
+.email-template {
+  background: #efefef;
+  padding: 100px 0;
+}
+.max-width {
+  max-width: 600px;
+  margin: 0 auto;
+}
+.padding {
+  padding: 10px 20px;
+}
+.email-template .header {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+}
+.email-template .header .store {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+}
+.email-template .header .store img {
+  width: 25px;
+  cursor: pointer;
+}
+.email-template .header .store a {
+  text-decoration: none;
+  display: block;
+  margin-right: 10px;
+}
+.email-template .header .store a:hover {
+  text-decoration: underline;
+  color: #222;
+}
+.email-template .logo img {
+  width: 150px;
 }
 
-#wrapper {
-	background-color: <?php echo esc_attr( $bg ); ?>;
-	margin: 0;
-	padding: 70px 0;
-	-webkit-text-size-adjust: none !important;
-	width: 100%;
+/* body */
+.email-template .body {
+  background: #efeae5;
+  position: relative;
+}
+.playfair-fonts {
+  font-family: "Playfair Display", serif !important;
+}
+.email-template .body .title {
+  text-align: center;
+
+  margin: 30px 0 10px 0;
+  font-weight: 500;
+  font-size: 30px;
+}
+.email-template .body .text-content .divider {
+  position: relative;
+}
+.email-template .body .text-content .divider img {
+  display: block;
+  margin: 0 auto;
+  width: 80px;
+  padding: 0 20px;
+  background: #efeae5;
+  z-index: 100;
+  position: relative;
+}
+.email-template .body .text-content .divider::before {
+  content: "";
+  width: 250px;
+  height: 2px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 0;
+  background-color: black;
 }
 
-#template_container {
-	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) !important;
-	background-color: <?php echo esc_attr( $body ); ?>;
-	border: 1px solid <?php echo esc_attr( $bg_darker_10 ); ?>;
-	border-radius: 3px !important;
+.email-template .body .text-content .subtitle {
+  font-size: 18px;
+  font-weight: 500;
+  text-align: center;
+  margin-top: 20px;
 }
 
-#template_header {
-	background-color: <?php echo esc_attr( $base ); ?>;
-	border-radius: 3px 3px 0 0 !important;
-	color: <?php echo esc_attr( $base_text ); ?>;
-	border-bottom: 0;
-	font-weight: bold;
-	line-height: 100%;
-	vertical-align: middle;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
+.email-template .body .text-content .paragraph {
+  font-size: 16px;
+  text-align: center;
+  font-weight: 300;
+  margin-top: 10px;
 }
 
-#template_header h1,
-#template_header h1 a {
-	color: <?php echo esc_attr( $base_text ); ?>;
-	background-color: inherit;
+/* order-container */
+.order-container {
+  background: #efeae5;
+  padding: 20px;
+}
+.order-content {
+  background: white;
+  padding: 20px;
+  margin: 0 20px;
+}
+.order-container .text-content {
+  text-align: center;
 }
 
-#template_header_image img {
-	margin-left: 0;
-	margin-right: 0;
+.order-container .text-content .meta {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  margin-top: 20px;
+  position: relative;
+}
+.order-container .product-cards {
+  position: relative;
+}
+.order-container .product-cards::before {
+  position: absolute;
+  background: #efeae5;
+  width: 100%;
+  height: 2px;
+  content: "";
+  top: 10px;
+  left: 0;
+}
+.order-container .product-cards::after {
+  position: absolute;
+  background: #efeae5;
+  width: 100%;
+  height: 2px;
+  content: "";
+  bottom: -10px;
+  left: 0;
 }
 
-#template_footer td {
-	padding: 0;
-	border-radius: 6px;
+/* order table */
+.order-container .product-cards .card table {
+  width: 100%;
+  text-align: left;
+}
+.order-container .product-cards .card table th {
+  padding: 10px 0;
+  color: rgb(138, 138, 138);
+  font-weight: 300;
+}
+.order-container .product-cards .card table th:nth-child(1) {
+  padding: 0 20px 0 0;
+}
+.order-container .product-cards .card table th:nth-child(2) {
+  padding: 0 10px 0 0;
+}
+.order-container .product-cards .card table td:nth-child(1) {
+  padding: 0 20px 0 0 !important;
 }
 
-#template_footer #credit {
-	border: 0;
-	color: <?php echo esc_attr( $text_lighter_40 ); ?>;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-	font-size: 12px;
-	line-height: 150%;
-	text-align: center;
-	padding: 24px 0;
+.order-container .product-cards .card .table td {
+  font-family: "Playfair Display", serif !important;
+}
+.order-container .product-cards .card table img {
+  width: 50px !important;
+  height: 40px;
+  object-fit: cover;
 }
 
-#template_footer #credit p {
-	margin: 0 0 16px;
+.order-container .product-cards .card table .title {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+.order-container .product-cards .card table .items {
+  border-spacing: 15px;
+  border-collapse: separate;
+  padding-bottom: 50px;
+}
+.order-container .product-cards .card table td span {
+  display: block !important;
+}
+.order-container .product-cards .card table td span:nth-child(2) {
+  margin-bottom: 20px;
+}
+.order-container .product-cards .card table td a {
+  text-decoration: none !important;
+}
+.order-container .product-cards .card table td a:hover {
+  text-decoration: underline !important;
 }
 
-#body_content {
-	background-color: <?php echo esc_attr( $body ); ?>;
+@media (max-width: 500px) {
+  /* order-container */
+  .order-container {
+    background: #efeae5;
+    padding: 20px 0;
+  }
+  .order-content {
+    background: white;
+    padding: 20px 5px;
+    margin: 0 10px;
+  }
+
+  .order-container .product-cards {
+    padding: 10px 0 !important;
+  }
+  .order-container .product-cards .card table td span {
+    display: block;
+  }
 }
 
-#body_content table td {
-	padding: 48px 48px 32px;
+/* customer contact  */
+.customer-contact {
+  margin: 30px 0 20px 0;
+}
+.customer-contact .contact-info {
+  margin-top: 10px;
+}
+.customer-contact .contact-info span {
+  display: block;
 }
 
-#body_content table td td {
-	padding: 12px;
+/* footer */
+.email-template .footer {
+  background: #efeae5;
+  padding-bottom: 40px;
+  text-align: center;
 }
 
-#body_content table td th {
-	padding: 12px;
+/* total container */
+.email-template .total {
+  position: relative;
+}
+.email-template .total tr td {
+  text-align: right !important;
+  margin: 0 20px !important;
+}
+.email-template .total table {
+  border-spacing: 15px;
+  margin: 10px 15px 0 auto;
+}
+.email-template .total::after {
+  position: absolute;
+  background: #efeae5;
+  width: 100%;
+  height: 2px;
+  content: "";
+  bottom: -10px;
+  left: 0;
+}
+/* social media container */
+
+.email-template .social-container {
+  background: #efeae5;
+  text-align: center;
+}
+.email-template .social-container .title {
+  font-size: 20px;
+  position: relative;
+}
+.email-template .social-container .title::after {
+  position: absolute;
+  background: #0b0b0b;
+  width: 100px;
+  height: 2px;
+  content: "";
+  bottom: -7px;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
-#body_content td ul.wc-item-meta {
-	font-size: small;
-	margin: 1em 0 0;
-	padding: 0;
-	list-style: none;
+.email-template .social-container img {
+  width: 25px;
+  margin: 15px 5px;
 }
 
-#body_content td ul.wc-item-meta li {
-	margin: 0.5em 0 0;
-	padding: 0;
-}
 
-#body_content td ul.wc-item-meta li p {
-	margin: 0;
-}
-
-#body_content p {
-	margin: 0 0 16px;
-}
-
-#body_content_inner {
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-	font-size: 14px;
-	line-height: 150%;
-	text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-}
-
-.td {
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
-	border: 1px solid <?php echo esc_attr( $body_darker_10 ); ?>;
-	vertical-align: middle;
-}
-
-.address {
-	padding: 12px;
-	color: <?php echo esc_attr( $text_lighter_20 ); ?>;
-	border: 1px solid <?php echo esc_attr( $body_darker_10 ); ?>;
-}
-
-.text {
-	color: <?php echo esc_attr( $text ); ?>;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-}
-
-.link {
-	color: <?php echo esc_attr( $link_color ); ?>;
-}
-
-#header_wrapper {
-	padding: 36px 48px;
-	display: block;
-}
-
-h1 {
-	color: <?php echo esc_attr( $base ); ?>;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-	font-size: 30px;
-	font-weight: 300;
-	line-height: 150%;
-	margin: 0;
-	text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-	text-shadow: 0 1px 0 <?php echo esc_attr( $base_lighter_20 ); ?>;
-}
-
-h2 {
-	color: <?php echo esc_attr( $base ); ?>;
-	display: block;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-	font-size: 18px;
-	font-weight: bold;
-	line-height: 130%;
-	margin: 0 0 18px;
-	text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-}
-
-h3 {
-	color: <?php echo esc_attr( $base ); ?>;
-	display: block;
-	font-family: "Helvetica Neue", Helvetica, Roboto, Arial, sans-serif;
-	font-size: 16px;
-	font-weight: bold;
-	line-height: 130%;
-	margin: 16px 0 8px;
-	text-align: <?php echo is_rtl() ? 'right' : 'left'; ?>;
-}
-
-a {
-	color: <?php echo esc_attr( $link_color ); ?>;
-	font-weight: normal;
-	text-decoration: underline;
-}
-
-img {
-	border: none;
-	display: inline-block;
-	font-size: 14px;
-	font-weight: bold;
-	height: auto;
-	outline: none;
-	text-decoration: none;
-	text-transform: capitalize;
-	vertical-align: middle;
-	margin-<?php echo is_rtl() ? 'left' : 'right'; ?>: 10px;
-	max-width: 100%;
-	height: auto;
-}
 <?php

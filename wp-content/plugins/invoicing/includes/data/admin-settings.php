@@ -417,14 +417,14 @@ return array(
                 'email_from' => array(
                     'id'   => 'email_from',
                     'name' => __( 'From Email', 'invoicing' ),
-                    'desc' => sprintf (__( 'Email address to send invoice emails from. This will act as the "from" and "reply-to" address. %s If emails are not being sent it may be that your hosting prevents emails being sent if the email domains do not match.%s', 'invoicing' ), $alert_wrapper_start, $alert_wrapper_close),
+                    'desc' => sprintf (__( 'Email address to send invoice emails from. This will act as the "from" address. %s If emails are not being sent it may be that your hosting prevents emails being sent if the email domains do not match.%s', 'invoicing' ), $alert_wrapper_start, $alert_wrapper_close),
                     'std' => get_option( 'admin_email' ),
                     'type' => 'text',
                 ),
                 'admin_email' => array(
                     'id'   => 'admin_email',
                     'name' => __( 'Admin Email', 'invoicing' ),
-                    'desc' => __( 'Where should we send admin notifications?', 'invoicing' ),
+                    'desc' => __( 'Where should we send admin notifications? This will is also act as the "reply-to" address for invoice emails', 'invoicing' ),
                     'std' => get_option( 'admin_email' ),
                     'type' => 'text',
                 ),
@@ -579,13 +579,18 @@ return array(
                     'name' => '<h3>' . __( 'Checkout Settings', 'invoicing' ) . '</h3>',
                     'type' => 'header',
                 ),
+                'disable_new_user_emails' => array(
+                    'id'   => 'disable_new_user_emails',
+                    'name' => __( 'Disable new user emails', 'invoicing' ),
+                    'desc' => __( 'Do not send an email to customers when a new user account is created for them.', 'invoicing' ),
+                    'type' => 'checkbox',
+                ),
                 'login_to_checkout' => array(
                     'id'   => 'login_to_checkout',
                     'name' => __( 'Require Login To Checkout', 'invoicing' ),
                     'desc' => __( 'If ticked then user needs to be logged in to view or pay invoice, can only view or pay their own invoice. If unticked then anyone can view or pay the invoice.', 'invoicing' ),
                     'type' => 'checkbox',
                 ),
-
                 'maxmind_license_key' => array(
                     'id'   => 'maxmind_license_key',
                     'name' => __( 'MaxMind License Key', 'invoicing' ),

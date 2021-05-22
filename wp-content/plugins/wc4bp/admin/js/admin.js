@@ -41,8 +41,6 @@ function wc4bpAdministration() {
 	}
 
 	
-/* Premium Code Stripped by Freemius */
-
 
 	return {
 		init: function() {
@@ -61,8 +59,6 @@ function wc4bpAdministration() {
 			}
 
 			
-/* Premium Code Stripped by Freemius */
-
 		},
 	};
 }

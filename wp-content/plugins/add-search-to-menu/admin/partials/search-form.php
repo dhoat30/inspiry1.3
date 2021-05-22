@@ -46,19 +46,21 @@ if ( ! defined( 'ABSPATH' ) ) {
 		}
 
 		$tab = 'includes';
-		switch ( $_GET['tab'] ) {
-			case 'excludes':
-				$tab = 'excludes';
-				break;
-			case 'customize':
-				$tab = 'customize';
-				break;
-			case 'ajax':
-				$tab = 'ajax';
-				break;
-			case 'options':
-				$tab = 'options';
-				break;
+		if ( isset( $_GET['tab'] ) ) {
+			switch ( $_GET['tab'] ) {
+				case 'excludes':
+					$tab = 'excludes';
+					break;
+				case 'customize':
+					$tab = 'customize';
+					break;
+				case 'ajax':
+					$tab = 'ajax';
+					break;
+				case 'options':
+					$tab = 'options';
+					break;
+			}
 		}
 	?>
 

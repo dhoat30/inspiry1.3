@@ -234,3 +234,6 @@ Remove Add to cart button common class
 
 = 2.1.19 =
 Remove admin privilege for setting page
+
+= 2.1.20 =
+Fix non-numerice value when add to cart

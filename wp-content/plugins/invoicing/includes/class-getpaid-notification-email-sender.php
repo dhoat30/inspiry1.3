@@ -157,7 +157,7 @@ class GetPaid_Notification_Email_Sender {
 		if ( ! is_email( $from_address ) ) {
 			$from_address =  $this->default_from_address();
         }
-        
+
         return $from_address;
 
     }
@@ -184,7 +184,7 @@ class GetPaid_Notification_Email_Sender {
 		return apply_filters( 'getpaid_default_from_address', $from_email );
 
     }
-    
+
     /**
 	 * Get the email reply-to.
 	 *
@@ -201,7 +201,7 @@ class GetPaid_Notification_Email_Sender {
 
 		return $reply_to;
     }
-    
+
     /**
 	 * Get the email content type.
 	 *
@@ -230,7 +230,7 @@ class GetPaid_Notification_Email_Sender {
 		remove_filter( 'wp_mail_from', array( $this, 'get_from_address' ), 1000 );
 		remove_filter( 'wp_mail_from_name', array( $this, 'get_from_name' ), 1000 );
 		remove_filter( 'wp_mail_content_type', array( $this, 'get_content_type' ), 1000 );
-		remove_filter( 'wp_mail', array( $this, 'ensure_email_content' ), 1000000 );
+		remove_filter( 'wp_mail', array( $this, 'ensure_email_content' ), 1000 );
 
 	}
 

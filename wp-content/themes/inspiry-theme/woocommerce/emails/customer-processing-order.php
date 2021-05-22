@@ -24,11 +24,23 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
-<?php /* translators: %s: Customer first name */ ?>
-<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
-<?php /* translators: %s: Order number */ ?>
-<p><?php printf( esc_html__( 'Just to let you know &mdash; we\'ve received your order #%s, and it is now being processed:', 'woocommerce' ), esc_html( $order->get_order_number() ) ); ?></p>
+ <!-- body  -->
+ <div class="body max-width padding">
+        <div class="text-content">
+            <!-- change the status here -->
+            <h1 class="title playfair-fonts"> We've received your order.</h1>
+            <div class="divider">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2021/05/shopping-1.png" alt="delivery">
+            </div>
 
+            <!-- tracking number -->
+            <h2 class="subtitle playfair-fonts">Thank you for shopping with us, we really appreciate it!</h2>
+            
+            <!-- only for when item is shipped  -->
+            
+          
+        </div>
+    </div>
 <?php
 
 /*

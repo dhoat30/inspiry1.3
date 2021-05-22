@@ -367,7 +367,7 @@ get_header();
     const next = document.querySelector('#next');
     const prev = document.querySelector('#prev');
     const auto = true; // Auto scroll
-    const intervalTime = 5000;
+    const intervalTime = 3000;
     let slideInterval;
     slides[0].classList.add('current');
 

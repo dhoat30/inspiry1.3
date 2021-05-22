@@ -596,9 +596,11 @@ class IS_Search_Editor
             echo  '<div class="is-cb-dropdown">' ;
             echo  '<div class="is-cb-title">' ;
             if ( $default_search || !isset( $includes['post_status'] ) || empty($includes['post_status']) ) {
-                $includes['post_status'] = array(
+                $includes = array(
+                    'post_status' => array(
                     'publish' => 'publish',
                     'inherit' => 'inherit',
+                ),
                 );
             }
             echo  '<span style="display:none;" class="is-cb-select">' . __( 'Select Post Status', 'add-search-to-menu' ) . '</span><span class="is-cb-titles">' ;

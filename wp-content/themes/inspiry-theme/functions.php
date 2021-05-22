@@ -30,9 +30,9 @@ require get_theme_file_path('/inc/nav-registeration.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.dcba60e01c433b2afeed.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.dcba60e01c433b2afeed.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.aebecbb789db7969773b.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.a4f5ca244ae1cb94082f.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.a4f5ca244ae1cb94082f.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.a4f5ca244ae1cb94082f.css'));
 
     }
     wp_localize_script("main", "inspiryData", array(
@@ -474,42 +474,4 @@ function remove_item_from_cart() {
     add_action('wp_ajax_remove_item_from_cart', 'remove_item_from_cart');
     add_action('wp_ajax_nopriv_remove_item_from_cart', 'remove_item_from_cart');
 
-    // update count after removing item from cart
-    add_action('woocommerce_email_order_details_custom', 'add_content', 20); 
-    function add_content($order){
-       
-        $var = '<div class="product-cards max-width padding">
-        <div class="card">
-            <table>
-                <tr>
-                    <th class="playfair-fonts">Item</th>
-                    <th class="playfair-fonts">Qty</th>
-                    <th class="playfair-fonts">Price</th>
-                </tr>';
-                
-                $count = 1;
-                foreach( $order->get_items() as $item_id => $line_item ){
-                    $item_data = $line_item->get_data();
-                    $product = $line_item->get_product();
-                    $product_name = $product->get_name();
-                    $productID = $product->get_id();
-                    $item_quantity = $line_item->get_quantity();
-                    $item_total = $line_item->get_total();
-                    $totalPrice = round($item_total, 2);
-                    $metadata['Line Item '.$count] = 'Product name: '.$product_name.' | Quantity: '.$item_quantity.' | Item total: '. number_format( $item_total, 2 );
-                    $count += 1;
-                    $var .= '<tr class="items"><td class="playfair-fonts title"> <a href="'; 
-                    
-                    $var.=   get_the_permalink($productID); 
-                    $var.='" target="_blank"><span><img src="'; 
-                    $var.=   get_the_post_thumbnail_url($productID, 'thumbnail');
-                    $var.='" alt=""></span> <span class="playfair-fonts">';
-                    $var.=  $product_name;
-                    $var.= '</span></a> </td>';
-                }
-       
-        echo $var; 
-    
-               
-            
-    }
+  

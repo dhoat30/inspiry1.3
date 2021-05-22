@@ -47,7 +47,7 @@ class Woo_Free_Product_Sample_Public {
 	 * @since    1.0.0
 	 */
 	public function wfps_enqueue_styles() {
-		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-free-product-sample-public.css', array(), $this->version, 'all' );
+		wp_enqueue_style( $this->plugin_name, plugin_dir_url( __FILE__ ) . 'css/woo-free-product-sample-public.css', [], $this->version, 'all' );
 	}
 
 	/**
@@ -58,20 +58,20 @@ class Woo_Free_Product_Sample_Public {
 		
 		// filter for Measurement Price Calculator plugin override overriding
 		if (in_array('woocommerce-measurement-price-calculator/woocommerce-measurement-price-calculator.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-			add_filter('wc_measurement_price_calculator_add_to_cart_validation', array($this, 'wfps_measurement_price_calculator_add_to_cart_validation'), 10, 4 );
+			add_filter('wc_measurement_price_calculator_add_to_cart_validation', [ $this, 'wfps_measurement_price_calculator_add_to_cart_validation' ], 10, 4 );
 		}
 
 		// filter for Minimum/Maximum plugin override overriding
 		if (in_array('woocommerce-min-max-quantities/min-max-quantities.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-			add_filter('wc_min_max_quantity_minimum_allowed_quantity', array( $this, 'wfps_minimum_quantity'), 10, 4 );
-			add_filter('wc_min_max_quantity_maximum_allowed_quantity', array( $this, 'wfps_maximum_quantity'), 10, 4 );
-			add_filter('wc_min_max_quantity_group_of_quantity', array( $this, 'wfps_group_of_quantity'), 10, 4 );			
+			add_filter('wc_min_max_quantity_minimum_allowed_quantity', [ $this, 'wfps_minimum_quantity' ], 10, 4 );
+			add_filter('wc_min_max_quantity_maximum_allowed_quantity', [ $this, 'wfps_maximum_quantity' ], 10, 4 );
+			add_filter('wc_min_max_quantity_group_of_quantity', [ $this, 'wfps_group_of_quantity' ], 10, 4 );			
 			// Check items.			
 		}
 
 		// filter for WooCommerce Chained Products plugin override overriding
 		if (in_array('woocommerce-chained-products/woocommerce-chained-products.php', apply_filters('active_plugins', get_option('active_plugins')))) {
-			add_action( 'wc_after_chained_add_to_cart', array( $this, 'wfps_remove_chained_products' ), 20, 6 );
+			add_action( 'wc_after_chained_add_to_cart', [ $this, 'wfps_remove_chained_products' ], 20, 6 );
 		}
 
 	}	
@@ -286,9 +286,9 @@ class Woo_Free_Product_Sample_Public {
 		if( isset( $_REQUEST['simple-add-to-cart'] ) || isset( $_REQUEST['variable-add-to-cart'] ) ) {
 			$cart_item['free_sample']  = isset( $_REQUEST['simple-add-to-cart'] ) ? sanitize_text_field( $_REQUEST['simple-add-to-cart'] ) : sanitize_text_field( $_REQUEST['variable-add-to-cart'] );
 			$product_id = isset( $_REQUEST['simple-add-to-cart'] ) ? sanitize_text_field( $_REQUEST['simple-add-to-cart'] ) : sanitize_text_field( $_REQUEST['variable-add-to-cart'] );
-			$cart_item['sample_price'] = \Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
-			$cart_item['line_subtotal']= \Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
-			$cart_item['line_total']   = \Woo_Free_Product_Sample_Helper::wfps_price( $product_id );				
+			$cart_item['sample_price'] = (float)\Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
+			$cart_item['line_subtotal']= (float)\Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
+			$cart_item['line_total']   = (float)\Woo_Free_Product_Sample_Helper::wfps_price( $product_id );				
 		}			
 		return $cart_item; 
 	}	
@@ -304,8 +304,8 @@ class Woo_Free_Product_Sample_Public {
 		if ( isset( $values['simple-add-to-cart'] ) || isset( $values['variable-add-to-cart'] ) ) {
 			$product_id 					= isset( $_REQUEST['simple-add-to-cart'] ) ? sanitize_text_field( $_REQUEST['simple-add-to-cart'] ) : sanitize_text_field( $_REQUEST['variable-add-to-cart'] );
 			$cart_item['free_sample'] 		= isset( $values['simple-add-to-cart'] ) ? $values['simple-add-to-cart'] : $values['variable-add-to-cart'];			
-			$cart_item['line_subtotal'] 	= \Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
-			$cart_item['line_total'] 	  	= \Woo_Free_Product_Sample_Helper::wfps_price( $product_id );	
+			$cart_item['line_subtotal'] 	= (float)\Woo_Free_Product_Sample_Helper::wfps_price( $product_id );
+			$cart_item['line_total'] 	  	= (float)\Woo_Free_Product_Sample_Helper::wfps_price( $product_id );	
 		}    
 
 		return $cart_item;
@@ -326,7 +326,7 @@ class Woo_Free_Product_Sample_Public {
 				wc_add_order_item_meta( $itemID, 'Preis', 'Wir übernehmen die Kosten für Sie!' );
 			} else {
 				wc_add_order_item_meta( $itemID, 'PRODUCT_TYPE', $sample );
-				wc_add_order_item_meta( $itemID, 'SAMPLE_PRICE', $values["sample_price"] );
+				wc_add_order_item_meta( $itemID, 'SAMPLE_PRICE', (float)$values["sample_price"] );
 			}
 			
 		}
@@ -393,7 +393,7 @@ class Woo_Free_Product_Sample_Public {
 		foreach ( $cart->get_cart() as $key => $value ) {
 			if( isset( $value["sample_price"] ) ) {	
 				$product = $value['data'];
-				method_exists( $product, 'set_price' ) ? $product->set_price( $value["sample_price"] ) : $product->price = $value["sample_price"];			
+				method_exists( $product, 'set_price' ) ? $product->set_price( (float)$value["sample_price"] ) : $product->price = $value["sample_price"];			
 			}			
 
 		}   
@@ -456,7 +456,7 @@ class Woo_Free_Product_Sample_Public {
 		$setting_options   = \Woo_Free_Product_Sample_Helper::wfps_settings();
 		$notice_type 	   = isset( $setting_options['limit_per_order'] ) ? $setting_options['limit_per_order'] : 'all';
 		$disable_limit 	   = isset( $setting_options['disable_limit_per_order'] ) ? $setting_options['disable_limit_per_order'] : null;
-		echo $message 		   = \Woo_Free_Product_Sample_Message::validation_notice( $product->get_id() );
+		$message 		   = \Woo_Free_Product_Sample_Message::validation_notice( $product->get_id() );
 
 		if( ! isset( $disable_limit ) ) :
 
@@ -546,7 +546,7 @@ class Woo_Free_Product_Sample_Public {
 	public function wfps_alter_item_name ( $product_name, $cart_item, $cart_item_key ) {
 
 		$product 			= $cart_item['data']; // Get the WC_Product Object
-		$sample_price 		= \Woo_Free_Product_Sample_Helper::wfps_price( $cart_item['product_id'] );
+		$sample_price 		= (float)\Woo_Free_Product_Sample_Helper::wfps_price( $cart_item['product_id'] );
 		$sample_price 		= str_replace( ",",".", $sample_price );
 		$prod_price 		= str_replace( ",",".", $product->get_price() );	
 		if( $sample_price == $prod_price ) {
@@ -569,7 +569,7 @@ class Woo_Free_Product_Sample_Public {
     public function wfps_cart_item_price_filter( $price, $cart_item, $cart_item_key ) {
 	
 		$product 			= $cart_item['data']; // Get the WC_Product Object
-		$sample_price 		= \Woo_Free_Product_Sample_Helper::wfps_price( $cart_item['product_id'] );
+		$sample_price 		= (float)\Woo_Free_Product_Sample_Helper::wfps_price( $cart_item['product_id'] );
 		$set_price 			= str_replace( ",", ".", $sample_price );
 		if( isset( $cart_item['sample_price'] ) ) {
 			$price         = wc_price( $set_price );
@@ -587,9 +587,15 @@ class Woo_Free_Product_Sample_Public {
 	public function wfps_item_subtotal( $subtotal, $cart_item, $cart_item_key ) {
 		
 		if( isset( $cart_item['sample_price'] ) ) {
-			$newsubtotal = wc_price( $cart_item['sample_price'] * $cart_item['quantity'] ); 		 
+			if(empty($cart_item['sample_price'])) {
+				$price = 0.00;
+			} else {
+				$price = (float)$cart_item['sample_price'];
+			}
+
+			$newsubtotal = wc_price( (float)$price * (int)$cart_item['quantity'] ); 		 
 			$subtotal = $newsubtotal; 			
-		}
+		}		 
 		 
 		return $subtotal;
 	}
@@ -679,7 +685,7 @@ class Woo_Free_Product_Sample_Public {
 		if( ! is_admin() ) {
 			if ( class_exists('WC_Min_Max_Quantities') && WC()->cart->get_cart_contents_count() != 0 ) {			
 				foreach ( WC()->cart->get_cart() as $cart_item_key => $values ) {
-					if($values['free_sample'] == $values['product_id']) {
+					if(isset($values['free_sample']) && $values['free_sample'] == $values['product_id']) {
 						wc_clear_notices();
 					}
 				}
@@ -697,7 +703,7 @@ class Woo_Free_Product_Sample_Public {
 	public function wfps_cart_exclude( $exclude, $checking_id, $cart_item_key, $values ) {
 		if ( class_exists('WC_Min_Max_Quantities') ) {
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $values ) {
-				if($values['free_sample'] == $values['product_id']) {
+				if(isset($values['free_sample']) && $values['free_sample'] == $values['product_id']) {
 					return 'yes';
 				}
 			}
@@ -710,7 +716,7 @@ class Woo_Free_Product_Sample_Public {
      * @param none
      * @return void
      **/     
-    public function wfps_order_sample( $atts ) 
+    public function wfps_order_sample( $atts )
     {
 
         // $atts = shortcode_atts( array(

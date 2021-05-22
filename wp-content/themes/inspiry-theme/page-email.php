@@ -3,17 +3,15 @@
 <link rel="preconnect" href="https://fonts.gstatic.com">
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
 
-</style>
 <?php 
 
     if (strstr($_SERVER['SERVER_NAME'], 'localhost')){
-        $order = wc_get_order( 15389 );
+        $order = wc_get_order( 15393 );
     }
    
-
-    $tracking = $order->get_meta('_wc_shipment_tracking_items'); 
+    // only use this for completed order emails
+    // $tracking = $order->get_meta('_wc_shipment_tracking_items'); 
    
     
   
@@ -34,27 +32,21 @@
     <div class="body max-width padding">
         <div class="text-content">
             <!-- change the status here -->
-            <h1 class="title playfair-fonts">Your Inspiry order has shipped.</h1>
+            <h1 class="title playfair-fonts"> We've received your order.</h1>
             <div class="divider">
-                <img src="https://inspiry.co.nz/wp-content/uploads/2021/05/delivery-truck.png" alt="delivery">
+                <img src="https://inspiry.co.nz/wp-content/uploads/2021/05/shopping-1.png" alt="delivery">
             </div>
 
             <!-- tracking number -->
-            <h2 class="subtitle playfair-fonts">Your order has been shipped. Your tracking number is <?php     print_r($tracking[0]['tracking_number']); ?></h2>
+            <h2 class="subtitle playfair-fonts">Thank you for shopping with us, we really appreciate it!</h2>
             
             <!-- only for when item is shipped  -->
             
-            <?php 
-            // create a tracking url
-                $trackingUrl; 
-
-                if($tracking[0]['tracking_provider']=== 'NZ Post'){
-                    $trackingUrl = 'https://www.nzpost.co.nz/tools/tracking?trackid='.$tracking[0]['tracking_number']; 
-                }
-            ?>
-            <h3 class="paragraph playfair-fonts">Use this link to track your package: <a class="playfair-fonts" href="<?php echo $trackingUrl;?>" target="_blank">Track  </a></h3>
+          
         </div>
     </div>
+
+    <!-- order-container -->
 
     <div class="order-container max-width">
         <div class="order-content"> 
@@ -99,7 +91,7 @@
                                     <td class="playfair-fonts title"> <a href="<?php echo  get_the_permalink($productID);?>" target="_blank"><span><img src="<?php echo get_the_post_thumbnail_url($productID, 'thumbnail');?>" alt=""></span> <span class="playfair-fonts"><?php echo $product_name; ?></span></a> </td>
                                     <td class="playfair-fonts"><?php echo $item_quantity;?></td>
                                     <td class="playfair-fonts">
-                                       $<?php echo round($item_total, 2); ?>
+                                       $<?php echo number_format($item_total); ?>
                                     </td>
                                 </tr>
 
@@ -115,8 +107,30 @@
                 </div>
                 
             </div>
+            <div class="total">
+                <table>
+                    <tr>
+                        <td class="playfair-fonts">Subtotal:</td>
+                        <td class="playfair-fonts">$<?php
+                        $subtotal= number_format($order->get_subtotal());
+                        echo $subtotal;?></td>
+                    </tr>
+                    <tr>
+                        <td class="playfair-fonts">Shipping:</td>
+                        <td class="playfair-fonts">$<?php echo number_format($order->get_shipping_total());?></td>
+                    </tr>
+                    <tr>
+                        <td class="playfair-fonts">Payment Method:</td>
+                        <td class="playfair-fonts"><?php echo get_post_meta( $order->id, '_payment_method', true );?></td>
+                    </tr>
+                    <tr>
+                        <td class="playfair-fonts">Total:</td>
+                        <td class="playfair-fonts">$<?php echo number_format( $order->get_total());?></td>
+                    </tr>
+                </table>
+            </div>
             <div class="customer-contact">
-                <div class="playfair-fonts">Sent to:</div>
+                <div class="playfair-fonts">Shipping Address:</div>
                 <div class="contact-info">
                     <span class="playfair-fonts"><?php  echo $order->get_shipping_first_name();?> <?php echo $order->get_shipping_last_name();?></span>
                     <span class="playfair-fonts"><?php echo $order->get_shipping_address_1();?></span>
@@ -124,6 +138,29 @@
                     <span class="playfair-fonts"><?php echo  $order->get_shipping_postcode();?></span>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="social-container max-width padding">
+        <div class="title playfair-fonts">Get social with us</div>
+        <div class="icons">
+          <?php 
+           $argsContact = array(
+            'pagename' => 'contact'
+          );
+          $queryContact = new WP_Query( $argsContact );
+          while($queryContact->have_posts()){
+            $queryContact->the_post(); 
+          ?>
+          <a class="social-icon" href="<?php echo get_field("facebook");?>" target="_blank"><img src="https://inspiry.co.nz/wp-content/uploads/2021/05/facebook.png" alt="Facebook Link"></a>
+          <a class="social-icon" href="<?php echo get_field("instagram");?>" target="_blank"><img src="https://inspiry.co.nz/wp-content/uploads/2021/05/instagram.png" alt="Instagram Link"></a>
+          <a class="social-icon" href="<?php echo get_field("pintrest_");?>" target="_blank"><img src="https://inspiry.co.nz/wp-content/uploads/2021/05/pinterest-social-logo.png" alt="Pinterest Link"></a>
+          <a class="social-icon" href="<?php echo get_field("youtube");?>" target="_blank"><img src="https://inspiry.co.nz/wp-content/uploads/2021/05/youtube.png" alt="Youtube Link"></a>
+          <?php 
+          
+          }
+          wp_reset_postdata(  );
+          ?>
         </div>
     </div>
 

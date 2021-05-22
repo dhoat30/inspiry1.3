@@ -8,7 +8,7 @@
  * Plugin Name:       Free Product Sample for WooCommerce
  * Plugin URI:        https://wordpress.org/plugins/woo-free-product-sample
  * Description:       It allows customers to order a product sample in a simple way.  
- * Version:           2.1.19
+ * Version:           2.1.20
  * Author:            TheNextWP
  * Author URI:        https://thenextwp.co
  * License:           GPL-2.0+
@@ -30,7 +30,7 @@ if ( ! defined( 'WPINC' ) ) {
 	die;
 }
 
-define( 'WFPS_VERSION', '2.1.19' ); 
+define( 'WFPS_VERSION', '2.1.20' ); 
 define( 'WFPS_MINIMUM_PHP_VERSION', '5.6.0' );
 define( 'WFPS_MINIMUM_WP_VERSION', '4.4' );
 define( 'WFPS_MINIMUM_WC_VERSION', '3.0.9' );
@@ -338,7 +338,7 @@ class Woo_Free_Product_Sample_Start {
 			self::$instance = new self();
 		}
 
-		return self::$instance;
+		return self::$instance; 
 	}
 
 }
