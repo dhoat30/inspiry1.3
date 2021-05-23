@@ -1,4 +1,4 @@
-<?php
+	<?php
 /**
  * Customer note email
  *
@@ -25,12 +25,19 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %s: Customer first name */ ?>
-<p><?php printf( esc_html__( 'Hi %s,', 'woocommerce' ), esc_html( $order->get_billing_first_name() ) ); ?></p>
-<p><?php esc_html_e( 'The following note has been added to your order:', 'woocommerce' ); ?></p>
 
-<blockquote><?php echo wpautop( wptexturize( make_clickable( $customer_note ) ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></blockquote>
-
-<p><?php esc_html_e( 'As a reminder, here are your order details:', 'woocommerce' ); ?></p>
+<div class="body max-width padding">
+        <div class="text-content">
+            <!-- change the status here -->
+            <h1 class="title playfair-fonts"></h1>
+          
+            
+            <h2 class="subtitle playfair-fonts"><?php esc_html_e( 'The following note has been added to your order:', 'woocommerce' ); ?></h2>
+            
+    
+            <h3 class="paragraph playfair-fonts"><?php echo $customer_note; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></h3>
+        </div>
+    </div>
 
 <?php
 

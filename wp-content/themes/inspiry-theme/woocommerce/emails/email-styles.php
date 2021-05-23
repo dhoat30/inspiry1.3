@@ -118,10 +118,17 @@ if ( ! defined( 'ABSPATH' ) ) {
 
 .email-template .body .text-content .paragraph {
   font-size: 16px;
-  text-align: center;
+  text-align: center !important;
   font-weight: 300;
   margin-top: 10px;
 }
+.email-template .body .text-content .paragraph p{
+  font-size: 16px;
+  text-align: center !important;
+  font-weight: 300;
+  margin-top: 10px;
+}
+
 
 /* order-container */
 .order-container {

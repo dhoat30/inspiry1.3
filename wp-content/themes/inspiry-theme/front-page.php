@@ -5,11 +5,11 @@ get_header();
 ?>
 
 <section class="home-page">
-    <div class="slider-container">
+    <!-- <div class="slider-container">
 
 
         <div class="slider">
-            <div class="hero-overlay"></div>
+           
 
 
             <?php 
@@ -30,25 +30,22 @@ get_header();
 
                                         while($query->have_posts()){ 
                                             $query->the_post(); 
-
+                                            $image = get_field('mobile_image'); 
+                                            $imgUrl; 
+                                            if($image['sizes']['medium_large']){
+                                                $imgUrl = $image['sizes']['medium_large'];
+                                            }
+                                            else{
+                                                $imgUrl = $image['url'];
+                                            }
+                                          
                                             ?>
-                                           
-
-            <div class="slide" style='background: url("<?php echo get_the_post_thumbnail_url(null,"large"); ?>") no-repeat
-                                        center top/cover;'>
-                <div class="content">
-                    <h2 class="lg-font-sz center-align regular white"><?php the_title();?></h2>
-                    <h3 class="roboto-font center-align white section-ft-size regular">
-                        <?php echo get_field('add_subtitle_');?>
-                    </h3>
-                    <a class="rm-txt-dec front-page-hero-button"
-                        href="<?php echo get_field('add_link');?>"><?php echo get_field('add_link_title');?> <i
-                            class="fal fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-
-            <?php
+                                           <picture class="slide">
+                                                <source media="(min-width:700px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
+                                                <source media="(min-width:465px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
+                                                <img   src="<?php echo esc_url($imgUrl);?>" alt="<?php echo get_the_title();?>">
+                                            </picture>                          
+                                            <?php
 
                                        
                                         }
@@ -65,7 +62,7 @@ get_header();
             <button id="prev"><i class="fas fa-arrow-left"></i></button>
             <button id="next"><i class="fas fa-arrow-right"></i></button>
         </div>
-    </div>
+    </div> -->
 
     <div class="beige-color-bc usp">
         <div>
@@ -367,7 +364,7 @@ get_header();
     const next = document.querySelector('#next');
     const prev = document.querySelector('#prev');
     const auto = true; // Auto scroll
-    const intervalTime = 3000;
+    const intervalTime = 50000;
     let slideInterval;
     slides[0].classList.add('current');
 
