@@ -4,7 +4,7 @@ class FacetWP_Init
 {
 
     function __construct() {
-        add_action( 'init', [ $this, 'init' ] );
+        add_action( 'init', [ $this, 'init' ], 20 );
         add_filter( 'woocommerce_is_rest_api_request', [ $this, 'is_rest_api_request' ] );
     }
 

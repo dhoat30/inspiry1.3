@@ -123,6 +123,8 @@ class FacetWP_Ajax
 
             $wpdb->query( "DROP TABLE IF EXISTS {$wpdb->prefix}facetwp_index" );
             delete_option( 'facetwp_version' );
+            delete_option( 'facetwp_indexing' );
+            delete_option( 'facetwp_transients' );
 
             $response = [
                 'code' => 'success',

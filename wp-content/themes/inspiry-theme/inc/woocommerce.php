@@ -189,9 +189,9 @@ add_action('woocommerce_single_product_summary', function(){
      add_action('add_calculator_body', 'calculator_body');
     }
     if (strpos($category, $categoryFabric )) { 
-      echo '<div class="product-page-btn-container">
-      <a class="sizing-calculator-button"><i class="far fa-calculator" aria-hidden="true"></i> Fabric Calculator</a>       
-   </div>'; 
+  //     echo '<div class="product-page-btn-container">
+  //     <a class="sizing-calculator-button"><i class="far fa-calculator" aria-hidden="true"></i> Fabric Calculator</a>       
+  //  </div>'; 
       //add calculator body
       add_action('add_calculator_body', 'fabric_calculator_body');
 

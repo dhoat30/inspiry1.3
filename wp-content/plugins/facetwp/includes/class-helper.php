@@ -12,6 +12,9 @@ final class FacetWP_Helper
     /* (array) Cached data sources */
     public $data_sources;
 
+    /* (array) Cached terms */
+    public $term_cache;
+
 
     function __construct() {
         $this->facet_types = $this->get_facet_types();
@@ -90,7 +93,8 @@ final class FacetWP_Helper
             'settings' => [
                 'thousands_separator' => ',',
                 'decimal_separator' => '.',
-                'prefix' => '_'
+                'prefix' => '_',
+                'load_jquery' => 'no'
             ]
         ];
 
@@ -251,6 +255,10 @@ final class FacetWP_Helper
      */
     function get_term_depths( $taxonomy ) {
 
+        if ( isset( $this->term_cache[ $taxonomy ] ) ) {
+            return $this->term_cache[ $taxonomy ];
+        }
+
         $output = [];
         $parents = [];
 
@@ -285,6 +293,8 @@ final class FacetWP_Helper
                 }
             }
         }
+
+        $this->term_cache[ $taxonomy ] = $output;
 
         return $output;
     }

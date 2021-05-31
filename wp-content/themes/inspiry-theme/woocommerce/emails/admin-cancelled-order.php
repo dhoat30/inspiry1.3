@@ -25,8 +25,12 @@ if ( ! defined( 'ABSPATH' ) ) {
 do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
 <?php /* translators: %1$s: Order number, %2$s: Customer full name.  */ ?>
-<p><?php printf( esc_html__( 'Notification to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce' ), esc_html( $order->get_order_number() ), esc_html( $order->get_formatted_billing_full_name() ) ); ?></p>
-
+<div class="body max-width padding">
+        <div class="text-content">
+					
+            			<h2 class="subtitle playfair-fonts"><?php printf( esc_html__( 'Notification to let you know &mdash; order #%1$s belonging to %2$s has been cancelled:', 'woocommerce' ), esc_html( $order->get_order_number() ), esc_html( $order->get_formatted_billing_full_name() ) ); ?></h2>
+        </div>
+    </div>
 <?php
 /*
  * @hooked WC_Emails::order_details() Shows the order details table.

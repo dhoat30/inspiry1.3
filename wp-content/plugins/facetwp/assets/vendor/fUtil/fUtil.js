@@ -45,15 +45,18 @@ window.fUtil = (() => {
             var settings = Object.assign({}, {
                 dataType: 'json',
                 contentType: 'application/json',
+                headers: {},
                 done: () => {},
                 fail: () => {}
             }, settings);
+
+            settings.headers['Content-Type'] = settings.contentType;
 
             data = ('application/json' === settings.contentType) ? JSON.stringify(data) : $.toEncoded(data);
 
             fetch(url, {
                 method: 'POST',
-                headers: {'Content-Type': settings.contentType},
+                headers: settings.headers,
                 body: data
             })
             .then(response => response[settings.dataType]())
@@ -134,7 +137,7 @@ window.fUtil = (() => {
         ready(callback) {
             if (typeof callback !== 'function') return;
 
-            if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            if (document.readyState === 'complete') {
                 return callback();
             }
 
@@ -340,7 +343,8 @@ window.fUtil = (() => {
 
         trigger(eventName, extraData) {
             this.each(node => node.dispatchEvent(new CustomEvent(eventName, {
-                detail: extraData
+                detail: extraData,
+                bubbles: true
             })));
             return this;
         }

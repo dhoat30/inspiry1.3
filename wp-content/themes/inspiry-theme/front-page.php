@@ -5,7 +5,7 @@ get_header();
 ?>
 
 <section class="home-page">
-    <!-- <div class="slider-container">
+    <div class="slider-container">
 
 
         <div class="slider">
@@ -40,11 +40,17 @@ get_header();
                                             }
                                           
                                             ?>
-                                           <picture class="slide">
-                                                <source media="(min-width:700px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
-                                                <source media="(min-width:465px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                                                <img   src="<?php echo esc_url($imgUrl);?>" alt="<?php echo get_the_title();?>">
-                                            </picture>                          
+                                            <div class="slide">
+                                                <a  href="<?php echo  get_field('add_link'); ?>">
+                                            <picture > 
+                                                    <source media="(min-width:700px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
+                                                    <source media="(min-width:465px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
+                                                    <img   src="<?php echo esc_url($imgUrl);?>" alt="<?php echo get_the_title();?>">
+                                                </picture>   
+
+                                                    </a>   
+                                                     </div>
+                                                           
                                             <?php
 
                                        
@@ -62,7 +68,7 @@ get_header();
             <button id="prev"><i class="fas fa-arrow-left"></i></button>
             <button id="next"><i class="fas fa-arrow-right"></i></button>
         </div>
-    </div> -->
+    </div>
 
     <div class="beige-color-bc usp">
         <div>
@@ -345,26 +351,12 @@ get_header();
     </div>
 </div>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
     const slides = document.querySelectorAll('.slide');
     const next = document.querySelector('#next');
     const prev = document.querySelector('#prev');
     const auto = true; // Auto scroll
-    const intervalTime = 50000;
+    const intervalTime = 3000;
     let slideInterval;
     slides[0].classList.add('current');
 
