@@ -7,7 +7,7 @@
                  
                  <?php echo do_shortcode('[ivory-search id="7686" title="Default Search Form"]');?>
 
-                <div class="roboto-font font-s-medium">Category</div>
+                <div class="roboto-font medium-font-sizeium">Category</div>
                 <?php echo do_shortcode('[facetwp facet="blogs"]');?>
                 <button onclick="FWP.reset()" class="facet-reset-btn">Reset</button>
         </div>
@@ -47,8 +47,8 @@
                 <div class="cards">
                     <div>
                             <img src="<?php echo get_the_post_thumbnail_url(null,"large"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                            <div class="font-s-med center-align text-padding"><?php the_title(); ?></div>
-                            <div class="font-s-regular roboto-font center-align text-padding"><?php 
+                            <div class="medium-font-size center-align text-padding"><?php the_title(); ?></div>
+                            <div class="paragraph-font-size roboto-font center-align text-padding"><?php 
                              echo wp_trim_words(get_the_content(), 15) ;?> </div>
                              <a class="button btn-dk-green rm-txt-dec" href="<?php the_permalink();?>">READ THE POST</a>
                     </div>
@@ -65,7 +65,7 @@
 
     <!--third section --> 
     <section class="row-container third-section">
-        <div class="section-ft-size">The Latest </div>
+        <div class="section-font-size">The Latest </div>
         <div class="flex">
             <?php 
 
@@ -87,7 +87,7 @@
                             
                             <a class="rm-txt-dec" href="<?php the_permalink();?>">  
                                 <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                                <div class="font-s-regular"><?php the_title(); ?></div>
+                                <div class="paragraph-font-size"><?php the_title(); ?></div>
                             </a>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                  <button class="border-none">Furniture</button>
                  <button class="border-none">Homeware</button>
              </div>   
-            <div class="font-s-med">The Latest </div>
+            <div class="medium-font-size">The Latest </div>
             <div class="flex wallpaper --visible-flex">
             
                 <?php 
@@ -139,7 +139,7 @@
                                 
                                 <a class="rm-txt-dec" href="<?php echo get_the_permalink();?>">  
                                     <img src="<?php echo get_the_post_thumbnail_url(); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                                    <div class="font-s-regular center-align"><?php the_title(); ?></div>
+                                    <div class="paragraph-font-size center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
                                 </a>
@@ -182,7 +182,7 @@
                                 
                                 <a class="rm-txt-dec" href="<?php echo get_field('link');?>">  
                                     <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                                    <div class="font-s-regular center-align"><?php the_title(); ?></div>
+                                    <div class="paragraph-font-size center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
                                 </a>
@@ -225,7 +225,7 @@
                                 
                                 <a class="rm-txt-dec" href="<?php echo get_field('link');?>">  
                                     <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                                    <div class="font-s-regular center-align"><?php the_title(); ?></div>
+                                    <div class="paragraph-font-size center-align"><?php the_title(); ?></div>
                                     <a class="button btn-dk-green rm-txt-dec" href="<?php echo get_field('link');?>">SHOP NOW</a>
 
                                 </a>
@@ -246,7 +246,7 @@
     <!--social meda section --> 
 
     <section class="row-container social-section">
-        <div class="font-s-regular center-align">Inspiry On Instagram</div>
+        <div class="paragraph-font-size center-align">Inspiry On Instagram</div>
             <script src="https://assets.juicer.io/embed.js" type="text/javascript"></script>
         <link href="https://assets.juicer.io/embed.css" media="all" rel="stylesheet" type="text/css" />
         <ul data-per="6" class="juicer-feed" data-feed-id="inspirynz"><h1 class="referral"><a href="https://www.juicer.io"></a></h1></ul>
@@ -256,7 +256,7 @@
 
      <!--fifth section --> 
      <section class="fifth-section">
-        <div class="font-s-regular center-align">More Inspiry </div>
+        <div class="paragraph-font-size center-align">More Inspiry </div>
         <div class="flex">
             <?php 
 
@@ -285,7 +285,7 @@
                             
                             <a class="rm-txt-dec" href="<?php the_permalink();?>">  
                                 <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="<?php echo get_post_meta(get_post_thumbnail_id(), '_wp_attachment_image_alt', TRUE);?>">                      
-                                <div class="font-s-regular"><?php the_title(); ?></div>
+                                <div class="paragraph-font-size"><?php the_title(); ?></div>
                             </a>
                     </div>
                 </div>

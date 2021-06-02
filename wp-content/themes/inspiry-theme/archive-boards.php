@@ -4,7 +4,7 @@ get_header();
 <div class="body-container archive">
 
 <div class="row-container board-page board-archive">
-    <h1 class="lg-font-sz playfair-fonts regular">Design Boards</h1>
+    <h1 class="large-font-size playfair-fonts regular">Design Boards</h1>
     <?php 
         $boardLoop = new WP_Query(array(
             'post_type' => 'boards', 
@@ -13,7 +13,7 @@ get_header();
             'author' => get_current_user_id()
         ));
         ?>
-        <div class="font-s-regular roboto-font post-count light-grey font-s-med">
+        <div class="paragraph-font-size roboto-font post-count light-grey medium-font-size">
             <?php  echo $boardLoop->found_posts;?>
             boards
         </div>
@@ -83,7 +83,7 @@ get_header();
                                     <?php
                                 }
                             ?>
-                        <h5 class="font-s-med board-title"><?php the_title();?></h5>
+                        <h5 class="medium-font-size board-title"><?php the_title();?></h5>
                         <div class="pin-info">
                             <div class="padlock">
                             <?php $postStatus =  get_post_status(); 
@@ -111,7 +111,7 @@ get_header();
                         </div>
                         
 
-                         <div class="roboto-font font-s-regular"><?php if( '' !== get_post()->post_content ) { 
+                         <div class="roboto-font paragraph-font-size"><?php if( '' !== get_post()->post_content ) { 
                                
                                 echo get_the_content();
                                  }
@@ -142,7 +142,7 @@ get_header();
                                     <div class="project-save-form-section project-update" data-postid='20'>
        
                                     <div class="project-save-form-container"> 
-                                        <div class="roboto-font regular form-title font-s-med">Create Board</div>
+                                        <div class="roboto-font regular form-title medium-font-size">Create Board</div>
                                         <div class="form-underline"></div>
                                         <div class="form">
                                             <form id="new-board-form-update">
@@ -160,7 +160,7 @@ get_header();
                                                     </div>
                                                
                                                 </div>
-                                                <div class="toggle-status-info roboto-font font-s-regular regular">
+                                                <div class="toggle-status-info roboto-font paragraph-font-size regular">
                                                   Private boards cannot be shared with the general public. 
                                                 </div>
                                                
@@ -182,7 +182,7 @@ get_header();
                                 <div class="project-save-form-section">
    
                                 <div class="project-save-form-container"> 
-                                    <div class="roboto-font regular form-title font-s-med">Create Board</div>
+                                    <div class="roboto-font regular form-title medium-font-size">Create Board</div>
                                     <div class="form-underline"></div>
                                     <div class="form">
                                         <form id="new-board-form-archive">
@@ -199,7 +199,7 @@ get_header();
                                                 </div>
                                            
                                             </div>
-                                            <div class="toggle-status-info roboto-font font-s-regular regular">
+                                            <div class="toggle-status-info roboto-font paragraph-font-size regular">
                                               Private boards cannot be shared with the general public. 
                                             </div>
                                            
@@ -220,7 +220,7 @@ get_header();
 </div>
 <div class="overlay"></div>                       
 <div class="share-icon-container box-shadow">
-                        <div class="roboto-font regular font-s-med"> Share this pin </div>
+                        <div class="roboto-font regular medium-font-size"> Share this pin </div>
                         <div class="underline"></div>
                         <div>
                             <?php echo do_shortcode('[Sassy_Social_Share  url="http:'.get_the_permalink(get_field('saved_project_id')).'"]');?>

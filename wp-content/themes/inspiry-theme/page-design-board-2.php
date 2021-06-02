@@ -2,7 +2,7 @@
 get_header(); 
 ?>
 <div class="body-container">
-    <h1 class="center-align section-ft-size margin-elements"><?php the_title();?></h1>
+    <h1 class="center-align section-font-size margin-elements"><?php the_title();?></h1>
 
     <div class="row-container board-page">
         <div>
@@ -47,7 +47,7 @@ get_header();
                                 $childThumbnail = get_field('saved_project_id', $child_id); 
                                 ?>
                             <div class="img-div"><?php echo get_the_post_thumbnail($childThumbnail);?></div>
-                            <h5 class="font-s-med"><?php the_title();?></h5>
+                            <h5 class="medium-font-size"><?php the_title();?></h5>
             
                             <div class="pin-count gray"><?php echo $pinCount;
                                 if($pinCount <= 1){ 
@@ -58,7 +58,7 @@ get_header();
                                 }
                             ?></div>
 
-                             <div class="roboto-font font-s-regular"><?php if( '' !== get_post()->post_content ) { 
+                             <div class="roboto-font paragraph-font-size"><?php if( '' !== get_post()->post_content ) { 
                                    
                                     echo get_the_content();
                                      }
@@ -80,7 +80,7 @@ get_header();
 </div>
 <div class="overlay"></div>                       
 <div class="share-icon-container box-shadow">
-                            <div class="roboto-font regular font-s-med"> Share this pin </div>
+                            <div class="roboto-font regular medium-font-size"> Share this pin </div>
                             <div class="underline"></div>
                             <div>
                                 <?php echo do_shortcode('[Sassy_Social_Share  url="http:'.get_the_permalink(get_field('saved_project_id')).'"]');?>

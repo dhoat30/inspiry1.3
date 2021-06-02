@@ -22,9 +22,9 @@ do_action( 'woocommerce_before_cart' ); ?>
 <form class="woocommerce-cart-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
 	<?php do_action( 'woocommerce_before_cart_table' ); ?>
 	<div class="cart-labels">
-		<h6 class="font-s-med ft-wt-med roboto-font">Item</h6>
-		<h6 class="font-s-med ft-wt-med roboto-font">Quantity</h6>
-		<h6 class="font-s-med ft-wt-med roboto-font">Price</h6>
+		<h6 class="medium-font-size medium roboto-font">Item</h6>
+		<h6 class="medium-font-size medium roboto-font">Quantity</h6>
+		<h6 class="medium-font-size medium roboto-font">Price</h6>
 
 	</div>
 	<table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents" cellspacing="0">

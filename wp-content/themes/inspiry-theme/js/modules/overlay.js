@@ -9,10 +9,10 @@ class Overlay{
             console.log('hover')
             console.log(e.target);
             $(e.target).css('opacity', '60%');
-            $(e.target).siblings('.featured-project-section .flex .column-s-font').show(300); 
+            $(e.target).siblings('.featured-project-section .flex .column-font-size').show(300); 
         }, (e)=>{ 
             $(e.target).css('opacity', '0');
-            $(e.target).siblings('.featured-project-section .flex .column-s-font').hide(300);
+            $(e.target).siblings('.featured-project-section .flex .column-font-size').hide(300);
 
 
         })

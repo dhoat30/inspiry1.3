@@ -4,6 +4,9 @@ let $ = jQuery;
 import 'owl.carousel/dist/assets/owl.carousel.css';
 import 'owl.carousel';
 
+// owl carousel 
+import EveryOwlCarousel from './modules/OwlCarousel/EveryOwlCarousel';
+// wishlist 
 import WishlistAjax from './modules/WishlistAjax';
 import Warranty from './modules/Warranty';
 import WallpaperCalc from './modules/WallpaperCalc';
@@ -33,28 +36,31 @@ import TradeDirectory from './modules/TradeDirectory';
 
 // footer 
 
-// owl carousel 
-setTimeout(function () {
-  $('.flex-control-thumbs').addClass('owl-carousel');
-  $('.owl-carousel').owlCarousel({
-    loop: false,
-    margin: 10,
-    nav: true,
-    responsive: {
-      0: {
-        items: 3
-      },
-      600: {
-        items: 3
-      },
-      1000: {
-        items: 4
-      }
-    }
-  });
-}, 300);
+// // owl carousel 
+// setTimeout(function () {
+//   $('.flex-control-thumbs').addClass('owl-carousel');
+//   $('.owl-carousel').owlCarousel({
+//     loop: false,
+//     margin: 10,
+//     nav: true,
+//     responsive: {
+//       0: {
+//         items: 3
+//       },
+//       600: {
+//         items: 3
+//       },
+//       1000: {
+//         items: 4
+//       }
+//     }
+//   });
+// }, 300);
 
 window.onload = function () {
+
+  // every owl carousel
+  const everyOwlCarousel = new EveryOwlCarousel();
   //account 
   const wooAccount = new WooAccount();
 

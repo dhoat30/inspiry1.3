@@ -47,7 +47,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
               
             <!-- login area -->
-            <div class="login-area playfair-fonts font-s-regular profile-trigger ">
+            <div class="login-area playfair-fonts paragraph-font-size profile-trigger ">
                
                     <?php 
                         if(is_user_logged_in()){
@@ -82,14 +82,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
             </div>
             
             <!-- shopping cart -->
-            <div class="shopping-cart playfair-fonts font-s-regular desktop-visible">
+            <div class="shopping-cart playfair-fonts paragraph-font-size desktop-visible">
                 <a href="#" class="text-decoration-none dark-grey regular cart-items-header">
                     <i class="fas fa-shopping-cart"></i>
                     <span class="cart-item-count">Cart (<?php echo WC()->cart->get_cart_contents_count(); ?>)</span>
                 </a>
             </div>
             
-            <div class="search-code playfair-fonts font-s-regular dark-grey">
+            <div class="search-code playfair-fonts paragraph-font-size dark-grey">
                <?php  echo  do_shortcode('[ivory-search id="7686" title="Default Search Form"]');?>
             </div>
         </div>
@@ -196,13 +196,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                 <img src="<?php echo wp_get_attachment_image_url( $originalProduct->image_id, 'woocommerce_thumbnail' );?>" alt="<?php echo $originalProduct->get_name()?>">
                             </div>
                             <div class="title-container">
-                                    <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
+                                    <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
                                     ?> )
                                     </h5>
                             </div>
                             
                             <div class="price-container">
-                            <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity) ?></h6>
+                            <h6 class="paragraph-font-size roboto-font bold">$<?php echo number_format($product->price * $quantity) ?></h6>
                             </div>
                             <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
                         </a>
@@ -217,13 +217,13 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                                     <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
                                 </div>
                                 <div class="title-container">
-                                        <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name
+                                        <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  <?php echo $product->name
                                         ?> 
                                         </h5>
                                 </div>
                                 
                                 <div class="price-container">
-                                <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity); ?></h6>
+                                <h6 class="paragraph-font-size roboto-font bold">$<?php echo number_format($product->price * $quantity); ?></h6>
                                 </div>
                                 
                                 <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>

@@ -32,7 +32,7 @@ get_header();
                 }
                 ?>
                 <div class="header-title">
-                    <h2 class="section-ft-size board-heading-post-id" data-postid='<?php echo get_the_id()?>'>
+                    <h2 class="section-font-size board-heading-post-id" data-postid='<?php echo get_the_id()?>'>
                         <?php echo get_the_title();?></h2>
                 </div>
 
@@ -83,11 +83,11 @@ get_header();
                 </div>
                 <!--
                 <div class="header-contact-details">
-                        <a class="roboto-font font-s-med rm-txt-dec " href="tel:<? //php echo do_shortcode( '[gd_post_meta key="phone" show="value-raw" no_wrap="1"]');?>">
+                        <a class="roboto-font medium-font-size rm-txt-dec " href="tel:<? //php echo do_shortcode( '[gd_post_meta key="phone" show="value-raw" no_wrap="1"]');?>">
                             <i class="fas fa-phone-alt"></i>
                             <?php //echo do_shortcode( '[gd_post_meta key="phone" show="value-raw" no_wrap="1"]');?>
                         </a>
-                        <a class="roboto-font font-s-med rm-txt-dec " href=" <? //php echo do_shortcode( '[gd_post_meta key="website" show="value-raw" no_wrap="1"]');?>" target="_blank">
+                        <a class="roboto-font medium-font-size rm-txt-dec " href=" <? //php echo do_shortcode( '[gd_post_meta key="website" show="value-raw" no_wrap="1"]');?>" target="_blank">
                             <i class="fas fa-globe"></i>
                             Website
                         </a>
@@ -112,7 +112,7 @@ get_header();
                     <li class="trade-nav-link">Gallery</li>
                 </ul>
 
-                <div class="trade-about-nav-content roboto-font font-s-med">
+                <div class="trade-about-nav-content roboto-font medium-font-size">
                     <?php 
                     echo get_the_content();
                     ?>
@@ -122,7 +122,7 @@ get_header();
                     <table class="roboto-font">
                         <tr>
                             <td><i class="fal fa-phone-alt"></i></td>
-                            <td class="font-s-med">
+                            <td class="medium-font-size">
                                 <a class="rm-txt-dec thin roboto-font"
                                     href="tel:<?php echo geodir_get_post_meta($postID, 'phone', true);?>">
                                     <?php echo geodir_get_post_meta($postID, 'phone', true);?>
@@ -131,7 +131,7 @@ get_header();
                         </tr>
                         <tr>
                             <td><i class="fal fa-envelope"></i></td>
-                            <td class="font-s-med">
+                            <td class="medium-font-size">
                                 <a class="rm-txt-dec thin roboto-font"
                                     href="mailto:<?php echo geodir_get_post_meta($postID, 'email', true);?>">
                                     <?php echo geodir_get_post_meta($postID, 'email', true);?>
@@ -140,7 +140,7 @@ get_header();
                         </tr>
                         <tr>
                             <td><i class="fal fa-globe"></i></td>
-                            <td class="font-s-med">
+                            <td class="medium-font-size">
                                 <a class="rm-txt-dec thin roboto-font"
                                     href="<?php echo geodir_get_post_meta($postID, 'website', true);?>"><?php echo geodir_get_post_meta($postID, 'website', true);?>
                                 </a>
@@ -148,7 +148,7 @@ get_header();
                         </tr>
                         <tr>
                             <td><i class="fal fa-map-marker-alt"></i></td>
-                            <td class="font-s-med thin roboto-font"><?php echo geodir_get_post_meta($postID, 'address', true);
+                            <td class="medium-font-size thin roboto-font"><?php echo geodir_get_post_meta($postID, 'address', true);
                             echo geodir_get_post_meta($postID, 'regions_covered', true);?></td>
                         </tr>
 
@@ -193,7 +193,7 @@ get_header();
 
 
                         <div class="main-cards">
-                            <!-- <div class="section-ft-size">Project Gallery </div>-->
+                            <!-- <div class="section-font-size">Project Gallery </div>-->
                             <div class="flex">
 
 
@@ -217,11 +217,11 @@ get_header();
 
                                     <a class='rm-txt-dec' href="<?php echo get_the_permalink( $value ); ?>">
 
-                                        <div class="title regular font-s-med"><?php echo get_the_title( $value );?>
+                                        <div class="title regular medium-font-size"><?php echo get_the_title( $value );?>
                                         </div>
                                     </a>
                                     <a href="<?php echo get_the_permalink($postID); ?>"
-                                        class='rm-txt-dec font-s-regular thin roboto-font'>
+                                        class='rm-txt-dec paragraph-font-size thin roboto-font'>
                                         <?php echo get_the_title($postID); ?>
                                     </a>
 

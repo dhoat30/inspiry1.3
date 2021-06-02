@@ -31,7 +31,7 @@ do_action( 'woocommerce_before_main_content' );
 ?>
 <header class="woocommerce-products-header">
 	<?php if ( apply_filters( 'woocommerce_show_page_title', true ) ) : ?>
-		<h1 class="woocommerce-products-header__title section-ft-size"><?php woocommerce_page_title(); ?></h1>
+		<h1 class="woocommerce-products-header__title section-font-size"><?php woocommerce_page_title(); ?></h1>
 	<?php endif; ?>
 
 	<?php

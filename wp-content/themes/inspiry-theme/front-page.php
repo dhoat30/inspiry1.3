@@ -74,7 +74,7 @@ get_header();
         <div>
             <i class="fal fa-truck"></i>
             <div>
-                <span class="roboto-font font-s-med ft-wt-med">Free Shipping NZ Wide</span> <br>
+                <span class="roboto-font medium-font-size medium">Free Shipping NZ Wide</span> <br>
                 <span>on all wallpaper and fabric</span>
             </div>
 
@@ -82,14 +82,14 @@ get_header();
         <div>
             <i class="fal fa-tag"></i>
             <div>
-                <span class="roboto-font font-s-med ft-wt-med">Beautiful Designer Brands</span> <br>
-                <span class="roboto-font font-s-regular">furniture, homeware & rugs</span>
+                <span class="roboto-font medium-font-size medium">Beautiful Designer Brands</span> <br>
+                <span class="roboto-font paragraph-font-size">furniture, homeware & rugs</span>
             </div>
         </div>
         <div>
             <i class="fal fa-shipping-timed"></i>
             <div>
-                <span class="roboto-font font-s-med ft-wt-med">shipped daily</span> <br>
+                <span class="roboto-font medium-font-size medium">shipped daily</span> <br>
                 <span>to your door</span>
             </div>
         </div>
@@ -111,12 +111,12 @@ get_header();
 
             <div class="boxes">
                 <div>
-                    <p class="section-ft-size white center-align"> Creative Kitchen Walls</p>
+                    <p class="section-font-size white center-align"> Creative Kitchen Walls</p>
                     <a class="rm-txt-dec shop-borastapeter-button-home" href="<?php echo get_site_url();?>/brands/boras-tapeter/"> <i
                             class="fal fa-arrow-left "></i> Shop Borastapeter <i class="fal fa-arrow-up"></i></a>
                 </div>
                 <div>
-                    <p class="section-ft-size white center-align"> Good Things Are Coming</p>
+                    <p class="section-font-size white center-align"> Good Things Are Coming</p>
                     <a class="rm-txt-dec shop-khroma-button-home" href="<?php echo get_site_url();?>/brands/khroma"> Shop Khroma <i
                             class="fal fa-arrow-right"></i> <i class="fal fa-arrow-down"></i></a>
                 </div>
@@ -147,7 +147,7 @@ get_header();
 <div class="loving-section row-section margin-row">
     <div class="underline-dg"></div>
 
-    <div class="lg-font-sz center-align">What We’re Loving</div>
+    <div class="large-font-size center-align">What We’re Loving</div>
     <div class="flex">
 
         <?php 
@@ -227,7 +227,7 @@ get_header();
 <div class="row-container featured-project-section">
     <div class="underline-dg"></div>
 
-    <div class="lg-font-sz center-align">Featured Project</div>
+    <div class="large-font-size center-align">Featured Project</div>
 
     <div class="flex">
         <?php 
@@ -248,7 +248,7 @@ get_header();
                    
                     <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null, 'large');?>" alt="">
                     <div class="hover-overlay"></div>
-                    <div class="column-s-font"><?php the_title();?></div>
+                    <div class="column-font-size"><?php the_title();?></div>
                 </div>
             </a>
         </div>
@@ -262,7 +262,7 @@ get_header();
 <div class="row-container featured-trade-section">
     <div class="flex">
         <div class="card">
-            <div class="column-s-font center-align ft-wt-med">TRADE PROFESSIONALS</div>
+            <div class="column-font-size center-align medium">TRADE PROFESSIONALS</div>
             <div class="underline-dg center-align"></div>
             <div class="paragraph center-align">Inspiry Trade <br>
                 List your services with and be apart of our 'Be Inspired' page with your featured projects.
@@ -298,7 +298,7 @@ get_header();
                                 ?>
                 <img loading="lazy" src="<?php echo  $variable?>" alt="<?php the_title();  ?>">
             </div>
-            <div class="font-s-med center-align regular light-grey"><?php the_title();  ?></div>
+            <div class="medium-font-size center-align regular light-grey"><?php the_title();  ?></div>
 
             <table>
                 <tr>

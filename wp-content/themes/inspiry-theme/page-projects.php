@@ -12,9 +12,9 @@ get_header();
         <!--hero section  -->
         <section class="hero-section trade-directory-hero-section beige-color-bc">
             <div class="row-container hero-container">
-                <h3 class="column-s-font dark-grey regular">Be Inspired</h3>
+                <h3 class="column-font-size dark-grey regular">Be Inspired</h3>
                
-                        <h1 class="dark-grey lg-font-sz" ></h1>
+                        <h1 class="dark-grey large-font-size" ></h1>
 
                   
             </div>
@@ -31,7 +31,7 @@ get_header();
                     <div class="category">
                         <div class="facet-wp-code">
                             <div class="title">
-                                <h2 class="regular column-s-font"> Project Categories</h2>
+                                <h2 class="regular column-font-size"> Project Categories</h2>
                                 <i class="fal fa-plus"></i>
                             </div>
                             
@@ -51,7 +51,7 @@ get_header();
                 <!-- count the number of trade proffesionals  -->
 
               
-                <h1 class="section-ft-size regular"><?php  //echo $tradeProfessionals->post_count;?> Projects </h1>
+                <h1 class="section-font-size regular"><?php  //echo $tradeProfessionals->post_count;?> Projects </h1>
                 <div class="refine-button">
                     <a class="btn button btn-dk-green-border rm-txt-dec"><i class="fal fa-filter"></i> Filters</a>
                 </div>

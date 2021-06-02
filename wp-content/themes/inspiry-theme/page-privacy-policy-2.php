@@ -7,7 +7,7 @@
     <div class="content content_only">
     <div class="content_main">
     <div id="c159" class="component_ContentDisplay_PageTitle"><header id="page-title" class="">
-    <h1 class="lg-font-sz margin-row regular playfair-fonts">Privacy Policy</h1>
+    <h1 class="large-font-size margin-row regular playfair-fonts">Privacy Policy</h1>
     </header>
 </div>
 

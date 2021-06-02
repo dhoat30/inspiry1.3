@@ -29,7 +29,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 <?php endif; ?>
 
-		<h2 class="section-ft-size">Log In</h2>
+		<h2 class="section-font-size">Log In</h2>
 
 		<form class="login-form" method="post">
 
@@ -81,7 +81,7 @@ do_action( 'woocommerce_before_customer_login_form' ); ?>
 
 	<div class="register-section">
 
-		<h2 class="section-ft-size"><?php esc_html_e( 'Register', 'woocommerce' ); ?></h2>
+		<h2 class="section-font-size"><?php esc_html_e( 'Register', 'woocommerce' ); ?></h2>
 
 		<form method="post"  <?php do_action( 'woocommerce_register_form_tag' ); ?> >
 

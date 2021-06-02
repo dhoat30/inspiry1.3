@@ -9,9 +9,9 @@ get_header();
         <!--hero section  -->
         <section class="hero-section trade-directory-hero-section beige-color-bc">
             <div class="row-container hero-container">
-                <h3 class="column-s-font dark-grey regular">Trade Directory</h3>
+                <h3 class="column-font-size dark-grey regular">Trade Directory</h3>
                
-                        <h1 class="dark-grey lg-font-sz" ></h1>
+                        <h1 class="dark-grey large-font-size" ></h1>
 
                   
             </div>
@@ -28,7 +28,7 @@ get_header();
                     <div class="category">
                         <div class="facet-wp-code">
                             <div class="title">
-                                <h2 class="regular column-s-font"> Professional Categories</h2>
+                                <h2 class="regular column-font-size"> Professional Categories</h2>
                                 <i class="fal fa-plus"></i>
                             </div>
                             
@@ -41,7 +41,7 @@ get_header();
                     <div class="location">
                         <div class="facet-wp-code">
                             <div class="title">
-                                <h2 class="regular column-s-font"> Regions</h2>
+                                <h2 class="regular column-font-size"> Regions</h2>
                                 <i class="fal fa-plus"></i>
                             </div>
                             <?php echo do_shortcode('[facetwp facet="location"]');?>
@@ -51,7 +51,7 @@ get_header();
                     <div class="professionals">
                         <div class="facet-wp-code">
                             <div class="title">
-                                <h2 class="regular column-s-font"> Professionals</h2>
+                                <h2 class="regular column-font-size"> Professionals</h2>
                                 
                                 <i class="fal fa-plus"></i>
                             </div>
@@ -74,7 +74,7 @@ get_header();
                     $tradeProfessionals = new WP_Query($proffesionalARgs); 
                     
                 ?>
-                <h1 class="section-ft-size regular"><?php  //echo $tradeProfessionals->post_count;?> Trade Professionals </h1>
+                <h1 class="section-font-size regular"><?php  //echo $tradeProfessionals->post_count;?> Trade Professionals </h1>
                 <div class="refine-button">
                     <a class="btn button btn-dk-green-border rm-txt-dec"><i class="fal fa-filter"></i> Filters</a>
                 </div>

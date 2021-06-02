@@ -11,7 +11,7 @@ get_header();
 
         <div class="flex">
             <div class="form">
-                <div class="column-s-font"><?php the_title();?></div>
+                <div class="column-font-size"><?php the_title();?></div>
                 <?php the_content();?>
             </div>
 
@@ -19,8 +19,8 @@ get_header();
                 <div class="stamp hero-content">
                     <div>
                         <i class="fal fa-home-alt center-align"></i>
-                        <div class="section-ft-size center-align">INSPIRY</div>
-                        <div class="font-s-med center-align">Interior Design Services</div>
+                        <div class="section-font-size center-align">INSPIRY</div>
+                        <div class="medium-font-size center-align">Interior Design Services</div>
                     </div>
 
 
@@ -50,7 +50,7 @@ get_header();
                                 ?>      
                         <div class="cards">
                             <div>
-                                <div class="column-s-font center-align"><?php the_title(); ?></div>
+                                <div class="column-font-size center-align"><?php the_title(); ?></div>
                                 <div class="underline underline-dg"></div>
                                 <div class="paragraph center-align"><?php the_content();?></div>
                             </div>

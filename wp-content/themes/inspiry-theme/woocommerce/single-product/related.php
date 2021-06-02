@@ -28,7 +28,7 @@ if ( $related_products ) : ?>
 
 		if ( $heading ) :
 			?>
-			<h2 class="regular section-ft-size center-align"><?php echo esc_html( $heading ); ?></h2>
+			<h2 class="regular section-font-size center-align"><?php echo esc_html( $heading ); ?></h2>
 			<div class="small-underline"></div>
 		<?php endif; ?>
 		

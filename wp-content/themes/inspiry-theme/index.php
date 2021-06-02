@@ -7,7 +7,7 @@ get_header();
             while(have_posts()){
                 the_post(); 
                 ?>
-                    <h1 class="lg-font-sz regular center-align"><?php the_title();?></h1>
+                    <h1 class="large-font-size regular center-align"><?php the_title();?></h1>
                     <div>
                         <?php the_content();?>
                     </div>

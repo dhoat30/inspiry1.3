@@ -6,7 +6,7 @@ echo('this is an index page');
     ?>
     <div class="body-contaienr">
       <div class="row-container">
-        <h1 class="center-align section-ft-size playfair-fonts"><?php the_title();?></h1>
+        <h1 class="center-align section-font-size playfair-fonts"><?php the_title();?></h1>
         <div><?php the_content();?></div>
       </div>
     </div>

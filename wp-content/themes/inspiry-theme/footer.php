@@ -1,9 +1,9 @@
 <section class="subscribe-section">
   <div class="content">
-    <div class="section-ft-size">
+    <div class="section-font-size">
       Sign up For Inspiry Emails.
     </div>
-    <div class="roboto-font font-s-regular">
+    <div class="roboto-font paragraph-font-size">
       Plus hear about the latest and greatest from our family of brands!
     </div>
   </div>
@@ -72,7 +72,7 @@
               ) )
             ?>
       <div class="social-media-footer">
-        <h6 class="column-s-font regular">Get social with us</h6>
+        <h6 class="column-font-size regular">Get social with us</h6>
         <div class="underline-dg"></div>
         <div class="social-media-container">
           <?php 
@@ -155,7 +155,7 @@
   <div class="project-save-form-section">
 
     <div class="project-save-form-container">
-      <div class="roboto-font regular form-title font-s-med">Create Board</div>
+      <div class="roboto-font regular form-title medium-font-size">Create Board</div>
       <div class="form-underline"></div>
       <div class="form">
         <form id="new-board-form">
@@ -172,7 +172,7 @@
             </div>
 
           </div>
-          <div class="toggle-status-info roboto-font font-s-regular regular">
+          <div class="toggle-status-info roboto-font paragraph-font-size regular">
             Private boards cannot be shared with the general public.
           </div>
 

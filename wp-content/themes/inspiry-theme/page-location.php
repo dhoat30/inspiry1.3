@@ -10,7 +10,7 @@ get_header();
 
       </div>
       <div class="main-cards">
-        <div class="section-ft-size">Professionals </div>
+        <div class="section-font-size">Professionals </div>
         <div class="flex">
 
         <?php 
@@ -57,7 +57,7 @@ get_header();
 
                       <a class='rm-txt-dec' href="<?php the_permalink(); ?>">
 
-                         <div class="title regular font-s-med"><?php the_title();?></div>
+                         <div class="title regular medium-font-size"><?php the_title();?></div>
                       </a>
 
               </div>

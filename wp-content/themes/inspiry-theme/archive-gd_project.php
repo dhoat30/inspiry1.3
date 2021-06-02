@@ -10,7 +10,7 @@ get_header();
 
       </div>
       <div class="main-cards">
-        <!-- <div class="section-ft-size">Project Gallery </div>-->
+        <!-- <div class="section-font-size">Project Gallery </div>-->
         <div class="flex">
 
         <?php 
@@ -60,14 +60,14 @@ get_header();
 
                       <a class='rm-txt-dec' href="<?php the_permalink(); ?>">
 
-                         <div class="title regular font-s-med"><?php the_title();?></div>
+                         <div class="title regular medium-font-size"><?php the_title();?></div>
                       </a>
 
                       <?php 
                       //find the post id of trade proffessional 
                       $placeID = geodir_get_post_meta($postID, 'gd_place', true); 
                       ?>
-                      <a href="<?php echo get_the_permalink($placeID); ?>" class='rm-txt-dec font-s-regular thin roboto-font add-txt-dec'>
+                      <a href="<?php echo get_the_permalink($placeID); ?>" class='rm-txt-dec paragraph-font-size thin roboto-font add-txt-dec'>
                           By <?php echo get_the_title($placeID); ?>
                       </a>
 

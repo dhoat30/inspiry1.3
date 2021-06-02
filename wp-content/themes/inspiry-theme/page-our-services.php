@@ -7,8 +7,8 @@ get_header();
         </div>    
         <div class="stamp hero-content">
             <i class="fal fa-home-alt"></i>
-            <div class="section-ft-size">INSPIRY</div>
-            <div class="font-s-med">Interior Design Services</div>
+            <div class="section-font-size">INSPIRY</div>
+            <div class="medium-font-size">Interior Design Services</div>
             <a class="rm-txt-dec button btn-dk-green" href="<?php echo get_site_url();?>/consultation">MAKE AN APPOINTMENT</a>
         </div>
     </section>
@@ -17,7 +17,7 @@ get_header();
         <div class="heading-line-through">
             <div class="underline-dg"></div>
 
-            <div class="lg-font-sz center-align">Our Services</div>
+            <div class="large-font-size center-align">Our Services</div>
         </div>
         
         <div class="flex">
@@ -45,7 +45,7 @@ get_header();
                         <div class="cards">
                             <div>
                                 <img src="<?php echo get_the_post_thumbnail_url(null,"full"); ?>" alt="Khroma">                      
-                                <div class="column-s-font"><?php the_title(); ?></div>
+                                <div class="column-font-size"><?php the_title(); ?></div>
                                 <div class="paragraph center-align"><?php the_content();?></div>
                             </div>
                         </div>
@@ -68,7 +68,7 @@ get_header();
         </div>    
         <div class="content">
             
-            <div class="section-ft-size white center-align">Free half an hour consultation </div>
+            <div class="section-font-size white center-align">Free half an hour consultation </div>
          
             <a class="rm-txt-dec button btn-dk-green" href="<?php echo get_site_url();?>/consultation">Book Now</a>
         </div>
@@ -82,15 +82,15 @@ get_header();
                 </div>
 
                 <div class="content">
-                    <div class="white center-align lg-font-sz">Testimonials</div>
+                    <div class="white center-align large-font-size">Testimonials</div>
                 </div>
             </div>
             <div class="quote">
                 <i class="fas fa-quote-left"></i>
                 <div class='background beige-color-bc'>
-                    <div class="column-s-font regular">Corrine has a great sense of style, taste & knew what I wanted. She helped me so much and inspired me with lights, drapes, furniture and painting. She took all the pressure away and I love everything.</div>
-                    <span class="roboto-font ft-wt-med font-s-med">Mary Jaques</span>
-                    <div class="roboto-font font-s-med regular">Bay Of Plenty</div>
+                    <div class="column-font-size regular">Corrine has a great sense of style, taste & knew what I wanted. She helped me so much and inspired me with lights, drapes, furniture and painting. She took all the pressure away and I love everything.</div>
+                    <span class="roboto-font medium medium-font-size">Mary Jaques</span>
+                    <div class="roboto-font medium-font-size regular">Bay Of Plenty</div>
                 </div>
                 
             </div>

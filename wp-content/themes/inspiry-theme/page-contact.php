@@ -29,7 +29,7 @@ get_header();
                 </div>
 
                 <div class="social-media">
-                    <h4 class="column-s-font regular">Get social with us</h4>
+                    <h4 class="column-font-size regular">Get social with us</h4>
                     <div class="underline-dg"></div>
                     <div class="social-media-container">
                         <a href="https://www.facebook.com/inspiryliveaninspiredlife/" target="_blank"><i class="fab fa-facebook-square"></i></a>

@@ -29,11 +29,10 @@ require get_theme_file_path('/inc/nav-registeration.php');
    if (strstr($_SERVER['SERVER_NAME'], 'localhost')) {
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
-      wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.aebecbb789db7969773b.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.5c4d2b50c67dcd698ebb.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.5c4d2b50c67dcd698ebb.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.5c4d2b50c67dcd698ebb.css'));
-
+      wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/undefined'),  array( 'jquery' ), '1.0', true);
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.fc977ecd1ab203d666d4.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.fc977ecd1ab203d666d4.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.fc977ecd1ab203d666d4.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),
@@ -349,13 +348,13 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                                 <img src="<?php echo wp_get_attachment_image_url( $originalProduct->image_id, 'woocommerce_thumbnail' );?>" alt="<?php echo $originalProduct->get_name()?>">
                             </div>
                             <div class="title-container">
-                                    <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
+                                    <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
                                     ?> )
                                     </h5>
                             </div>
                             
                             <div class="price-container">
-                            <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity) ?></h6>
+                            <h6 class="paragraph-font-size roboto-font bold">$<?php echo number_format($product->price * $quantity) ?></h6>
                             </div>
                             <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>
                         </a>
@@ -370,13 +369,13 @@ function woocommerce_header_add_to_cart_fragment( $fragments ) {
                                     <img src="<?php echo get_the_post_thumbnail_url($product_id, 'medium');?>" alt="<?php echo $product->name?>">
                                 </div>
                                 <div class="title-container">
-                                        <h5 class="font-s-regular regular"> <?php echo $quantity;?> X  <?php echo $product->name
+                                        <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  <?php echo $product->name
                                         ?> 
                                         </h5>
                                 </div>
                                 
                                 <div class="price-container">
-                                <h6 class="font-s-regular roboto-font bold">$<?php echo number_format($product->price * $quantity); ?></h6>
+                                <h6 class="paragraph-font-size roboto-font bold">$<?php echo number_format($product->price * $quantity); ?></h6>
                                 </div>
                                 
                                 <i class="fal fa-times remove-cart-item-btn" data-productID="<?php echo $product_id;?>"></i>

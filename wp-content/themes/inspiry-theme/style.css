@@ -76,6 +76,9 @@
 
 @import "css/contact.css";
 
+/* second front page css */
+@import "css/second-front-page.css";
+
 * {
   box-sizing: border-box;
   padding: 0;
@@ -99,11 +102,25 @@ textarea::placeholder {
   flex-direction: row;
   flex-wrap: wrap;
 }
+.flex-column {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
+.flex-start {
+  justify-content: flex-start;
+}
 .flex-center {
   justify-content: center;
 }
 .flex-space-between {
   justify-content: space-between;
+}
+.align-center {
+  align-items: center;
+}
+.align-end {
+  align-items: flex-end;
 }
 
 .underline-bg {
@@ -120,7 +137,7 @@ textarea::placeholder {
   margin-bottom: 150px;
 }
 
-.heading-line-through .lg-font-sz {
+.heading-line-through .large-font-size {
   background-color: white;
   padding: 20px 20px;
   position: absolute;
@@ -168,6 +185,14 @@ textarea::placeholder {
 .margin-row {
   margin-top: 40px;
 }
+.margin-large-row {
+  margin: 100px 0;
+}
+@media (max-width: 600px) {
+  .margin-large-row {
+    margin: 50px 0;
+  }
+}
 
 .small-margin-bottom {
   margin-bottom: 10px;
@@ -194,13 +219,13 @@ textarea::placeholder {
 
 /*font size*/
 
-.lg-font-sz {
+.large-font-size {
   font-size: 60px;
   margin-top: 40px;
   text-transform: capitalize !important;
 }
 
-.section-ft-size {
+.section-font-size {
   font-size: 35px !important;
   text-transform: uppercase;
   font-weight: 500;
@@ -208,12 +233,12 @@ textarea::placeholder {
   text-transform: capitalize !important;
 }
 
-.font-s-regular {
+.paragraph-font-size {
   font-size: 15px;
   line-height: 1.5em;
 }
 
-.font-s-med {
+.medium-font-size {
   font-size: 18px;
   letter-spacing: 0.03em !important;
   margin: 0 !important;
@@ -221,19 +246,19 @@ textarea::placeholder {
   font-weight: 300;
 }
 
-.column-s-font {
+.column-font-size {
   font-size: 25px;
 }
 
 @media (max-width: 830px) {
-  .lg-font-sz {
+  .large-font-size {
     font-size: 40px;
   }
 }
 
 /*font weight*/
 
-.black-bold {
+.black {
   font-weight: 900;
 }
 
@@ -245,7 +270,7 @@ textarea::placeholder {
   font-weight: 400 !important;
 }
 
-.ft-wt-med {
+.medium {
   font-weight: 600;
 }
 
@@ -296,7 +321,7 @@ textarea::placeholder {
   display: block;
 }
 .btn-dk-green-border {
-  background-color: white !important;
+  background-color: rgba(0, 0, 0, 0) !important;
   border: 1px solid #303030 !important;
   color: #303030 !important;
 }

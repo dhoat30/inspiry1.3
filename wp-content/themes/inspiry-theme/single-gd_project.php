@@ -25,7 +25,7 @@ get_header();
                 }
                 ?>
                 <div class="header-title">
-                    <h2 class="section-ft-size board-heading-post-id" data-postid='<?php echo get_the_id()?>'><?php echo get_the_title();?></h2>
+                    <h2 class="section-font-size board-heading-post-id" data-postid='<?php echo get_the_id()?>'><?php echo get_the_title();?></h2>
                 </div>
             
                 <div class="header-address regular">

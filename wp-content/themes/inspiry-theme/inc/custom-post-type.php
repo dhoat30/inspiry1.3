@@ -10,9 +10,25 @@ add_post_type_support( "loving", "thumbnail" );
 add_post_type_support( "blogs", "thumbnail" );
 add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
-
+add_post_type_support( "shop_by_brand", "trending-now" );
 function register_custom_type2(){ 
-    //brand logo
+    //Home Page Cards
+    register_post_type("homepage-cards", array(
+      "supports" => array("title", 'thumbnail'), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Home Page Cards", 
+         "add_new_item" => "Add New Home Page Card", 
+         "edit_item" => "Edit Home Page Card", 
+         "all_items" => "All Home Page Cards", 
+         "singular_name" => "Home Page Card"
+      ), 
+      "menu_icon" => "dashicons-visibility"
+   )
+   ); 
+    //Brand Logo
     register_post_type("brand-logo", array(
       "supports" => array("title", 'thumbnail'), 
       "public" => true, 
@@ -31,7 +47,7 @@ function register_custom_type2(){
 
    //sliders psot type
    register_post_type("sliders", array(
-      "supports" => array("title", "page-attributes", 'editor'), 
+      "supports" => array("title"), 
       "public" => true, 
       "show_ui" => true, 
       "hierarchical" => true,
@@ -42,8 +58,7 @@ function register_custom_type2(){
          "all_items" => "All Sliders", 
          "singular_name" => "Slider"
       ), 
-      "menu_icon" => "dashicons-slides",
-      'taxonomies'          => array('category')
+      "menu_icon" => "dashicons-slides"
    )
    ); 
 
@@ -125,15 +140,32 @@ function register_custom_type2(){
       "show_ui" => true, 
       "hierarchical" => true,
       "labels" => array(
-         "name" => "Typewriter Effect Titles", 
-         "add_new_item" => "Add New Typewriter Effect Title", 
-         "edit_item" => "Edit Typewriter Effect Title", 
-         "all_items" => "All Typewriter Effect Titles", 
-         "singular_name" => "Typewriter Effect Title"
+         "name" => "Typewriter Effect", 
+         "add_new_item" => "Add New Typewriter Effect", 
+         "edit_item" => "Edit Typewriter Effect", 
+         "all_items" => "All Typewriter Effect", 
+         "singular_name" => "Typewriter Effect"
       ), 
       "menu_icon" => "dashicons-welcome-write-blog"
    )
    );
+   // tri photos 
+
+register_post_type("tri-images", array(
+   "supports" => array("title", "editor"), 
+   "public" => true, 
+   "show_ui" => true, 
+   "hierarchical" => true,
+   "labels" => array(
+      "name" => "Tri Images ", 
+      "add_new_item" => "Add New Tri Images", 
+      "edit_item" => "Edit Tri Images", 
+      "all_items" => "All Tri Images", 
+      "singular_name" => "Tri Images"
+   ), 
+   "menu_icon" => "dashicons-images-alt"
+)
+);
   
 }
 
@@ -171,8 +203,41 @@ $argsTypewriter = array(
    'hierarchical' => true,
    'show_in_rest' => true
 );
+register_taxonomy( 'typewriter-category', 'typewriter_effect', $argsTypewriter );
 
-register_taxonomy( 'typewriter-effect', 'typewriter_effect', $argsTypewriter );
+
+//   taxonomy for sliders
+$argsSliders = array(
+   'label'        => __( 'Slider Categories', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'show_in_rest' => true,
+   'hierarchical' => true,
+);
+register_taxonomy( 'slider-category', 'sliders', $argsSliders );
+
+//   taxonomy for tri images
+$argsTriImages = array(
+   'label'        => __( 'Tri Images Categories', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'show_in_rest' => true,
+   'hierarchical' => true,
+);
+register_taxonomy( 'tri-Images-category', 'tri-images', $argsTriImages );
+
+//   taxonomy for home page cards
+$argsTriImages = array(
+   'label'        => __( 'Home Page Card Categories', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'show_in_rest' => true,
+   'hierarchical' => true,
+);
+register_taxonomy( 'home-page-card-category', 'homepage-cards', $argsTriImages );
+
+
+
 
 }
 add_action( 'init', 'wpdocs_register_private_taxonomy', 0 );

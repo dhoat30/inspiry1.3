@@ -4,14 +4,14 @@ get_header();
   ?>
     <section class="trade-directory row-container">
       <div class="sidebar">
-        <div class="scolumn-s-font">Search </div>
+        <div class="scolumn-font-size">Search </div>
         <?php //echo do_shortcode('[gd_categories post_type="0" max_level="1" max_count="all" max_count_child="all" title_tag="h4" sort_by="count"]');?>
           <?php  echo do_shortcode('[gd_search]');?>
         <?php echo do_shortcode('[gd_map width="100%" height="425px" maptype="ROADMAP" zoom="0" map_type="auto" post_settings="1"]');?>
 
       </div>
       <div class="main-cards">
-        <div class="section-ft-size">Proffesionals </div>
+        <div class="section-font-size">Proffesionals </div>
         <div class="flex">
 
         <?php 
@@ -58,7 +58,7 @@ get_header();
 
                       <a class='rm-txt-dec' href="<?php the_permalink(); ?>">
 
-                         <div class="title regular font-s-med"><?php the_title();?></div>
+                         <div class="title regular medium-font-size"><?php the_title();?></div>
                       </a>
 
               </div>

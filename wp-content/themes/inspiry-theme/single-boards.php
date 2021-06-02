@@ -8,20 +8,20 @@ get_header();
                 <i class="fal fa-arrow-left"></i>
             </a>
         </div>
-        <h1 class="lg-font-sz playfair-fonts regular light-grey"> <?php echo get_the_title($parentID);?></h1>
+        <h1 class="large-font-size playfair-fonts regular light-grey"> <?php echo get_the_title($parentID);?></h1>
         <div class="btn-container">
             <?php //check if the post status is publish 
                                 if(get_post_status() == 'publish'){
                                     ?>
             <div class='action-btn-container'>
-                <button class="share btn btn-dk-green-border font-s-regular"><i class="fal fa-share-alt"></i>
+                <button class="share btn btn-dk-green-border paragraph-font-size"><i class="fal fa-share-alt"></i>
                     Share</button>
 
                 <div class="share-icons box-shadow">
                     
            
                         <i class="fal fa-times"></i>
-                        <h2 class="roboto-font font-s-medium regular">Share this board</h2>
+                        <h2 class="roboto-font medium-font-sizeium regular">Share this board</h2>
                         <div class="underline underline-bg margin-elements"></div>
                         <div>
                             <?php echo do_shortcode('[Sassy_Social_Share]');?>
@@ -34,12 +34,12 @@ get_header();
                             ?>
 
             <div class="image-upload-container" data-parentid=<?php echo get_the_id();?>>
-                <button class="img-upload share btn btn-dk-green-border font-s-regular"> <i
+                <button class="img-upload share btn btn-dk-green-border paragraph-font-size"> <i
                         class="far fa-arrow-to-top"></i> Upload</button>
 
                 <div>
                     <div class="project-save-form-container">
-                        <div class="roboto-font regular form-title font-s-med">Upload</div>
+                        <div class="roboto-font regular form-title medium-font-size">Upload</div>
                         <div class="form-underline"></div>
                         <div class="form">
                             <form action="{{admin_url}}" method="POST" enctype="multipart/form-data" id="upload-image">
@@ -119,7 +119,7 @@ get_header();
                 </div>
 
                 <div class="share-icon-container box-shadow">
-                    <div class="roboto-font regular font-s-med"> Share this pin </div>
+                    <div class="roboto-font regular medium-font-size"> Share this pin </div>
                     <div class="underline"></div>
                     <div>
 
@@ -139,7 +139,7 @@ get_header();
                             <img src="<?php echo $imgSmall[0] ?>" alt="<?php echo get_the_title();?>" class="event-image">
                             <img src="" data-src="<?php echo $imgFull[0]?>" alt="<?php echo get_the_title();?>" class="lightbox-image">
                         </div>
-                        <div class="title font-s-regular rm-txt-dec">
+                        <div class="title paragraph-font-size rm-txt-dec">
                             <?php echo get_the_title(get_field('saved_project_id')); ?>
                         </div>
 
@@ -154,7 +154,7 @@ get_header();
                                     echo get_the_post_thumbnail( get_field('saved_project_id'), 'post-thumbnail');
                                     ?>
                                 </div>
-                                <div class="title font-s-regular rm-txt-dec">
+                                <div class="title paragraph-font-size rm-txt-dec">
                                     <?php echo get_the_title(get_field('saved_project_id')); ?>
                                 </div>
 

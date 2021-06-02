@@ -7,14 +7,14 @@ get_header(); ?>
 	<div id="content" class="site-content" role="main">
 
 		<header class="page-header">
-			<h1 class="lg-font-sz center-align regular margin-row"><?php _e( 'Not Found', 'twentythirteen' ); ?></h1>
+			<h1 class="large-font-size center-align regular margin-row"><?php _e( 'Not Found', 'twentythirteen' ); ?></h1>
 		</header>
 
 		<div class="page-wrapper">
 			<div class="page-content">
-				<h2 class="roboto-font center-align font-s-medium regular">
+				<h2 class="roboto-font center-align medium-font-sizeium regular">
 					<?php _e( 'This is somewhat embarrassing, isn’t it?', 'twentythirteen' ); ?></h2>
-				<p class="roboto-font center-align font-s-regular regular">
+				<p class="roboto-font center-align paragraph-font-size regular">
 					<?php _e( 'It looks like nothing was found at this location. Maybe try a search?', 'twentythirteen' ); ?>
 				</p>
 
