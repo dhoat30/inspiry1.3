@@ -654,23 +654,22 @@ get_header();
                 <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> second Image">
                 <img loading="lazy" src="<?php echo $thirdImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> third Image">
                 <img loading="lazy" src="<?php echo $fourthImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> fourth Image"> 
-            
             </div>
             
             <!-- content box -->
-            <div class="content-box beige-color-bc">
-                <div class="title-container">
+            <div class="content-box beige-color-bc flex-column">
+                <div class="title-container margin-elements">
                     <i class="fad fa-house-user center-align"></i>
                     <h6 class="center-align column-font-size regular"><?php echo get_the_title();?></h6>
                 </div>
                 <div class="paragraph center-align"><?php echo get_the_content();?></div>
                 <div class="step-container">
-                    <div class="step_1 center-align roboto-font regular medium-font-size"><?php echo get_field('step_1'); ?></div>
-                    <div class="step_2 center-align roboto-font regular medium-font-size"><?php echo get_field('step_2'); ?></div>
-                    <div class="step_3 center-align roboto-font regular medium-font-size"><?php echo get_field('step_3'); ?></div>
+                    <div class="step_1 roboto-font thin medium-font-size"><?php echo get_field('step_1'); ?></div>
+                    <div class="step_2 roboto-font thin medium-font-size"><?php echo get_field('step_2'); ?></div>
+                    <div class="step_3 roboto-font thin medium-font-size"><?php echo get_field('step_3'); ?></div>
                 </div>
                 <div class="button-container">
-                    <a class="button btn-dk-green-border rm-txt-dec" href="<?php echo get_field('enter_now_link');?>">ENTER NOW</a>
+                    <a class="button btn-dk-green-border rm-txt-dec center-align" href="<?php echo get_field('enter_now_link');?>">ENTER NOW</a>
                 </div>
             </div>
 
@@ -691,6 +690,71 @@ get_header();
     
 </section>
 
+
+
+<!-- Trade Professional - 13th section -->
+<section class="trade-professional-section row-container">
+    <div class="container margin-large-row">
+        <?php 
+
+            $argsBrandLogo = array(
+                'post_type' => 'post',
+                'posts_per_page'=> -1,
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'post_tag',
+                            'field'    => 'slug',
+                            'terms'    => array( 'trade-professional-section-home-page'),
+                        )
+                        )
+            );
+            $brandLogo = new WP_Query( $argsBrandLogo );
+
+            while($brandLogo->have_posts()){ 
+                $brandLogo->the_post(); 
+                $tradeImage = get_field('trade_professional_profile_image');
+                $projectImage = get_field('project_image');
+              
+                ?>
+                <!-- content box -->
+                <div class="content-box beige-color-bc">
+                    <div class="title center-align section-font-size"><?php echo get_the_title();?></div>
+                    <div class="paragraph center-align roboto-font regular"><?php echo get_the_content();?></div>
+                    <a class="button btn-dk-green rm-txt-dec center-align" href="<?php echo get_site_url();?>/trade-professionals/">View Trade Professionals</a>
+                    <a class="button btn-dk-green-border rm-txt-dec center-align" href="<?php echo get_site_url();?>/add-listing/?listing_type=gd_place">Join Trade Directory</a>
+
+                </div>
+                <!--  trade proffesional image-->
+                <div class="trade-image">
+                    <picture>
+                                    <source media="(min-width:1366px)" srcset="<?php echo $tradeImage['sizes']['full']; ?>">
+                                    <source media="(min-width:600px)" srcset="<?php echo $tradeImage['sizes']['large'];?>">
+                                    <img loading="lazy" src="<?php echo $tradeImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
+                    
+                    </picture>
+                </div>
+
+                <!--  trade proffesional image-->
+                <div class="project-image">
+                    <picture>
+                                    <source media="(min-width:1366px)" srcset="<?php echo $projectImage['sizes']['full']; ?>">
+                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['large'];?>">
+                                    <img loading="lazy" src="<?php echo $projectImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
+                    
+                    </picture>
+                </div>
+            
+            
+            
+                <?php 
+
+                    }
+                    wp_reset_postdata();
+                    ?>
+    </div>
+                                    
+    
+</section>
 
 <script>
     const slides = document.querySelectorAll('.slide');
