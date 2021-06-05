@@ -4,70 +4,39 @@ get_header();
 ?>
 
 <section class="home-page">
-    <div class="slider-container">
+    <div class="video-container">
+        <?php 
+
+            $argsVideos = array(
+                'post_type' => 'videos',
+                'posts_per_page'=> 1,
+                    'tax_query' => array(
+                        array(
+                            'taxonomy' => 'video-category',
+                            'field'    => 'slug',
+                            'terms'    => array( 'home-page-hero-video'),
+                        )
+                        ), 
+            );
+            $video = new WP_Query( $argsVideos );
+
+            while($video->have_posts()){ 
+                $video->the_post(); 
+                ?>
+                <a href="<?php echo get_field('add_a_landing_page_link'); ?>"></a>
+                <?php echo get_the_content();?>
+                <?php 
+               
+
+            }
+            wp_reset_postdata();
+            ?>
 
 
-        <div class="slider">
-           
-
-
-            <?php 
-
-                                        $args = array(
-                                            'post_type' => 'sliders',
-                                            'tax_query' => array(
-                                                array(
-                                                    'taxonomy' => 'slider-category',
-                                                    'field'    => 'slug',
-                                                    'terms'    => array( 'home-page-hero-slider'),
-                                                )
-                                                ), 
-                                                'orderby' => 'date', 
-                                                'order' => 'ASC'
-                                        );
-                                        $query = new WP_Query( $args );
-
-                                        while($query->have_posts()){ 
-                                            $query->the_post(); 
-                                            $image = get_field('mobile_image'); 
-                                            $imgUrl; 
-                                            if($image['sizes']['medium_large']){
-                                                $imgUrl = $image['sizes']['medium_large'];
-                                            }
-                                            else{
-                                                $imgUrl = $image['url'];
-                                            }
-                                          
-                                            ?>
-                                            <div class="slide">
-                                                <a  href="<?php echo  get_field('add_link'); ?>">
-                                            <picture > 
-                                                    <source media="(min-width:700px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
-                                                    <source media="(min-width:465px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                                                    <img   src="<?php echo esc_url($imgUrl);?>" alt="<?php echo get_the_title();?>">
-                                                </picture>   
-
-                                                    </a>   
-                                                     </div>
-                                                           
-                                            <?php
-
-                                       
-                                        }
-                                        wp_reset_postdata();
-
-                                        ?>
-
-
-
-        </div>
-
-
-        <div class="buttons">
-            <button id="prev"><i class="fas fa-arrow-left"></i></button>
-            <button id="next"><i class="fas fa-arrow-right"></i></button>
-        </div>
     </div>
+
+
+        
 </section>
 
 <!--Trending section  ----->
@@ -85,7 +54,7 @@ get_header();
 
             $argsLoving = array(
                 'post_type' => 'homepage-cards',
-                'posts_per_page'=> 0,
+                'posts_per_page'=> -1,
                     'orderby' => 'date', 
                     'order' => 'ASC',
                     'tax_query' => array(
@@ -342,7 +311,7 @@ get_header();
                 </div>
                 <div class="title-container flex-row align-end">
                     <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
-                    <p><?php echo get_the_content();?></p>
+                    <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
                 </div>
         <?php 
 
@@ -475,7 +444,7 @@ get_header();
                 </div>
                 <div class="title-container flex-row align-end">
                     <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
-                    <p><?php echo get_the_content();?></p>
+                    <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
                 </div>
         <?php 
 
@@ -525,7 +494,7 @@ get_header();
             <a class="cards rm-txt-dec"  href="<?php echo get_field('category_link');?>">
             
          
-                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium"); ?>"
+                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
                             alt="Khroma">
                     <div class="paragraph-font-size margin-top"  id="trending-now" ><?php echo get_the_title();?> </div>
               
@@ -547,22 +516,20 @@ get_header();
 <section class="service-page">
                 <?php 
 
-                $argsFavourite = array(
+                $argsServices = array(
                     'pagename' => 'our-services',
                     'posts_per_page'=> -1,
                         'orderby' => 'date', 
                         'order' => 'ASC',
                 );
-                $favourite = new WP_Query( $argsFavourite );
+                $services = new WP_Query( $argsServices );
 
-                while($favourite->have_posts()){ 
-                    $favourite->the_post(); 
-                      $desktopImage = get_the_post_thumbnail_url(null,"large");
-                      $mobileImage = get_the_post_thumbnail_url(null,"woocommerce_thumbnail");
-                      
+                while($services->have_posts()){ 
+                    $services->the_post(); 
+                      $desktopImage = get_the_post_thumbnail_url(null,"large");                      
                     ?>
     
-        <div class="hero-section"  style='background: url("<?php echo $desktopImage; ?>") no-repeat center top/cover;'>
+        <div class="hero-section"  style='background: url("<?php echo $desktopImage; ?>") no-repeat center bottom   /cover;'>
             <div class="hero-overlay"></div>
         </div>    
         <div class="stamp hero-content">
@@ -606,8 +573,21 @@ get_header();
             <?php if($imageUrl['sizes']){
                 ?>
                     <a class="cards rm-txt-dec"  href="<?php echo get_field('add_a_link');?>">
-                            <img class="brand-image" loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
-                                    alt="Khroma">    
+                        <?php 
+                            if(get_the_post_thumbnail_url(null,"woocommerce_thumbnail")){
+                                ?>
+                                <img class="brand-image" loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
+                                    alt="Khroma">   
+                                <?php 
+                            }
+                            else{
+                                ?>
+                                <img class="brand-image" loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium_large"); ?>"
+                                    alt="Khroma">   
+                                <?php
+                            }
+                        ?>
+                             
                             <img class="brand-logo" loading="lazy" src="<?php echo $imageUrl['sizes']['medium']; ?>" alt="">
                                      
                     </a>
@@ -728,7 +708,7 @@ get_header();
                 <div class="trade-image">
                     <picture>
                                     <source media="(min-width:1366px)" srcset="<?php echo $tradeImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $tradeImage['sizes']['large'];?>">
+                                    <source media="(min-width:600px)" srcset="<?php echo $tradeImage['sizes']['full'];?>">
                                     <img loading="lazy" src="<?php echo $tradeImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
                     
                     </picture>
@@ -738,7 +718,7 @@ get_header();
                 <div class="project-image">
                     <picture>
                                     <source media="(min-width:1366px)" srcset="<?php echo $projectImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['large'];?>">
+                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['full'];?>">
                                     <img loading="lazy" src="<?php echo $projectImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
                     
                     </picture>

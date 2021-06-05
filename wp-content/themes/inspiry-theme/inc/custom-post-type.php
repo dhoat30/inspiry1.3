@@ -12,6 +12,22 @@ add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
 add_post_type_support( "shop_by_brand", "trending-now" );
 function register_custom_type2(){ 
+   //Home Page Cards
+   register_post_type("videos", array(
+      "supports" => array("title", 'editor'), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Video", 
+         "add_new_item" => "Add New Video", 
+         "edit_item" => "Edit Video", 
+         "all_items" => "All Videos", 
+         "singular_name" => "Video"
+      ), 
+      "menu_icon" => "dashicons-video-alt3"
+   )
+   ); 
     //Home Page Cards
     register_post_type("homepage-cards", array(
       "supports" => array("title", 'thumbnail'), 
@@ -227,15 +243,24 @@ $argsTriImages = array(
 register_taxonomy( 'tri-Images-category', 'tri-images', $argsTriImages );
 
 //   taxonomy for home page cards
-$argsTriImages = array(
+$argsHomePageCards = array(
    'label'        => __( 'Home Page Card Categories', 'textdomain' ),
    'public'       => true,
    'rewrite'      => true,
    'show_in_rest' => true,
    'hierarchical' => true,
 );
-register_taxonomy( 'home-page-card-category', 'homepage-cards', $argsTriImages );
+register_taxonomy( 'home-page-card-category', 'homepage-cards', $argsHomePageCards );
 
+//   taxonomy for Videos
+$argsVideos = array(
+   'label'        => __( 'Video Category', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'show_in_rest' => true,
+   'hierarchical' => true,
+);
+register_taxonomy( 'video-category', 'videos', $argsVideos );
 
 
 
