@@ -1,69 +1,168 @@
 <?php 
+/* Template Name: Places * Template Post Type: post*/ /*The template for displaying full width single posts. */
 get_header(); 
 
 ?>
 
 <section class="home-page">
-    <div class="video-container">
-        <?php 
+    <div class="slider-container">
 
-            $argsVideos = array(
-                'post_type' => 'videos',
-                'posts_per_page'=> 1,
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'video-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'home-page-hero-video'),
-                        )
-                        ), 
-            );
-            $video = new WP_Query( $argsVideos );
 
-            while($video->have_posts()){ 
-                $video->the_post(); 
-                ?>
-                <a href="<?php echo get_field('add_a_landing_page_link'); ?>"></a>
-                <?php echo get_the_content();?>
-                <?php 
-               
+        <div class="slider">
+           
 
-            }
-            wp_reset_postdata();
-            ?>
+
+            <?php 
+
+                                        $args = array(
+                                            'post_type' => 'sliders',
+                                            'tax_query' => array(
+                                                array(
+                                                    'taxonomy' => 'category',
+                                                    'field'    => 'slug',
+                                                    'terms'    => array( 'home-page-hero-slider'),
+                                                )
+                                                ), 
+                                                'orderby' => 'date', 
+                                                'order' => 'ASC'
+                                        );
+                                        $query = new WP_Query( $args );
+
+                                        while($query->have_posts()){ 
+                                            $query->the_post(); 
+                                            $image = get_field('mobile_image'); 
+                                            $imgUrl; 
+                                            if($image['sizes']['medium_large']){
+                                                $imgUrl = $image['sizes']['medium_large'];
+                                            }
+                                            else{
+                                                $imgUrl = $image['url'];
+                                            }
+                                          
+                                            ?>
+                                            <div class="slide">
+                                                <a  href="<?php echo  get_field('add_link'); ?>">
+                                            <picture > 
+                                                    <source media="(min-width:700px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
+                                                    <source media="(min-width:465px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
+                                                    <img   src="<?php echo esc_url($imgUrl);?>" alt="<?php echo get_the_title();?>">
+                                                </picture>   
+
+                                                    </a>   
+                                                     </div>
+                                                           
+                                            <?php
+
+                                       
+                                        }
+                                        wp_reset_postdata();
+
+                                        ?>
+
+
+
+        </div>
+
+
+        <div class="buttons">
+            <button id="prev"><i class="fas fa-arrow-left"></i></button>
+            <button id="next"><i class="fas fa-arrow-right"></i></button>
+        </div>
+    </div>
+
+    <div class="beige-color-bc usp">
+        <div>
+            <i class="fal fa-truck"></i>
+            <div>
+                <span class="roboto-font medium-font-size medium">Free Shipping NZ Wide</span> <br>
+                <span>on all wallpaper and fabric</span>
+            </div>
+
+        </div>
+        <div>
+            <i class="fal fa-tag"></i>
+            <div>
+                <span class="roboto-font medium-font-size medium">Beautiful Designer Brands</span> <br>
+                <span class="roboto-font paragraph-font-size">furniture, homeware & rugs</span>
+            </div>
+        </div>
+        <div>
+            <i class="fal fa-shipping-timed"></i>
+            <div>
+                <span class="roboto-font medium-font-size medium">shipped daily</span> <br>
+                <span>to your door</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="box-section">
+        <div class="flex">
+            <div class="photo photo-1">
+                <picture>
+                    <source media="(max-width: 500px)"
+                        srcset="<?php echo get_site_url();?>/wp-content/uploads/2020/11/frida_image_roomshot_kitchen_item_7675-370x370.jpg">
+                    <source media="(max-width: 800px)"
+                        srcset="<?php echo get_site_url();?>/wp-content/uploads/2020/11/frida_image_roomshot_kitchen_item_7675-960x960.jpg">
+                    <img loading="lazy" src="<?php echo get_site_url();?>/wp-content/uploads/2020/11/frida_image_roomshot_kitchen_item_7675.jpg"
+                        alt="Frida">
+                </picture>
+
+            </div>
+
+            <div class="boxes">
+                <div>
+                    <p class="section-font-size white center-align"> Creative Kitchen Walls</p>
+                    <a class="rm-txt-dec shop-borastapeter-button-home" href="<?php echo get_site_url();?>/brands/boras-tapeter/"> <i
+                            class="fal fa-arrow-left "></i> Shop Borastapeter <i class="fal fa-arrow-up"></i></a>
+                </div>
+                <div>
+                    <p class="section-font-size white center-align"> Good Things Are Coming</p>
+                    <a class="rm-txt-dec shop-khroma-button-home" href="<?php echo get_site_url();?>/brands/khroma"> Shop Khroma <i
+                            class="fal fa-arrow-right"></i> <i class="fal fa-arrow-down"></i></a>
+                </div>
+            </div>
+
+            <div class="photo photo-2">
+                <picture>
+                    <source media="(max-width: 500px)"
+                        srcset="<?php echo get_site_url();?>/wp-content/uploads/2020/11/PICTCAB803-1-370x370.jpg">
+                    <source media="(max-width: 800px)"
+                        srcset="<?php echo get_site_url();?>/wp-content/uploads/2020/11/PICTCAB803-1-960x960.jpg">
+                    <img loading="lazy" src="<?php echo get_site_url();?>/wp-content/uploads/2020/11/PICTCAB803-1.jpg"
+                        alt="Khroma">
+                </picture>
+            </div>
+
+        </div>
 
 
     </div>
-
-
-        
 </section>
 
-<!--Trending section  ----->
 
-<section class="trending-section  margin-row row-container">
-    
-    <div class="title-container flex-row flex-start align-end">
-        <h1 class="section-font-size">Trending Now</h1>  
-        <h2 class="roboto-font medium-font-size thin">What we’re covering most this season</h2>                                
-    </div>                                   
-    
-    <div class="flex flex-row owl-carousel">
+
+
+<!--Loving Section ----->
+
+<div class="loving-section row-section margin-row">
+    <div class="underline-dg"></div>
+
+    <div class="large-font-size center-align">What We’re Loving</div>
+    <div class="flex">
 
         <?php 
 
             $argsLoving = array(
-                'post_type' => 'homepage-cards',
-                'posts_per_page'=> -1,
+                'post_type' => 'loving',
+                'tax_query' => array(
+                    array(
+                        'taxonomy' => 'category',
+                        'field'    => 'slug',
+                        'terms'    => array( 'home-page-loving-section')
+                    )
+                    ), 
                     'orderby' => 'date', 
-                    'order' => 'ASC',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'home-page-card-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'trending-now-home-page'),
-                        )
-                        ), 
+                    'order' => 'ASC'
             );
             $loving = new WP_Query( $argsLoving );
 
@@ -72,247 +171,21 @@ get_header();
 
                 ?>
         
-            <a class="cards rm-txt-dec"  href="<?php echo get_field('category_link');?>">
+            <div class="cards">
             
-         
-                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium"); ?>"
+                <div>
+                    <picture>
+                        <source media="(max-width: 500px)"
+                            srcset="<?php echo get_the_post_thumbnail_url(null,"medium"); ?>">
+                       
+                        <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"large"); ?>"
                             alt="Khroma">
-                    <div class="paragraph-font-size margin-top"  id="trending-now" ><?php echo get_the_title();?> </div>
-              
-            </a>
-    
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-<!--third section  ----->
-
-<section class="third-section  margin-large-row ">
-    
-   
-    <div class="image-container">
-
-        <?php 
-
-                $args = array(
-                    'post_type' => 'sliders',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'slider-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'third-section-home-page'),
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                    $image = get_field('mobile_image'); 
-                                            $imgUrl; 
-                                            if($image['sizes']['medium_large']){
-                                                $imgUrl = $image['sizes']['medium_large'];
-                                            }
-                                            else{
-                                                $imgUrl = $image['url'];
-                                            }
-                ?>
-        
-                <a  href="<?php echo  get_field('add_link'); ?>">                         
-                    <picture>
-                            <source media="(min-width:1366px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
-                            <source media="(min-width:600px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                            <img loading="lazy" src="<?php echo esc_url($imgUrl);?>"
-                            alt="<?php echo get_the_title();?>">
-              
                     </picture>
-                </a>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-<!--fourth section  ----->
-
-<section class="fourth-section  margin-row row-container">
-    <div class="image-container flex-row flex-center">
-        <?php 
-
-                $args = array(
-                    'post_type' => 'sliders',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'slider-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'fourth-section-home-page'),
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                  
-                ?>
-        
-                <a  href="<?php echo  get_field('add_link'); ?>">                         
-                    <picture>
-                            <source media="(min-width:1366px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                            <source media="(min-width:600px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                            <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
-                            alt="<?php echo get_the_title();?>">
-              
-                    </picture>
-                </a>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-<!--fifth section with third section styling ----->
-
-<section class="third-section  margin-large-row">
-    
-   
-    <div class="image-container">
-
-        <?php 
-
-                $args = array(
-                    'post_type' => 'sliders',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'slider-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'fifth-section-home-page'),
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                    $image = get_field('mobile_image'); 
-                                            $imgUrl; 
-                                            if($image['sizes']['medium_large']){
-                                                $imgUrl = $image['sizes']['woocommerce_thumbnail'];
-                                            }
-                                            else{
-                                                $imgUrl = $image['url'];
-                                            }
-                ?>
-        
-                <a  href="<?php echo  get_field('add_link'); ?>">                         
-                    <picture>
-                            <source media="(min-width:1366px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
-                            <source media="(min-width:600px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                            <img loading="lazy" src="<?php echo esc_url($imgUrl);?>"
-                            alt="<?php echo get_the_title();?>">
-              
-                    </picture>
-                </a>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-
-<!--sixth section with three photos ----->
-
-<section class="sixth-section margin-large-row">
-    <div class="sixth-container row-container">
-
-        <?php 
-
-                $args = array(
-                    'post_type' => 'tri-images',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'tri-Images-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'sixth-section-home-page')
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                    $largeImage = get_field('large_image'); 
-                    $firstImage = get_field('first_small_image'); 
-                    $secondImage = get_field('second_small_image'); 
-
-                   
-                ?>
-        
-                <div class="images-container flex-row flex-space-between">
-                    <div class="first-image">
-                        <a  href="<?php echo  get_field('large_image_link'); ?>">                         
-                            <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $largeImage['sizes']['large'];?>">
-                                    <img loading="lazy" src="<?php echo $largeImage['sizes']['woocommerce_thumbnail'];?>"
-                                    alt="<?php echo get_the_title();?>">
-                    
-                            </picture>
-                        </a>
-                    </div>
-                   
-                    <div class="second-image small-image">
-                            <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['sizes']['full']; ?>">
-                                        <source media="(min-width:600px)" srcset="<?php echo $firstImage['sizes']['large'];?>">
-                                        <img loading="lazy" src="<?php echo $firstImage['sizes']['woocommerce_thumbnail'];?>"
-                                        alt="<?php echo get_field('first_image_title');?>">
-                    
-                            </picture>
-                            <a class="anchor-overlay rm-txt-dec center-align" href="<?php echo  get_field('first_small_image_link'); ?>"><?php echo get_field('first_image_title'); ?></a>
-                    </div>
-                    <div class="third-image small-image">
-                            <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['sizes']['full']; ?>">
-                                        <source media="(min-width:600px)" srcset="<?php echo $secondImage['sizes']['large'];?>">
-                                        <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'];?>"
-                                        alt="<?php echo get_field('second_image_title');?>">
-                    
-                            </picture>
-                            <a class="anchor-overlay rm-txt-dec center-align" href="<?php echo  get_field('second_small_image_link'); ?>"><?php echo get_field('second_image_title'); ?></a>
-                    </div>
-                    
+                    <a class="rm-txt-dec center-align"  id="we-are-loving" href="<?php echo get_field('add_link');?>">Shop Now <i
+                            class="fal fa-arrow-right"></i> </a>
                 </div>
-                <div class="title-container flex-row align-end">
-                    <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
-                    <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
-                </div>
+            </div>
+    
         <?php 
 
             }
@@ -323,418 +196,160 @@ get_header();
 
 
     </div>
-</section>
+</div>
+<section class="brand-stripe">
+    <div class="flex">
 
-<!--seventh section with third section styling ----->
+    <?php 
 
-<section class="third-section  margin-large-row">
-    
-   
-    <div class="image-container">
-
-        <?php 
-
-                $args = array(
-                    'post_type' => 'sliders',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'slider-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'seventh-section-home-page'),
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                    $image = get_field('mobile_image'); 
-                                            $imgUrl; 
-                                            if($image['sizes']['medium_large']){
-                                                $imgUrl = $image['sizes']['woocommerce_thumbnail'];
-                                            }
-                                            else{
-                                                $imgUrl = $image['url'];
-                                            }
-                ?>
-        
-                <a  href="<?php echo  get_field('add_link'); ?>">                         
-                    <picture>
-                            <source media="(min-width:1366px)" srcset="<?php echo get_the_post_thumbnail_url(null,"full"); ?>">
-                            <source media="(min-width:600px)" srcset="<?php echo get_the_post_thumbnail_url(null,"large"); ?>">
-                            <img loading="lazy" src="<?php echo esc_url($imgUrl);?>"
-                            alt="<?php echo get_the_title();?>">
-              
-                    </picture>
-                </a>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-<!--Eighth section with three photos----->
-
-<section class="eighth-section margin-large-row reverse-section">
-    <div class="eighth-container row-container">
-
-        <?php 
-
-                $args = array(
-                    'post_type' => 'tri-images',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'tri-Images-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'eighth-section-home-page')
-                        )
-                        )
-                );
-                $query = new WP_Query( $args );
-
-                while($query->have_posts()){ 
-                    $query->the_post(); 
-                    $largeImage = get_field('large_image'); 
-                    $firstImage = get_field('first_small_image'); 
-                    $secondImage = get_field('second_small_image'); 
-
-                   
-                ?>
-        
-                <div class="images-container flex-row flex-space-between">
-                    <div class="first-image">
-                        <a  href="<?php echo  get_field('large_image_link'); ?>">                         
-                            <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $largeImage['sizes']['large'];?>">
-                                    <img loading="lazy" src="<?php echo $largeImage['sizes']['woocommerce_thumbnail'];?>"
-                                    alt="<?php echo get_the_title();?>">
-                    
-                            </picture>
-                        </a>
-                    </div>
-                   
-                    <div class="second-image small-image">
-                            <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['sizes']['full']; ?>">
-                                        <source media="(min-width:600px)" srcset="<?php echo $firstImage['sizes']['large'];?>">
-                                        <img loading="lazy" src="<?php echo $firstImage['sizes']['woocommerce_thumbnail'];?>"
-                                        alt="<?php echo get_field('first_image_title');?>">
-                    
-                            </picture>
-                            <a class="anchor-overlay rm-txt-dec center-align" href="<?php echo  get_field('first_small_image_link'); ?>"><?php echo get_field('first_image_title'); ?></a>
-                    </div>
-                    <div class="third-image small-image">
-                            <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['sizes']['full']; ?>">
-                                        <source media="(min-width:600px)" srcset="<?php echo $secondImage['sizes']['large'];?>">
-                                        <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'];?>"
-                                        alt="<?php echo get_field('second_image_title');?>">
-                    
-                            </picture>
-                            <a class="anchor-overlay rm-txt-dec center-align" href="<?php echo  get_field('second_small_image_link'); ?>"><?php echo get_field('second_image_title'); ?></a>
-                    </div>
-                    
-                </div>
-                <div class="title-container flex-row align-end">
-                    <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
-                    <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
-                </div>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-
-
-
-
-    </div>
-</section>
-
-<!--Favourite - Ninth section  ----->
-
-<section class="trending-section  margin-row row-container">
-    
-    <div class="title-container flex-row flex-start align-end">
-        <h3 class="section-font-size">Our Favourites</h3>  
-        <h4 class="roboto-font medium-font-size thin">What we’re covering most this season</h4>                                
-    </div>                                   
-    
-    <div class="flex flex-row owl-carousel owl-theme">
-
-        <?php 
-
-            $argsFavourite = array(
-                'post_type' => 'homepage-cards',
-                'posts_per_page'=> -1,
-                    'orderby' => 'date', 
-                    'order' => 'ASC',
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'home-page-card-category',
-                            'field'    => 'slug',
-                            'terms'    => array( 'our-favourites-home-page')
-                        )
-                        ), 
+            $brandLogo = array(
+                'post_type' => 'brand-logo',
+                'posts_per_page'=> -1
             );
-            $favourite = new WP_Query( $argsFavourite );
+            $brandLogoQuery = new WP_Query( $brandLogo );
 
-            while($favourite->have_posts()){ 
-                $favourite->the_post(); 
+            while($brandLogoQuery->have_posts()){ 
+                $brandLogoQuery->the_post(); 
 
                 ?>
         
-            <a class="cards rm-txt-dec"  href="<?php echo get_field('category_link');?>">
-            
-         
-                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
-                            alt="Khroma">
-                    <div class="paragraph-font-size margin-top"  id="trending-now" ><?php echo get_the_title();?> </div>
-              
-            </a>
-    
-        <?php 
+        <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium"); ?>" alt="<?php echo get_the_title();?>">
+       
 
+    <?php 
             }
             wp_reset_postdata();
-            ?>
 
-
-
+    ?>
 
     </div>
 </section>
+<div class="row-container featured-project-section">
+    <div class="underline-dg"></div>
 
-<!-- our services - tenth section  -->
-<section class="service-page">
-                <?php 
+    <div class="large-font-size center-align">Featured Project</div>
 
-                $argsServices = array(
-                    'pagename' => 'our-services',
-                    'posts_per_page'=> -1,
-                        'orderby' => 'date', 
-                        'order' => 'ASC',
+    <div class="flex">
+        <?php 
+                $argsPorject = array(
+                    'post_type' => 'gd_project', 
+                    'posts_per_page' => 4
                 );
-                $services = new WP_Query( $argsServices );
-
-                while($services->have_posts()){ 
-                    $services->the_post(); 
-                      $desktopImage = get_the_post_thumbnail_url(null,"large");                      
-                    ?>
+                $project = new WP_Query( $argsPorject );
     
-        <div class="hero-section"  style='background: url("<?php echo $desktopImage; ?>") no-repeat center bottom   /cover;'>
-            <div class="hero-overlay"></div>
-        </div>    
-        <div class="stamp hero-content">
-            <i class="fal fa-home-alt"></i>
-            <div class="section-font-size">INSPIRY</div>
-            <div class="medium-font-size">Interior Design Services</div>
-            <a class="rm-txt-dec button btn-dk-green" href="<?php echo get_site_url();?>/consultation">MAKE AN APPOINTMENT</a>
+                while($project->have_posts()){ 
+                    $project->the_post(); 
+                    ?>
+
+
+        <div class="card">
+            <a href="<?php the_permalink();?>" class="view-project">
+                <div>
+                   
+                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null, 'large');?>" alt="">
+                    <div class="hover-overlay"></div>
+                    <div class="column-font-size"><?php the_title();?></div>
+                </div>
+            </a>
         </div>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-    </section>
-
-
-<!-- Brand Cards - eleventh section -->
-<section class="brand-logo-section beige-color-bc">
-    
-    <div class="title-container flex-row flex-start align-end row-container">
-        <div class="column-font-size">Shop Our Family of Brands</div>  
-    </div>                                   
-    
-    <div class="flex flex-row owl-carousel owl-theme row-container">
-
-        <?php 
-
-            $argsBrandLogo = array(
-                'post_type' => 'shop_by_brand',
-                'posts_per_page'=> -1,
-                    'orderby' => 'date', 
-                    'order' => 'ASC'
-            );
-            $brandLogo = new WP_Query( $argsBrandLogo );
-
-            while($brandLogo->have_posts()){ 
-                $brandLogo->the_post(); 
-                $imageUrl = get_field('brand_logo');
-                ?>
-
-            <?php if($imageUrl['sizes']){
-                ?>
-                    <a class="cards rm-txt-dec"  href="<?php echo get_field('add_a_link');?>">
-                        <?php 
-                            if(get_the_post_thumbnail_url(null,"woocommerce_thumbnail")){
-                                ?>
-                                <img class="brand-image" loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
-                                    alt="Khroma">   
-                                <?php 
-                            }
-                            else{
-                                ?>
-                                <img class="brand-image" loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium_large"); ?>"
-                                    alt="Khroma">   
-                                <?php
-                            }
-                        ?>
-                             
-                            <img class="brand-logo" loading="lazy" src="<?php echo $imageUrl['sizes']['medium']; ?>" alt="">
-                                     
-                    </a>
-                <?php
-            }
-                ?>
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-    </div>
-</section>
-
-<!-- Be inspired Section - 12th section -->
-<section class="be-inspired-section">
-    <div class="container ">
-        <?php 
-
-            $argsBrandLogo = array(
-                'post_type' => 'post',
-                'posts_per_page'=> -1,
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'post_tag',
-                            'field'    => 'slug',
-                            'terms'    => array( 'be-inspired-section-home-page'),
-                        )
-                        )
-            );
-            $brandLogo = new WP_Query( $argsBrandLogo );
-
-            while($brandLogo->have_posts()){ 
-                $brandLogo->the_post(); 
-                $firstImage = get_field('first_image');
-                $secondImage = get_field('second_image');
-                $thirdImage = get_field('third_image');
-                $fourthImage = get_field('fourth_image');
-                $fifthImage = get_field('fifth_image');
-                $sixthImage = get_field('sixth_image');
-                ?>
-            <div class="first-image-container">
-                <img loading="lazy" src="<?php echo $firstImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> First Image">
-                <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> second Image">
-                <img loading="lazy" src="<?php echo $thirdImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> third Image">
-                <img loading="lazy" src="<?php echo $fourthImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> fourth Image"> 
-            </div>
-            
-            <!-- content box -->
-            <div class="content-box beige-color-bc flex-column">
-                <div class="title-container margin-elements">
-                    <i class="fad fa-house-user center-align"></i>
-                    <h6 class="center-align column-font-size regular"><?php echo get_the_title();?></h6>
-                </div>
-                <div class="paragraph center-align"><?php echo get_the_content();?></div>
-                <div class="step-container">
-                    <div class="step_1 roboto-font thin medium-font-size"><?php echo get_field('step_1'); ?></div>
-                    <div class="step_2 roboto-font thin medium-font-size"><?php echo get_field('step_2'); ?></div>
-                    <div class="step_3 roboto-font thin medium-font-size"><?php echo get_field('step_3'); ?></div>
-                </div>
-                <div class="button-container">
-                    <a class="button btn-dk-green-border rm-txt-dec center-align" href="<?php echo get_field('enter_now_link');?>">ENTER NOW</a>
-                </div>
-            </div>
-
-
-            <!-- second lot images  -->
-            <div class="second-image-container">
-                <img loading="lazy" src="<?php echo $fifthImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> fifth Image">
-                <img loading="lazy" src="<?php echo $sixthImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?> sixth Image">
-            </div>
-            
-        <?php 
-
-            }
-            wp_reset_postdata();
-            ?>
-    </div>
-                                    
-    
-</section>
-
-
-
-<!-- Trade Professional - 13th section -->
-<section class="trade-professional-section row-container">
-    <div class="container margin-large-row">
-        <?php 
-
-            $argsBrandLogo = array(
-                'post_type' => 'post',
-                'posts_per_page'=> -1,
-                    'tax_query' => array(
-                        array(
-                            'taxonomy' => 'post_tag',
-                            'field'    => 'slug',
-                            'terms'    => array( 'trade-professional-section-home-page'),
-                        )
-                        )
-            );
-            $brandLogo = new WP_Query( $argsBrandLogo );
-
-            while($brandLogo->have_posts()){ 
-                $brandLogo->the_post(); 
-                $tradeImage = get_field('trade_professional_profile_image');
-                $projectImage = get_field('project_image');
-              
-                ?>
-                <!-- content box -->
-                <div class="content-box beige-color-bc">
-                    <div class="title center-align section-font-size"><?php echo get_the_title();?></div>
-                    <div class="paragraph center-align roboto-font regular"><?php echo get_the_content();?></div>
-                    <a class="button btn-dk-green rm-txt-dec center-align" href="<?php echo get_site_url();?>/trade-professionals/">View Trade Professionals</a>
-                    <a class="button btn-dk-green-border rm-txt-dec center-align" href="<?php echo get_site_url();?>/add-listing/?listing_type=gd_place">Join Trade Directory</a>
-
-                </div>
-                <!--  trade proffesional image-->
-                <div class="trade-image">
-                    <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $tradeImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $tradeImage['sizes']['full'];?>">
-                                    <img loading="lazy" src="<?php echo $tradeImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
-                    
-                    </picture>
-                </div>
-
-                <!--  trade proffesional image-->
-                <div class="project-image">
-                    <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $projectImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['full'];?>">
-                                    <img loading="lazy" src="<?php echo $projectImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
-                    
-                    </picture>
-                </div>
-            
-            
-            
-                <?php 
-
-                    }
+        <?php
+                    } 
                     wp_reset_postdata();
-                    ?>
+            ?>
     </div>
-                                    
+</div>
+
+<div class="row-container featured-trade-section">
+    <div class="flex">
+        <div class="card">
+            <div class="column-font-size center-align medium">TRADE PROFESSIONALS</div>
+            <div class="underline-dg center-align"></div>
+            <div class="paragraph center-align">Inspiry Trade <br>
+                List your services with and be apart of our 'Be Inspired' page with your featured projects.
+                <br>Request an information pack<br>
+                trade@inspiry.co.nz
+            </div>
+            <a href="<?php echo get_site_url();?>/location" id="view-trade-proffesional" class="rm-txt-dec button btn-dk-green">View Trade
+                Professionals</a>
+        </div>
+
+        <?php 
+                $argsTrade = array(
+                    'post_type' => 'gd_place', 
+                    'posts_per_page' => 2, 
+                    'order'=>'DESC', 
+                    'orderby'=> 'title'
+                );
+                $trade = new WP_Query( $argsTrade );
     
-</section>
+                while($trade->have_posts()){ 
+                    $trade->the_post(); 
+                    ?>
+
+
+        <div class="card">
+            <img loading="lazy" class="gallery" src="<?php echo get_the_post_thumbnail_url(null, 'large');?>"
+                alt="Trade Proffesionals">
+            <div class="logo">
+
+                <?php
+                                $variable =  do_shortcode('[gd_post_meta key="logo" show="value-raw" no_wrap="1" alignment="left"]');
+                                $variable = substr($variable, 0, strpos($variable, "|"));
+                                ?>
+                <img loading="lazy" src="<?php echo  $variable?>" alt="<?php the_title();  ?>">
+            </div>
+            <div class="medium-font-size center-align regular light-grey"><?php the_title();  ?></div>
+
+            <table>
+                <tr>
+                    <th>LOCATION:</th>
+
+                    <td><?php echo do_shortcode('[gd_post_meta key="city" show="value-raw" no_wrap="1" alignment="left"]');?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>PHONE:</th>
+
+                    <td>
+                        <a class="rm-txt-dec"
+                            href='tel:<?php echo do_shortcode('[gd_post_meta key="phone" show="value-raw"  no_wrap="1" alignment="left"]');?>'>
+
+                            <?php echo do_shortcode('[gd_post_meta key="phone" show="value-raw" no_wrap="1" alignment="left"]');?>
+                    </td>
+                    </a>
+                </tr>
+
+                <tr>
+                    <th>EMAIL:</th>
+
+                    <td>
+                        <a class="rm-txt-dec"
+                            href='mailto:<?php echo do_shortcode('[gd_post_meta key="email" show="value-raw"  no_wrap="1" alignment="left"]');?>'>
+
+                            <?php echo do_shortcode('[gd_post_meta key="email" show="value-raw" no_wrap="1" alignment="left"]');?>
+                        </a>
+                    </td>
+
+                </tr>
+
+                <tr>
+                    <th>WEBSITE:</th>
+                    <td>
+                        <a class="rm-txt-dec"
+                            href='mailto:<?php echo do_shortcode('[gd_post_meta key="email" show="value-raw"  no_wrap="1" alignment="left"]');?>'>
+
+                            <?php echo do_shortcode('[gd_post_meta key="website" show="value-strip" no_wrap="1" alignment="left"]');?>
+                        </a>
+                    </td>
+                </tr>
+            </table>
+
+        </div>
+        <?php
+                    } 
+            ?>
+    </div>
+</div>
 
 <script>
     const slides = document.querySelectorAll('.slide');

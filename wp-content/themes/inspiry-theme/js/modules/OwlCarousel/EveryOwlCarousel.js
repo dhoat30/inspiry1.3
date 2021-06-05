@@ -56,7 +56,7 @@ class EveryOwlCarousel {
         let className = '.trending-section .owl-carousel';
         let args = {
             loop: true,
-            margin: 10,
+            margin: 20,
 
             lazyLoad: true,
             autoplay: true,
@@ -83,10 +83,6 @@ class EveryOwlCarousel {
                 },
                 1200: {
                     items: 4,
-                    dots: true
-                },
-                1500: {
-                    items: 5,
                     dots: true
                 }
             }

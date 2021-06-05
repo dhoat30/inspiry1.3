@@ -1,6 +1,7 @@
 /* video container */
 .home-page .video-container {
   position: relative;
+  margin: 0 auto;
 }
 .home-page .video-container a {
   display: inline-block;
@@ -14,9 +15,7 @@
   z-index: 10;
 }
 /* trending now section  */
-.trending-section {
-  margin: 100px auto !important;
-}
+
 @media (max-width: 400px) {
   .trending-section {
     margin: 50px auto !important;
@@ -94,25 +93,30 @@
 
 .fourth-section .image-container a {
   width: 45%;
-  margin: 20px;
+  margin: 10px 0;
+}
+.fourth-section .image-container img {
+  width: 90%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
 }
 @media (max-width: 870px) {
   .fourth-section .image-container a {
     width: 100%;
   }
-}
-.fourth-section .image-container img {
-  width: 100%;
-  height: 100%;
-  display: block;
-  margin: 0 auto;
+  .fourth-section .image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+  }
 }
 
 /* sixth section */
 .sixth-section .sixth-container {
   height: auto;
-
-  max-width: 1500px;
+  max-width: 1300px;
 }
 .sixth-section .sixth-container .images-container {
   display: grid;
@@ -198,7 +202,6 @@
 /*  eighths section*/
 .eighth-section .eighth-container {
   height: auto;
-
   max-width: 1500px;
 }
 .eighth-section .eighth-container .images-container {
@@ -208,17 +211,17 @@
   grid-gap: 20px;
 }
 .eighth-section .eighth-container .images-container .first-image {
-  grid-column: 1/10;
+  grid-column: 4/13;
   grid-row: 1/3;
 }
 
 .eighth-section .eighth-container .images-container .second-image {
-  grid-column: 10/13;
+  grid-column: 1/4;
   grid-row: 1/2;
   position: relative;
 }
 .eighth-section .eighth-container .images-container .third-image {
-  grid-column: 10/13;
+  grid-column: 1/4;
   grid-row: 2/3;
   position: relative;
 }
@@ -315,7 +318,7 @@
   grid-column: 1/13;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  grid-gap: 0 1px;
+  grid-gap: 0 15px;
   align-content: space-between;
 }
 .be-inspired-section .container .content-box {
@@ -326,7 +329,7 @@
 .be-inspired-section .container .second-image-container {
   grid-column: 20/26;
   align-content: space-between;
-  grid-gap: 5px 10px;
+  grid-gap: 15px 0;
   display: grid;
   grid-template-columns: repeat(4, 1fr);
 }
@@ -345,7 +348,7 @@
 
 /* be inspired content styling */
 .be-inspired-section {
-  margin: 50px 0 0 0;
+  margin: 100px 0 0 0;
 }
 .be-inspired-section .container .content-box i {
   font-size: 40px;
