@@ -161,3 +161,23 @@ span {
 .archive .added_to_cart {
   display: none !important;
 }
+
+/* swap image on hover  */
+/* CUSTOM ON-HOVER IMAGE */
+.woocommerce ul.products li.product a img {
+  /* FORMAT ALL IMAGES TO FILL EQUIVALENT SPACE,
+  to remove jitter on replacement */
+
+  object-fit: cover;
+  padding: 0;
+  margin: 0 auto;
+}
+.woocommerce ul.products li.product a img:nth-of-type(2) {
+  display: none;
+}
+.woocommerce ul.products li.product a:hover img:nth-of-type(2) {
+  display: block;
+}
+.woocommerce ul.products li.product a:hover img:nth-of-type(1) {
+  display: none;
+}

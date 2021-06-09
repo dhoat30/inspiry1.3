@@ -558,3 +558,21 @@ add_filter( 'woocommerce_price_trim_zeros', '__return_true' );
 	
 // }
 
+// change image on hove on product archive page
+add_action( 'woocommerce_before_shop_loop_item_title', 'add_on_hover_shop_loop_image' ) ; 
+
+function add_on_hover_shop_loop_image() {
+
+    $image_id = wc_get_product()->get_gallery_image_ids()[1] ; 
+
+    if ( $image_id ) {
+        echo '<img src="' . wp_get_attachment_image_src( $image_id, 'woocommerce_thumbnail')[0] . '" class="current">';
+     
+
+    } else {  //assuming not all products have galleries set
+
+        echo wp_get_attachment_image( wc_get_product()->get_image_id(),  'woocommerce_thumbnail'  ) ; 
+
+    }
+
+}

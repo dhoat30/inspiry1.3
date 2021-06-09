@@ -127,6 +127,17 @@ if ( ! defined( 'ABSPATH' ) ) {
   text-align: center !important;
   font-weight: 300;
   margin-top: 10px;
+  line-height: 2.4em;
+  letter-spacing: 0.05em;
+}
+ .paragraph{
+  font-size: 16px;
+  text-align: center !important;
+  font-weight: 300;
+  margin-top: 10px;
+  line-height: 1.4em;
+  letter-spacing: 0.05em;
+  color: #303030;
 }
 
 

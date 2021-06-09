@@ -36,26 +36,6 @@ import TradeDirectory from './modules/TradeDirectory';
 
 // footer 
 
-// // owl carousel 
-// setTimeout(function () {
-//   $('.flex-control-thumbs').addClass('owl-carousel');
-//   $('.owl-carousel').owlCarousel({
-//     loop: false,
-//     margin: 10,
-//     nav: true,
-//     responsive: {
-//       0: {
-//         items: 3
-//       },
-//       600: {
-//         items: 3
-//       },
-//       1000: {
-//         items: 4
-//       }
-//     }
-//   });
-// }, 300);
 
 window.onload = function () {
 
@@ -132,6 +112,8 @@ const wallpaperCalc = new WallpaperCalc();
 const laybuy = new LayBuy();
 
 
+
+
 // typewriter effect
 document.addEventListener('DOMContentLoaded', function (event) {
   // array with texts to type in typewriter
@@ -146,7 +128,7 @@ document.addEventListener('DOMContentLoaded', function (event) {
     // chekc if text isn't finished yet
     if (i < (text.length)) {
       // add next character to h1
-      document.querySelector("h1").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
+      document.querySelector(".typewriter-title").innerHTML = text.substring(0, i + 1) + '<span aria-hidden="true"></span>';
 
       // wait for a while and call this function again for next character
       setTimeout(function () {
@@ -179,14 +161,13 @@ document.addEventListener('DOMContentLoaded', function (event) {
   StartTextAnimation(0);
 });
 
+// scroll arrow 
 
 let myID = document.getElementById("go-to-header");
 
 var myScrollFunc = function () {
-  console.log('hello tis is a scroll ')
   var y = window.scrollY;
   if (y >= 1200) {
-    console.log('scrolled to 800')
     myID.classList.add("show");
   } else if (y <= 1200) {
     myID.classList.remove("show");

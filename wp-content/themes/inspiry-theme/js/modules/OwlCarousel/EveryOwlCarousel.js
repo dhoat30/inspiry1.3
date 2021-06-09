@@ -1,5 +1,5 @@
 import OwlCarousel from './OwlCarousel';
-
+let $ = jQuery;
 class EveryOwlCarousel {
     constructor() {
         this.events();
@@ -7,7 +7,44 @@ class EveryOwlCarousel {
     events() {
         this.trendingCarousel();
         this.brandLogoHomePageCarousel();
+        // product gallery on single product page
+        this.productGallery();
+
     }
+
+    productGallery() {
+        // // owl carousel 
+        $('.single-product .flex-control-thumbs').addClass('owl-carousel');
+        let className = '.single-product .owl-carousel';
+
+
+        let args = {
+
+            margin: 20,
+            lazyLoad: true,
+            autoplay: true,
+            autoplayTimeout: 2000,
+            autoplayHoverPause: true,
+            responsiveBaseElement: ".row-container",
+            responsiveClass: true,
+            rewind: true,
+            responsive: {
+                0: {
+                    items: 2,
+
+                    dots: true
+                },
+                600: {
+                    items: 4,
+                    dots: true
+                }
+
+            }
+        }
+        const trendingNow = new OwlCarousel(args, className);
+    };
+
+
     brandLogoHomePageCarousel() {
 
         // owl carousel 

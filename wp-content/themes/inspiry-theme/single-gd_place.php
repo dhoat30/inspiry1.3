@@ -9,7 +9,7 @@ get_header();
     ?>
 
 <div>
-
+    
     <div class="trade-hero" style='background: url(" <?php echo get_the_post_thumbnail_url( $postID, "large" ) ?>")'>
     </div>
 

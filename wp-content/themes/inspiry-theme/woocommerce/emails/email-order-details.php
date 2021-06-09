@@ -23,9 +23,11 @@ defined( 'ABSPATH' ) || exit;
                 <!-- change it depeding on a email template  -->
                 <!-- change above -->
                 <div class="meta">
+               
                     <div class="order-number">Order #: <?php echo $order->get_id();?></div>
-                    <div class="order-date">Order Date: <?php 
 
+                    <div class="order-date">Order Date: <?php 
+                    
                     // format date  
                     $justDate = strtotime($order->order_date);
                     echo date('d-m-Y',$justDate);
@@ -76,3 +78,5 @@ defined( 'ABSPATH' ) || exit;
                     </tr>
                 </table>
             </div>
+
+     

@@ -230,15 +230,15 @@ textarea::placeholder {
 
 .section-font-size {
   font-size: 35px !important;
-  text-transform: uppercase;
+  text-transform: uppercase !important;
   font-weight: 500;
-  letter-spacing: 0.02em;
-  text-transform: capitalize !important;
+  letter-spacing: 0.08em;
 }
 
 .paragraph-font-size {
   font-size: 15px;
   line-height: 1.5em;
+  letter-spacing: 0.05em;
 }
 
 .medium-font-size {
@@ -251,6 +251,8 @@ textarea::placeholder {
 
 .column-font-size {
   font-size: 25px;
+  letter-spacing: 0.05em;
+  margin-right: 10px;
 }
 
 @media (max-width: 830px) {
@@ -292,6 +294,11 @@ textarea::placeholder {
 .roboto-font {
   font-family: "Roboto", sans-serif !important;
 }
+/* CAPITALIZE  */
+.upper-case {
+  text-transform: uppercase !important;
+}
+/* letter spacing */
 
 .text-decoration-none {
   text-decoration: none;

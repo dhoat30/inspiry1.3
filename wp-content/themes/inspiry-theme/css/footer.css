@@ -2,7 +2,6 @@ footer {
   width: 100%;
   padding: 40px 0 5px 0;
 }
-
 .footer-menu-row {
   display: flex;
   flex-direction: row;
@@ -124,6 +123,9 @@ footer {
 }
 .go-to-header a i {
   font-size: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 0px 10px;
+  color: white;
 }
 .show {
   display: block !important;

@@ -35,9 +35,9 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
 
             <!-- tracking number -->
             <h2 class="subtitle playfair-fonts">Thank you for shopping with us, we really appreciate it!</h2>
-            
-            <!-- only for when item is shipped  -->
-            
+          
+                
+                 
           
         </div>
     </div>

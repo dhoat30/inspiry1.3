@@ -5,7 +5,7 @@ get_header();
 ?>
 
 <section class="home-page">
-    <div class="video-container row-container">
+    <div class="video-container">
         <?php 
 
             $argsVideos = array(
@@ -76,9 +76,9 @@ get_header();
             <a class="cards rm-txt-dec"  href="<?php echo get_field('category_link');?>">
             
          
-                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"medium"); ?>"
+                    <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
                             alt="Khroma">
-                    <div class="paragraph-font-size margin-top"  id="trending-now" ><?php echo get_the_title();?> </div>
+                    <div class="paragraph-font-size margin-top upper-case"  id="trending-now" ><?php echo get_the_title();?> <i class="fal fa-angle-right"></i></div>
               
             </a>
     
@@ -279,7 +279,7 @@ get_header();
                     <div class="first-image">
                         <a  href="<?php echo  get_field('large_image_link'); ?>">                         
                             <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['sizes']['full']; ?>">
+                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['url']; ?>">
                                     <source media="(min-width:600px)" srcset="<?php echo $largeImage['sizes']['large'];?>">
                                     <img loading="lazy" src="<?php echo $largeImage['sizes']['woocommerce_thumbnail'];?>"
                                     alt="<?php echo get_the_title();?>">
@@ -290,7 +290,7 @@ get_header();
                    
                     <div class="second-image small-image">
                             <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['sizes']['full']; ?>">
+                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['url']; ?>">
                                         <source media="(min-width:600px)" srcset="<?php echo $firstImage['sizes']['large'];?>">
                                         <img loading="lazy" src="<?php echo $firstImage['sizes']['woocommerce_thumbnail'];?>"
                                         alt="<?php echo get_field('first_image_title');?>">
@@ -300,7 +300,7 @@ get_header();
                     </div>
                     <div class="third-image small-image">
                             <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['sizes']['full']; ?>">
+                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['url']; ?>">
                                         <source media="(min-width:600px)" srcset="<?php echo $secondImage['sizes']['large'];?>">
                                         <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'];?>"
                                         alt="<?php echo get_field('second_image_title');?>">
@@ -310,8 +310,8 @@ get_header();
                     </div>
                     
                 </div>
-                <div class="title-container flex-row align-end">
-                    <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
+                <div class="title-container flex-row align-end flex-center">
+                    <h6 class="column-font-size regular upper-case"><?php echo get_the_title();?></h6>
                     <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
                 </div>
         <?php 
@@ -412,7 +412,7 @@ get_header();
                     <div class="first-image">
                         <a  href="<?php echo  get_field('large_image_link'); ?>">                         
                             <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['sizes']['full']; ?>">
+                                    <source media="(min-width:1366px)" srcset="<?php echo $largeImage['url']; ?>">
                                     <source media="(min-width:600px)" srcset="<?php echo $largeImage['sizes']['large'];?>">
                                     <img loading="lazy" src="<?php echo $largeImage['sizes']['woocommerce_thumbnail'];?>"
                                     alt="<?php echo get_the_title();?>">
@@ -423,7 +423,7 @@ get_header();
                    
                     <div class="second-image small-image">
                             <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['sizes']['full']; ?>">
+                                        <source media="(min-width:1366px)" srcset="<?php echo $firstImage['url']; ?>">
                                         <source media="(min-width:600px)" srcset="<?php echo $firstImage['sizes']['large'];?>">
                                         <img loading="lazy" src="<?php echo $firstImage['sizes']['woocommerce_thumbnail'];?>"
                                         alt="<?php echo get_field('first_image_title');?>">
@@ -433,7 +433,7 @@ get_header();
                     </div>
                     <div class="third-image small-image">
                             <picture>
-                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['sizes']['full']; ?>">
+                                        <source media="(min-width:1366px)" srcset="<?php echo $secondImage['url']; ?>">
                                         <source media="(min-width:600px)" srcset="<?php echo $secondImage['sizes']['large'];?>">
                                         <img loading="lazy" src="<?php echo $secondImage['sizes']['woocommerce_thumbnail'];?>"
                                         alt="<?php echo get_field('second_image_title');?>">
@@ -443,8 +443,8 @@ get_header();
                     </div>
                     
                 </div>
-                <div class="title-container flex-row align-end">
-                    <h6 class="column-font-size regular"><?php echo get_the_title();?></h6>
+                <div class="title-container flex-row align-end flex-center">
+                    <h6 class="column-font-size regular upper-case"><?php echo get_the_title();?></h6>
                     <p class="roboto-font paragraph-font-size thin dark-grey"><?php echo get_the_content();?></p>
                 </div>
         <?php 
@@ -464,7 +464,7 @@ get_header();
 <section class="trending-section  row-container margin-bottom">
     
     <div class="title-container flex-row flex-start align-end">
-        <h3 class="section-font-size">Our Favourites</h3>  
+        <div class="section-font-size">Our Favourites</div>  
         <h4 class="roboto-font medium-font-size thin">What we’re covering most this season</h4>                                
     </div>                                   
     
@@ -497,7 +497,7 @@ get_header();
          
                     <img loading="lazy" src="<?php echo get_the_post_thumbnail_url(null,"woocommerce_thumbnail"); ?>"
                             alt="Khroma">
-                    <div class="paragraph-font-size margin-top"  id="trending-now" ><?php echo get_the_title();?> </div>
+                    <div class="paragraph-font-size margin-top upper-case"  id="trending-now" ><?php echo get_the_title();?> <i class="fal fa-angle-right"></i> </div>
               
             </a>
     
@@ -551,7 +551,7 @@ get_header();
 <section class="brand-logo-section beige-color-bc">
     
     <div class="title-container flex-row flex-start align-end row-container">
-        <div class="column-font-size">Shop Our Family of Brands</div>  
+        <div class="column-font-size upper-case">Shop Our Family of Brands</div>  
     </div>                                   
     
     <div class="flex flex-row owl-carousel owl-theme row-container">
@@ -640,8 +640,8 @@ get_header();
             <!-- content box -->
             <div class="content-box beige-color-bc flex-column">
                 <div class="title-container margin-elements">
-                    <i class="fad fa-house-user center-align"></i>
-                    <h6 class="center-align column-font-size regular"><?php echo get_the_title();?></h6>
+                    <div class="medium-font-size thin center-align roboto-font upper-case">#inspirynz</div>
+                    <h6 class="center-align section-font-size regular"><?php echo get_the_title();?></h6>
                 </div>
                 <?php 
                     if(get_the_content()){
@@ -713,7 +713,7 @@ get_header();
                 ?>
                 <!-- content box -->
                 <div class="content-box beige-color-bc">
-                    <div class="title center-align section-font-size"><?php echo get_the_title();?></div>
+                    <div class="title center-align section-font-size typewriter-title" >Trade Professional</div>  
                     <div class="paragraph center-align roboto-font regular"><?php echo get_the_content();?></div>
                     <a class="button btn-dk-green rm-txt-dec center-align" href="<?php echo get_site_url();?>/trade-professionals/">View Trade Professionals</a>
                     <a class="button btn-dk-green-border rm-txt-dec center-align" href="<?php echo get_site_url();?>/add-listing/?listing_type=gd_place">Join Trade Directory</a>
@@ -732,8 +732,8 @@ get_header();
                 <!--  trade proffesional image-->
                 <div class="project-image">
                     <picture>
-                                    <source media="(min-width:1366px)" srcset="<?php echo $projectImage['sizes']['full']; ?>">
-                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['full'];?>">
+                                    <source media="(min-width:1366px)" srcset="<?php echo $projectImage['url']; ?>">
+                                    <source media="(min-width:600px)" srcset="<?php echo $projectImage['sizes']['large'];?>">
                                     <img loading="lazy" src="<?php echo $projectImage['sizes']['woocommerce_thumbnail'] ?>" alt="<?php echo get_the_title(); ?>">
                     
                     </picture>
@@ -751,71 +751,34 @@ get_header();
     
 </section>
 
-<script>
-    const slides = document.querySelectorAll('.slide');
-    const next = document.querySelector('#next');
-    const prev = document.querySelector('#prev');
-    const auto = true; // Auto scroll
-    const intervalTime = 3000;
-    let slideInterval;
-    slides[0].classList.add('current');
+<!-- typewriter effect titles -->
+<section class="typewriter-query-container">
+            <?php 
+                    $argsTypewriter = array(
+                        'post_type' => 'typewriter_effect', 
+                        'posts_per_page' => -1,
+                        'tax_query' => array(
+                            array(
+                                'taxonomy' => 'typewriter-category',
+                                'field'    => 'slug',
+                                'terms'    => array( 'trade-directory-page'),
+                            )
+                            ),
+                    );
+                    $typewriterEffect = new WP_Query( $argsTypewriter );
+                       
+                        $titleArray = array_map('get_the_title', $typewriterEffect->posts);
+                        ?>
+                        <div data-title='<?php  echo json_encode($titleArray);?>'></div>
 
-    const nextSlide = () => {
-        // Get current class
-        const current = document.querySelector('.current');
-        // Remove current class
-        current.classList.remove('current');
-        // Check for next slide
-        if (current.nextElementSibling) {
-            // Add current to next sibling
-            current.nextElementSibling.classList.add('current');
-        } else {
-            // Add current to start
-            slides[0].classList.add('current');
-        }
-        setTimeout(() => current.classList.remove('current'));
-    };
+                        <?php
+                    while($typewriterEffect->have_posts()){
+                        $typewriterEffect->the_post();
+                    }
+                    wp_reset_postdata();
+                ?>  
+</section>
 
-    const prevSlide = () => {
-        // Get current class
-        const current = document.querySelector('.current');
-        // Remove current class
-        current.classList.remove('current');
-        // Check for prev slide
-        if (current.previousElementSibling) {
-            // Add current to prev sibling
-            current.previousElementSibling.classList.add('current');
-        } else {
-            // Add current to last
-            slides[slides.length - 1].classList.add('current');
-        }
-        setTimeout(() => current.classList.remove('current'));
-    };
-
-    // Button events
-    next.addEventListener('click', e => {
-        console.log('clicked');
-        nextSlide();
-        if (auto) {
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, intervalTime);
-        }
-    });
-
-    prev.addEventListener('click', e => {
-        prevSlide();
-        if (auto) {
-            clearInterval(slideInterval);
-            slideInterval = setInterval(nextSlide, intervalTime);
-        }
-    });
-
-    // Auto slide
-    if (auto) {
-        // Run next slide at interval time
-        slideInterval = setInterval(nextSlide, intervalTime);
-    }
-</script>
 <?php 
 
 get_footer(); 

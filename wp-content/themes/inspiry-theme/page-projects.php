@@ -14,7 +14,7 @@ get_header();
             <div class="row-container hero-container">
                 <h3 class="column-font-size dark-grey regular">Be Inspired</h3>
                
-                        <h1 class="dark-grey large-font-size" ></h1>
+                        <h1 class="dark-grey large-font-size typewriter-title" ></h1>
 
                   
             </div>
@@ -72,7 +72,7 @@ get_header();
                         'posts_per_page' => -1,
                         'tax_query' => array(
                             array(
-                                'taxonomy' => 'typewriter-effect',
+                                'taxonomy' => 'typewriter-category',
                                 'field'    => 'slug',
                                 'terms'    => array( 'project-page'),
                             )

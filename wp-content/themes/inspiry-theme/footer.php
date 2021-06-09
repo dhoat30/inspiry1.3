@@ -189,7 +189,7 @@
 </div>
 
 <div class="go-to-header hide" id='go-to-header'>
-  <a href="#header"><i class="fad fa-caret-square-up"></i></a>
+  <a href="#header"><i class="fal fa-angle-up"></i></a>
 </div>
 
 <?php wp_footer();?>

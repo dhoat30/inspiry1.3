@@ -37,18 +37,26 @@ do_action( 'woocommerce_email_header', $email_heading, $email ); ?>
             <div class="divider">
                 <img src="https://inspiry.co.nz/wp-content/uploads/2021/05/delivery-truck.png" alt="delivery">
             </div>
-            
+            <?php if($tracking){
+                ?>
             <!-- tracking number -->
-            <h2 class="subtitle playfair-fonts">Your tracking number is <?php     print_r($tracking[0]['tracking_number']); ?></h2>
+            <h2 class="subtitle playfair-fonts">Your tracking number is <?php 
+            
+            print_r($tracking[0]['tracking_number']); ?></h2>
             
             <!-- only for when item is shipped  -->
             
             <?php 
             // create a tracking url 
+
                     $trackingUrl = $tracking[0]['custom_tracking_link']; 
                 
             ?>
+
             <h3 class="paragraph playfair-fonts">Use this link to track your package: <a class="playfair-fonts" href="<?php echo $trackingUrl;?>" target="_blank">Track  </a></h3>
+                <?php 
+            }?>
+           
         </div>
     </div>
 
