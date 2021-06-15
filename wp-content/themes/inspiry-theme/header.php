@@ -281,82 +281,57 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
 
     <!-- gtag manager data -->
-    <script type="text/javascript">
-console.log('it is working now')
-var placeOrderBtn = document.getElementsByClassName("checkout-btn-header");
+<script type="text/javascript">
 
-placeOrderBtn.addEventListener("click", function(event) {
+
+    jQuery('.checkout-btn-header').on("click", function(event) {
    
-    dataLayer.push({
-        'event': 'checkout',
-        'ecommerce': {
-            'checkout': {
-                'actionField': {'step': 1},
-                'products': [
-    <?php
-      foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-        $product = $cart_item['data'];
-        $product_id = $cart_item['product_id'];
-        $quantity = $cart_item['quantity'];
-        $price = WC()->cart->get_product_price( $product );
-        $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
-        $link = $product->get_permalink( $cart_item );
-        // Anything related to $product, check $product tutorial
-        $meta = wc_get_formatted_cart_item_data( $cart_item );
+        dataLayer.push({
+            'event': 'checkout',
+            'ecommerce': {
+                'checkout': {
+                    'actionField': {'step': 1},
+                    'products': [
+                        <?php
+                        foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
+                            $product = $cart_item['data'];
+                            $product_id = $cart_item['product_id'];
+                            $quantity = $cart_item['quantity'];
+                            $price = WC()->cart->get_product_price( $product );
+                            $subtotal = WC()->cart->get_product_subtotal( $product, $cart_item['quantity'] );
+                            $link = $product->get_permalink( $cart_item );
+                            // Anything related to $product, check $product tutorial
+                            $meta = wc_get_formatted_cart_item_data( $cart_item );
        
-        ?>
-                        {
-                            'name': '<?php echo $product -> get_name()?>',                  
-                            'id': '<?php echo $product -> get_id()?>',
-                            'price': '<?php echo $product -> get_price()?>',
-                            'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
-                                        'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
-                                        foreach ($terms as $term) {
-                                            $product_cat_id = $term->term_id;
+                            ?>
+                            {
+                                'name': '<?php echo $product -> get_name()?>',                  
+                                'id': '<?php echo $product -> get_id()?>',
+                                'price': '<?php echo $product -> get_price()?>',
+                                'brand': '<?php echo  $product->get_attribute('pa_brands')?>	',
+                                            'category': '<?php $terms = get_the_terms( $product_id, 'product_cat' );
+                                            foreach ($terms as $term) {
+                                                $product_cat_id = $term->term_id;
+                                                
+                                                echo get_the_category_by_ID($product_cat_id).",";
                                             
-                                            echo get_the_category_by_ID($product_cat_id).",";
-                                         
-                                            break;
-                                        } ?>',
-                            'variant': 'none',
-                            'quantity': '<?php echo $quantity; ?>'  
+                                                break;
+                                            } ?>',
+                                'variant': 'none',
+                                'quantity': '<?php echo $quantity; ?>'  
                             },
 
 
                             <?php
-                  }    
+                        }    
                            
-                    ?>
-                        ]
-                    }
-                    }
-                        }
-                })
+                            ?>
+                    ]
+                }
+            }
         })
-        }
-        </script>	
+    });
+       
+</script>	
 
-        <!-- product 
-
-        <?php
-        //  $boards = new WP_Query(array(
-        //     'post_type' => 'product',
-        //     'p' => 14868
-        //  )); 
-         
-        //  $boardsResult = array(); 
-      
-        //  while($boards->have_posts()){
-        //     $boards->the_post(); 
-        //     global $product; 
-        //     echo $product->get_name();
-        //     echo $product->get_description();
-        //     echo $product->get_price();
-        //     echo $product->get_regular_price();
-        //     print_r($product->get_attributes()); 
-        //     echo $product->get_image();
-            // array_push($boardsResult, array(
-            //    'price' =>  $product->get_price()
-            // )); 
-        //  } 
-        // ?> -->
+    

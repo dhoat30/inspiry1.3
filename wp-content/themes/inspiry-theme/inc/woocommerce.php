@@ -172,6 +172,8 @@ add_action('add_availability_share', function(){
 
 add_action('woocommerce_after_single_product_summary', 'add_container_closing_div');
 
+
+
 //add wallpaper calculator 
 add_action('woocommerce_single_product_summary', function(){
     global $post, $product; 
@@ -576,3 +578,29 @@ function add_on_hover_shop_loop_image() {
     }
 
 }
+
+
+// remove pagination- show all product on archive page
+add_filter( 'loop_shop_per_page', create_function( '$cols', 'return -1;' ), 20 );
+
+// quick view code
+// function x_woocommerce_shop_product_thumbnails_my_version() {
+
+//   GLOBAL $product;
+
+//   $id     = get_the_ID();
+//   $thumb  = 'entry';
+//   $rating = $product->get_rating_html();
+
+//   echo "<div>Quick View</div>";
+
+// }
+
+// add_action( 'init', 'my_own_product_loop_items', 9999 );
+
+// function my_own_product_loop_items () {
+
+// remove_action( 'woocommerce_before_shop_loop_item_title', 'x_woocommerce_shop_product_thumbnails', 10 );
+// add_action( 'woocommerce_before_shop_loop_item_title', 'x_woocommerce_shop_product_thumbnails_my_version', 10 );
+
+// }
