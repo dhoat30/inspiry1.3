@@ -34,11 +34,13 @@ import PopUpCart from './modules/PopUpCart';
 // trade directory
 import TradeDirectory from './modules/TradeDirectory';
 
-// footer 
+// get product date
+import Product from './modules/Product';
 
 
 window.onload = function () {
-
+  //get product data and show in the quick view
+  const product = new Product();
   // every owl carousel
   const everyOwlCarousel = new EveryOwlCarousel();
   //account 

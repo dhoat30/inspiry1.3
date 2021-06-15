@@ -400,6 +400,9 @@ textarea::placeholder {
 .off-white-bc {
   background-color: #efefef;
 }
+.dark-grey-bc {
+  background: #303030;
+}
 
 /*shadow */
 

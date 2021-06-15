@@ -1,3 +1,5 @@
+/* search bar */
+
 .top-banner {
   width: 100%;
   padding: 10px 0;
@@ -9,6 +11,7 @@
   position: fixed;
   z-index: 1500;
   top: 0;
+  background: white;
 }
 
 .top-banner > div {
@@ -27,7 +30,7 @@
 .logo-container {
   padding: 10px 0 0 0;
   display: block;
-  margin-top: 60px;
+  margin-top: 0;
 }
 
 .logo-container .slogan {
@@ -73,6 +76,19 @@
   justify-content: center;
   align-items: center;
 }
+
+/* banner styling */
+.banner-container {
+  margin-top: 60px;
+  padding: 10px 5px;
+}
+.banner-container a {
+  text-decoration: none;
+  letter-spacing: 0.07em !important;
+  cursor: pointer;
+  display: block;
+}
+
 /*login area*/
 
 .login-area a {
@@ -188,13 +204,16 @@
   .top-banner .mobile-visible {
     display: none;
   }
+  .banner-container {
+    margin-top: 106px;
+    padding: 10px 5px;
+  }
   .header .logo-container {
     position: relative;
     height: 50px;
     border: 2px solid black;
     border-left: none;
     border-right: none;
-    margin-top: 105px;
   }
   .header .logo-container img {
     position: absolute;

@@ -12,6 +12,22 @@ add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
 add_post_type_support( "shop_by_brand", "trending-now" );
 function register_custom_type2(){ 
+   //Banner
+   register_post_type("banners", array(
+      "supports" => array("title"), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Banner", 
+         "add_new_item" => "Add New Banner", 
+         "edit_item" => "Edit Banner", 
+         "all_items" => "All Banners", 
+         "singular_name" => "Banner"
+      ), 
+      "menu_icon" => "dashicons-align-wide"
+   )
+   ); 
    //Home Page Cards
    register_post_type("videos", array(
       "supports" => array("title", 'editor'), 

@@ -5,11 +5,45 @@ class EveryOwlCarousel {
         this.events();
     }
     events() {
+        //trending section carousel 
         this.trendingCarousel();
+
         this.brandLogoHomePageCarousel();
         // product gallery on single product page
         this.productGallery();
 
+        // banner carousel 
+        this.banner();
+
+    }
+
+    // banner carousel 
+    banner() {
+        // // owl carousel 
+
+        let className = '.banner-container .owl-carousel';
+
+
+        let args = {
+
+
+            lazyLoad: true,
+            autoplay: true,
+            autoplayTimeout: 5000,
+            autoplayHoverPause: true,
+            responsiveBaseElement: ".row-container",
+            responsiveClass: true,
+            rewind: true,
+            responsive: {
+                0: {
+                    items: 1,
+
+                    dots: false
+                }
+
+            }
+        }
+        const banner = new OwlCarousel(args, className);
     }
 
     productGallery() {

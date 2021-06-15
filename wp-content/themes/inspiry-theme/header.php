@@ -36,7 +36,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
     <section class="header" >
        
-        <div class="top-banner beige-color-bc">
+        <div class="top-banner">
            <!-- wishlist -->
             <div class="wishlist">
                <a href="<?php echo get_home_url().'/wishlist' ?>"   class="text-decoration-none dark-grey">
@@ -93,7 +93,26 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                <?php  echo  do_shortcode('[ivory-search id="7686" title="Default Search Form"]');?>
             </div>
         </div>
+        <div class="banner-container dark-grey-bc">
+            <div class="banner-card owl-carousel">
+                 <?php 
 
+                $argsBanner = array(
+                    'post_type' => 'banners',
+                    'posts_per_page'=> -1,
+                );
+                $banner = new WP_Query( $argsBanner );
+
+                while($banner->have_posts()){ 
+                    $banner->the_post(); 
+                ?>
+                <a href="<?php echo get_field('banner_link');?>" class="white roboto-font center-align paragraph-font-size thin"> <?php echo get_the_title(); ?> LEARN <i class="fal fa-chevron-right white"></i></a>
+                <?php
+                } 
+                wp_reset_postdata();
+                ?>
+            </div>
+        </div>
         <!--logo -->
         <div class="logo-container">
             <a href="<?php echo get_site_url(); ?>">
@@ -316,3 +335,28 @@ placeOrderBtn.addEventListener("click", function(event) {
         })
         }
         </script>	
+
+        <!-- product 
+
+        <?php
+        //  $boards = new WP_Query(array(
+        //     'post_type' => 'product',
+        //     'p' => 14868
+        //  )); 
+         
+        //  $boardsResult = array(); 
+      
+        //  while($boards->have_posts()){
+        //     $boards->the_post(); 
+        //     global $product; 
+        //     echo $product->get_name();
+        //     echo $product->get_description();
+        //     echo $product->get_price();
+        //     echo $product->get_regular_price();
+        //     print_r($product->get_attributes()); 
+        //     echo $product->get_image();
+            // array_push($boardsResult, array(
+            //    'price' =>  $product->get_price()
+            // )); 
+        //  } 
+        // ?> -->
