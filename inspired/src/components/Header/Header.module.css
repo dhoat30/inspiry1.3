@@ -1,0 +1,8 @@
+.headerSection {
+  background: white;
+  box-shadow: 1px 23px 24px 4px rgba(0, 0, 0, 0.03);
+  -webkit-box-shadow: 1px 23px 24px 4px rgba(0, 0, 0, 0.03);
+  -moz-box-shadow: 1px 23px 24px 4px rgba(0, 0, 0, 0.03);
+  padding-top: 10px !important;
+  padding-bottom: 10px !important;
+}

@@ -1,0 +1,12 @@
+.container {
+  display: flex;
+  width: 170px;
+  justify-content: flex-start;
+  align-items: center;
+}
+.logo {
+  width: auto;
+  object-fit: contain;
+  display: block;
+  margin-left: 5px;
+}

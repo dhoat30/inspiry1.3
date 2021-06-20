@@ -49,7 +49,7 @@ class EveryOwlCarousel {
     productGallery() {
         // // owl carousel 
         $('.single-product .flex-control-thumbs').addClass('owl-carousel');
-        let className = '.single-product .owl-carousel';
+        let className = '.woocommerce-product-gallery .owl-carousel';
 
 
         let args = {
