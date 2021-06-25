@@ -1,7 +1,7 @@
 html {
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
-  font: 112.5%/1.45em georgia, serif, sans-serif;
+  font: 112.5%/1.45em "poppins", sans-serif;
   box-sizing: border-box;
   overflow-y: scroll;
   margin: 0;
@@ -12,7 +12,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: hsla(0, 0%, 0%, 0.8);
-  font-family: georgia, serif;
+  font-family: "poppins";
   font-weight: normal;
   word-wrap: break-word;
   font-kerning: normal;
@@ -21,7 +21,7 @@ body {
   -webkit-font-feature-settings: "kern", "liga", "clig", "calt";
   font-feature-settings: "kern", "liga", "clig", "calt";
 }
-article,
+/* article,
 aside,
 details,
 figcaption,
@@ -347,7 +347,7 @@ hgroup {
   padding-top: 0;
   margin-bottom: 1.45rem;
 }
-ul {
+/* ul {
   margin-left: 1.45rem;
   margin-right: 0;
   margin-top: 0;
@@ -358,7 +358,7 @@ ul {
   margin-bottom: 1.45rem;
   list-style-position: outside;
   list-style-image: none;
-}
+} 
 ol {
   margin-left: 1.45rem;
   margin-right: 0;
@@ -596,9 +596,128 @@ pre tt:after {
   html {
     font-size: 100%;
   }
-}
+} */
 
 /* custom styling  */
 .row-container {
   padding: 0 20px;
+  max-width: 100% !important;
+}
+
+/* font weight */
+.black {
+  font-weight: 900;
+}
+.bold {
+  font-weight: 700;
+}
+.medium {
+  font-weight: 500;
+}
+.semi-bold {
+  font-weight: 600;
+}
+.regular {
+  font-weight: 400;
+}
+.light {
+  font-weight: 300;
+}
+.thin {
+  font-weight: 100;
+}
+
+/* background colors */
+.beige-color-bc {
+  background: #efeae5;
+}
+
+/* font colors */
+.light-grey {
+  color: #888888;
+}
+.black {
+  color: black;
+}
+.blue {
+  color: #007272;
+}
+.white {
+  color: white;
+}
+.dark-grey {
+  color: #474747;
+}
+
+/* flex containers */
+.flex-row {
+  display: flex;
+  flex-direction: row;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.justify-center {
+  justify-content: center;
+}
+.justify-start {
+  justify-content: flex-start;
+}
+.justify-end {
+  justify-content: flex-end;
+}
+.justify-between {
+  justify-content: space-between;
+}
+
+.align-center {
+  align-items: center;
+}
+/* positions  */
+.position-relative {
+  z-index: 5;
+  position: relative;
+}
+/* font size */
+.large-size {
+  font-size: 3rem;
+  line-height: 4rem;
+}
+.column-size {
+  font-size: 1.5rem;
+  margin: 0;
+}
+.paragraph-size {
+  font-size: 0.9rem;
+  margin: 0;
+  line-height: 1.5rem;
+}
+.small-size {
+  font-size: 0.8rem;
+  margin: 0;
+}
+/* text align */
+.center-align {
+  text-align: center !important;
+}
+/* box shadow */
+.box-shadow {
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px !important;
+}
+
+/* margins */
+.margin-auto {
+  margin: 0 auto !important;
+}
+.margin-row-v {
+  margin: 50px 0;
+}
+.margin-element-v {
+  margin: 10px 0;
+}
+
+/* card border radius */
+.card-border-radius {
+  border-radius: 16px;
 }

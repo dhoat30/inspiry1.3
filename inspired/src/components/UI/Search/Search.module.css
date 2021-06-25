@@ -1,0 +1,43 @@
+.searchContainer {
+  position: relative;
+  width: 100%;
+}
+.searchContainer svg {
+  position: absolute;
+  top: 50%;
+  left: 10px;
+  transform: translate(0, -50%);
+  color: #888888;
+}
+.searchContainer input {
+  display: block;
+  width: 100%;
+  border-radius: 30px;
+  background: #efeae5;
+  border: none;
+  height: 40px;
+  font-family: "poppins", sans-serif;
+  color: #303030;
+  font-weight: 500;
+}
+.searchContainer input::placeholder {
+  padding: 0 0 0 35px;
+}
+
+.paddingCondition {
+  padding-left: 10px;
+}
+.searchContainer input:focus {
+  border: 2px solid #303030 !important;
+  outline-width: 0;
+}
+
+@media (max-width: 600px) {
+  .searchContainer {
+    position: absolute;
+    width: 90%;
+    left: 50%;
+    transform: translate(-50%, 0);
+    top: 50px;
+  }
+}

@@ -44,6 +44,10 @@ import { data } from 'jquery';
 import EnquiryModal from './modules/EnquiryModal/EnquiryModal'
 
 window.onload = function () {
+  //send request to 
+  //create board function 
+
+
   // enquiry modal 
   const enquiryModal = new EnquiryModal();
   // form data processing 
@@ -69,7 +73,7 @@ window.onload = function () {
   //trade directory page 
   const tradeDirectory = new TradeDirectory();
 
-  //let designBoardAjax = new DesignBoardAjax(); 
+  // let designBoardAjax = new DesignBoardAjax();
 
   const tradeNav = new TradeNav();
 

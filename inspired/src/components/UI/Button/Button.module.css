@@ -1,0 +1,21 @@
+.button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 30px;
+  cursor: pointer;
+}
+.buttonDarkGrey {
+  background: #303030;
+  color: white;
+}
+.buttonDarkGrey:hover {
+  background: #000000;
+}
+.buttonBiegeColor {
+  background: #efeae5;
+  color: #303030;
+}
+.buttonBiegeColor:hover {
+  background: #303030;
+  color: white;
+}

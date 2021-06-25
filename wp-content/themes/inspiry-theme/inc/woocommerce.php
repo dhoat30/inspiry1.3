@@ -615,13 +615,13 @@ function wc_minimum_order_amount() {
     // Set this variable to specify a minimum order value
     $minimum = 35;
 
-    if ( WC()->cart->total < $minimum ) {
+    if ( WC()->cart->subtotal < $minimum ) {
 
         if( is_cart() ) {
 
             wc_print_notice( 
-                sprintf( 'Your current order total is %s — you must have an order with a minimum of %s to place your order ' , 
-                    wc_price( WC()->cart->total ), 
+                sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order ' , 
+                    wc_price( WC()->cart->subtotal ), 
                     wc_price( $minimum )
                 ), 'error' 
             );
@@ -629,8 +629,8 @@ function wc_minimum_order_amount() {
         } else {
 
             wc_add_notice( 
-                sprintf( 'Your current order total is %s — you must have an order with a minimum of %s to place your order' , 
-                    wc_price( WC()->cart->total ), 
+                sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order' , 
+                    wc_price( WC()->cart->subtotal ), 
                     wc_price( $minimum )
                 ), 'error' 
             );
