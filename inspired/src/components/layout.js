@@ -11,7 +11,9 @@ import { useStaticQuery, graphql } from "gatsby"
 
 import Header from "./Header/Header"
 import "./layout.css"
-import Main from "./Main/Main"
+
+import { AuthContextProvider } from "../store/auth-context"
+import { MenuContextProvider } from "../store/menu-context"
 
 const Layout = ({ children }) => {
   const data = useStaticQuery(graphql`
@@ -25,17 +27,17 @@ const Layout = ({ children }) => {
   `)
 
   return (
-    <>
+    <AuthContextProvider>
+      <MenuContextProvider>
+        <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
+        <div>
+          <main className="main">
+            {children}
+          </main>
 
-      <Header siteTitle={data.site.siteMetadata?.title || `Title`} />
-      <div>
-        <main className="main">
-          <Main />
-          {children}
-        </main>
-
-      </div>
-    </>
+        </div>
+      </MenuContextProvider>
+    </AuthContextProvider>
   )
 }
 

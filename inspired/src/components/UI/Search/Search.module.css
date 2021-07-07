@@ -1,6 +1,7 @@
 .searchContainer {
   position: relative;
   width: 100%;
+  z-index: 5;
 }
 .searchContainer svg {
   position: absolute;

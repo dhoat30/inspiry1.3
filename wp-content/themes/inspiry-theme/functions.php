@@ -35,7 +35,7 @@ require get_theme_file_path('/inc/woocommerce-product.php');
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.70b6c54e294e112966db.js'),  array( 'jquery' ), '1.0', true);
       wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.258ddedca0f585d1f9dc.js'), NULL, '1.0', true);
       wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.258ddedca0f585d1f9dc.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.258ddedca0f585d1f9dc.css'));
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.70b6c54e294e112966db.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),
@@ -44,10 +44,8 @@ require get_theme_file_path('/inc/woocommerce-product.php');
 }
 add_action( "wp_enqueue_scripts", "inspiry_scripts" ); 
 
-  //admin bar
-  if ( ! current_user_can( "manage_options" ) ) {
-   show_admin_bar( false );
-}
+
+
 //sidebar
 
 
@@ -476,3 +474,9 @@ function remove_item_from_cart() {
     add_action('wp_ajax_remove_item_from_cart', 'remove_item_from_cart');
     add_action('wp_ajax_nopriv_remove_item_from_cart', 'remove_item_from_cart');
 
+// redirect to home page after log out 
+add_action('wp_logout','ps_redirect_after_logout');
+function ps_redirect_after_logout(){
+         wp_redirect( 'https://inspiry.co.nz' );
+         exit();
+}

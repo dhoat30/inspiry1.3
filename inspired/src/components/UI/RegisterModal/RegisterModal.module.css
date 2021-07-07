@@ -4,18 +4,63 @@
   height: 500px;
   background: white;
   z-index: 2;
-  margin: 0 auto;
+  margin: 0 0 0 auto;
 }
-.logInModalContainer {
-  position: relative;
-  z-index: 3;
+.registerModalContainer {
+  position: absolute;
+  top: 130vh;
+  left: 50%;
+  z-index: 10;
   display: grid;
+
+  width: 95%;
+  transform: translate(-50%, 0);
   margin: 0 auto;
   grid-template-columns: 1fr 1fr;
   max-width: 1200px;
 }
 
-.loginForm {
-  width: 95%;
-  max-width: 250px;
+@media (max-width: 900px) {
+  .registerModalContainer {
+    position: absolute;
+
+    top: 130vh;
+    left: 50%;
+    z-index: 10;
+    display: grid;
+
+    width: 100%;
+    transform: translate(-50%, 0);
+    margin: 0 auto;
+    align-content: center;
+    grid-template-columns: 100%;
+    max-width: 1200px;
+  }
+  .registerModalContainer h1 {
+    text-align: center;
+  }
+  .logInModal {
+    margin: 20px auto 0 auto;
+  }
+}
+.visible {
+  opacity: 1;
+}
+.invisible {
+  opacity: 0 !important;
+}
+@media (max-width: 500px) {
+  .registerModalContainer {
+    position: absolute;
+    top: 60px;
+    left: 50%;
+    z-index: 10;
+    display: grid;
+    width: 100%;
+    transform: translate(-50%, 0);
+    margin: 0 auto;
+    align-content: center;
+    grid-template-columns: 100%;
+    max-width: 1200px;
+  }
 }

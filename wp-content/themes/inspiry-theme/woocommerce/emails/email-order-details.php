@@ -61,12 +61,16 @@ defined( 'ABSPATH' ) || exit;
                     <tr>
                         <td class="playfair-fonts">Subtotal:</td>
                         <td class="playfair-fonts">$<?php
-                        $subtotal= number_format($order->get_subtotal());
+                        $subtotal= $order->get_subtotal();
                         echo $subtotal;?></td>
                     </tr>
                     <tr>
                         <td class="playfair-fonts">Shipping:</td>
-                        <td class="playfair-fonts">$<?php echo number_format($order->get_shipping_total());?></td>
+                        <td class="playfair-fonts">$<?php echo $order->get_shipping_total();?></td>
+                    </tr>
+                    <tr>
+                        <td class="playfair-fonts">GST:</td>
+                        <td class="playfair-fonts">$<?php echo $order->get_total_tax();?></td>
                     </tr>
                     <tr>
                         <td class="playfair-fonts">Payment Method:</td>
@@ -74,7 +78,7 @@ defined( 'ABSPATH' ) || exit;
                     </tr>
                     <tr>
                         <td class="playfair-fonts">Total:</td>
-                        <td class="playfair-fonts">$<?php echo number_format( $order->get_total());?></td>
+                        <td class="playfair-fonts">$<?php echo  $order->get_total();?></td>
                     </tr>
                 </table>
             </div>

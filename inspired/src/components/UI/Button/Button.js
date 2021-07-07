@@ -11,7 +11,7 @@ function Button(props) {
     }
     return (
         <React.Fragment>
-            <button className={backgroundClasses}>{props.title}</button>
+            <button className={`${backgroundClasses} ${props.width}`} onClick={props.buttonClick}>{props.title}{props.children}</button>
         </React.Fragment >
     )
 }

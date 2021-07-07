@@ -1,8 +1,0 @@
-.typewriterContainer {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start !important;
-}
-.typewriterContainer h1 {
-  margin: 15px 0;
-}

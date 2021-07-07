@@ -3,6 +3,7 @@
  function inspiry_config(){ 
     register_nav_menus( 
        array(
+          "my-account-nav-top" => "My Account Top Navbar",
            "top-navbar" => "Top Navbar (under logo)",
           "inspiry_main_menu" => "Inspiry Main Menu",
           "inspiry_footer_menu" => "Inspiry Footer Menu", 

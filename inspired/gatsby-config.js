@@ -40,13 +40,11 @@ module.exports = {
     {
       resolve: `gatsby-source-wordpress`,
       options: {
-        url: `http://localhost/services/graphql`,
-        protocol: "http",
-        useACF: true,
-        verboseOutput: true
+        url: `http://localhost/services/graphql`
       },
     },
-    `gatsby-plugin-gatsby-cloud`,
+    `gatsby-plugin-gatsby-cloud`
+
     // this (optional) plugin enables Progressive Web App + Offline functionality
     // To learn more, visit: https://gatsby.dev/offline
     // `gatsby-plugin-offline`,

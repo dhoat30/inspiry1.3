@@ -4,8 +4,16 @@
   text-transform: capitalize;
   font-weight: 500;
   text-align: right !important;
+  display: inline-block;
+}
+.linkItem svg {
+  min-width: 20px;
+  margin-right: 5px;
 }
 .linkItem a:hover {
   cursor: pointer;
   text-decoration: underline;
 }
+/* .linkItem svg {
+  margin-right: 10px;
+} */

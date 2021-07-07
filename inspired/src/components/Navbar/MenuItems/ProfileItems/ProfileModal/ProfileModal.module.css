@@ -1,0 +1,12 @@
+.profileModalContainer {
+  position: fixed;
+  top: 70px;
+  background: white;
+  padding: 10px;
+  width: 200px;
+  right: 20px;
+  z-index: 20;
+}
+.profileModalContainer a {
+  margin: 5px 0;
+}

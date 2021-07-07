@@ -6,6 +6,7 @@ html {
   overflow-y: scroll;
   margin: 0;
   padding: 0;
+  scroll-behavior: smooth;
 }
 body {
   margin: 0;
@@ -697,6 +698,11 @@ pre tt:after {
   font-size: 0.8rem;
   margin: 0;
 }
+@media (max-width: 600px) {
+  .large-size {
+    font-size: 2rem;
+  }
+}
 /* text align */
 .center-align {
   text-align: center !important;
@@ -716,8 +722,18 @@ pre tt:after {
 .margin-element-v {
   margin: 10px 0;
 }
+.padding-element-v {
+  padding: 10px 0;
+}
 
 /* card border radius */
 .card-border-radius {
   border-radius: 16px;
+}
+
+/* width styling */
+.fullWidth {
+  display: block;
+  width: 100%;
+  margin: 15px auto;
 }

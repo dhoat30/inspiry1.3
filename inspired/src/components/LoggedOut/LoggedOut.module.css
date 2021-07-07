@@ -1,0 +1,52 @@
+.typewriterContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+  max-height: 200vh;
+  overflow: hidden;
+  margin-top: 50px;
+}
+.typewriterContainer h1 {
+  margin: 0 0;
+}
+
+.iconContainer {
+  position: fixed;
+  width: 100%;
+  top: 85vh;
+  height: 180px;
+  left: 0;
+  right: 0;
+  z-index: 3;
+}
+.gradient {
+  background: rgb(255, 255, 255);
+  background: linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 1) 0%,
+    rgba(255, 255, 255, 0.8) 46%,
+    rgba(0, 0, 0, 0.06486344537815125) 100%
+  );
+}
+.typewriterContainer svg {
+  display: block;
+  margin: 0 auto;
+
+  animation: arrowDown 1s ease-in-out 0 infinite;
+  animation-name: arrowDown;
+  animation-timing-function: ease-in-out;
+  animation-duration: 1000ms;
+  animation-iteration-count: infinite;
+  animation-fill-mode: forwards;
+  animation-direction: alternate;
+  cursor: pointer;
+}
+
+@keyframes arrowDown {
+  from {
+    transform: translate(-0%, 0);
+  }
+  to {
+    transform: translate(-0%, 20px);
+  }
+}

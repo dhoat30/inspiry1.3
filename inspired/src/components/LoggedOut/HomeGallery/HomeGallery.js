@@ -1,9 +1,9 @@
 import React from 'react'
 import { graphql, useStaticQuery } from 'gatsby'
 
-import Card from '../..//UI/Cards/Card/Card'
+import Card from '../../UI/Cards/Card/Card'
 import * as styles from './HomeGallery.module.css';
-import RegisterModal from '../../UI/RegisterModal/RegisterModal';
+
 const queryFirst = graphql`
 {
     firstQuery: allWpGdProjects( limit: 10) {
@@ -17,7 +17,7 @@ const queryFirst = graphql`
                 childImageSharp {
                   gatsbyImageData(
                     height: 350
-                    width: 250
+                    width: 236
                     layout: FIXED
                     placeholder: BLURRED
                   )
@@ -39,7 +39,7 @@ const queryFirst = graphql`
                   childImageSharp {
                     gatsbyImageData(
                       height: 350
-                      width: 250
+                      width: 236
                       layout: FIXED
                       placeholder: BLURRED
                     )
@@ -61,7 +61,7 @@ const queryFirst = graphql`
                   childImageSharp {
                     gatsbyImageData(
                       height: 350
-                      width: 250
+                      width: 236
                       layout: FIXED
                       placeholder: BLURRED
                     )
@@ -83,7 +83,7 @@ const queryFirst = graphql`
                   childImageSharp {
                     gatsbyImageData(
                       height: 350
-                      width: 250
+                      width: 236
                       layout: FIXED
                       placeholder: BLURRED
                     )
@@ -105,7 +105,7 @@ const queryFirst = graphql`
                   childImageSharp {
                     gatsbyImageData(
                       height: 350
-                      width: 250
+                      width: 236
                       layout: FIXED
                       placeholder: BLURRED
                     )
@@ -127,7 +127,29 @@ const queryFirst = graphql`
                   childImageSharp {
                     gatsbyImageData(
                       height: 350
-                      width: 250
+                      width: 236
+                      layout: FIXED
+                      placeholder: BLURRED
+                    )
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      seventhQuery: allWpGdProjects(limit: 10, skip: 27) {
+        edges {
+          node {
+            id
+            title
+            featuredImage {
+              node {
+                localFile {
+                  childImageSharp {
+                    gatsbyImageData(
+                      height: 350
+                      width: 236
                       layout: FIXED
                       placeholder: BLURRED
                     )
@@ -147,15 +169,18 @@ function HomeGallery() {
   return (
     <React.Fragment>
 
-      <RegisterModal />
+
       <div className={`flex-row justify-center ${styles.galleryContainer}`}>
 
-        <Card queryData={data.firstQuery} flex="flex-column" justify="justify-center" />
-        <Card queryData={data.secondQuery} />
-        <Card queryData={data.thirdQuery} />
-        <Card queryData={data.fourthQuery} />
-        <Card queryData={data.fifthQuery} />
-        <Card queryData={data.sixthQuery} />
+        <Card queryData={data.firstQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.secondQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.thirdQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.fourthQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.fifthQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.sixthQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+        <Card queryData={data.seventhQuery} flex="flex-column" justify="justify-center" cardsMargin={true} />
+
+
 
       </div>
     </React.Fragment>

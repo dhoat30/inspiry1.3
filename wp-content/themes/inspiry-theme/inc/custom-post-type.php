@@ -10,7 +10,7 @@ add_post_type_support( "loving", "thumbnail" );
 add_post_type_support( "blogs", "thumbnail" );
 add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
-add_post_type_support( "shop_by_brand", "trending-now" );
+add_post_type_support( "shop_by_brand", "trending-now" );  
 function register_custom_type2(){ 
    //Banner
    register_post_type("banners", array(

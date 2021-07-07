@@ -15,6 +15,9 @@
   font-weight: 500;
   text-decoration: none;
 }
+.profileItemsContainer a {
+  text-decoration: none !important;
+}
 .profileItemsContainer li:nth-child(1):hover {
   background: #303030;
 }

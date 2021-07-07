@@ -608,33 +608,33 @@ add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 40;' ), 20 )
 /**
  * Set a minimum order amount for checkout
  */
-add_action( 'woocommerce_checkout_process', 'wc_minimum_order_amount' );
-add_action( 'woocommerce_before_cart' , 'wc_minimum_order_amount' );
+// add_action( 'woocommerce_checkout_process', 'wc_minimum_order_amount' );
+// add_action( 'woocommerce_before_cart' , 'wc_minimum_order_amount' );
  
-function wc_minimum_order_amount() {
-    // Set this variable to specify a minimum order value
-    $minimum = 35;
+// function wc_minimum_order_amount() {
+//     // Set this variable to specify a minimum order value
+//     $minimum = 35;
 
-    if ( WC()->cart->subtotal < $minimum ) {
+//     if ( WC()->cart->subtotal < $minimum ) {
 
-        if( is_cart() ) {
+//         if( is_cart() ) {
 
-            wc_print_notice( 
-                sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order ' , 
-                    wc_price( WC()->cart->subtotal ), 
-                    wc_price( $minimum )
-                ), 'error' 
-            );
+//             wc_print_notice( 
+//                 sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order ' , 
+//                     wc_price( WC()->cart->subtotal ), 
+//                     wc_price( $minimum )
+//                 ), 'error' 
+//             );
 
-        } else {
+//         } else {
 
-            wc_add_notice( 
-                sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order' , 
-                    wc_price( WC()->cart->subtotal ), 
-                    wc_price( $minimum )
-                ), 'error' 
-            );
+//             wc_add_notice( 
+//                 sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order' , 
+//                     wc_price( WC()->cart->subtotal ), 
+//                     wc_price( $minimum )
+//                 ), 'error' 
+//             );
 
-        }
-    }
-}
+//         }
+//     }
+// }

@@ -69,7 +69,13 @@ get_footer( 'shop' );
 ?>
 <script>
 
-<?php global $product; ?>
+<?php global $product; 
+	$term_list = get_the_terms( $product->get_id(), 'product_cat' );
+	$term = $term_list[0];
+	$variation_id = "No Variation";
+	?>
+dataLayer = window.dataLayer || [];
+dataLayer.push({ ecommerce: null }); 
 dataLayer.push({
   'event': 'productDetails',
   'ecommerce': {
@@ -77,9 +83,7 @@ dataLayer.push({
   	'actionField': {'list': localStorage.getItem('<?php echo $product -> get_id()?>')},          
     'products': [
     	<?php 
-    				$term_list = get_the_terms( $product->get_id(), 'product_cat' );
-    				$term = $term_list[0];
-    				$variation_id = "No Variation";
+    			
 
     				if( $product->is_type('variable') ) {
 
@@ -101,10 +105,11 @@ dataLayer.push({
 					        }
 					} //end of variable product type condition
 				
-				
+					$stringTitle = str_replace("'", '-', $product->get_name());
+					$productTitleSanitized =  preg_replace('/[^A-Za-z0-9\-]/', '', $stringTitle);
 			?>
      {
-       'name': '<?php echo $product -> get_name()?>',       // Name or ID is required.
+       'name': '<?php echo $productTitleSanitized?>',       // Name or ID is required.
        'id': '<?php echo $product -> get_id()?>',
        'price': '<?php echo $product -> get_price()?>',
        'brand': '<?php echo  $product->get_attribute('pa_brands')?>',
@@ -147,11 +152,12 @@ dataLayer.push({
 					            }
 					        }
 					} //end of variable product type condition
-
+					$stringName = str_replace("'", '-', $product->get_name());
+					$productNameSanitized =  preg_replace('/[^A-Za-z0-9\-]/', '', $stringName);
 	?>
 
 	var thisProduct = {
-							'name': '<?php echo $product -> get_name()?>',   
+							'name': '<?php echo $productNameSanitized?>',   
        						'id': '<?php echo $product -> get_id()?>',
        						'price': '<?php echo $product -> get_price()?>',
      			       		'brand': '<?php echo  $product->get_attribute('pa_brands')?>',
@@ -163,7 +169,8 @@ dataLayer.push({
 	var addToCartBtn = document.getElementsByName("add-to-cart")[0];
 
 		addToCartBtn.addEventListener("click", function(event) {
-
+			// clear the previous data layer
+			dataLayer.push({ ecommerce: null }); 
 			  dataLayer.push({
 					    'event': 'addToCart',
 					    'actionField': {'list': localStorage.getItem('<?php echo $product -> get_id()?>')},  
