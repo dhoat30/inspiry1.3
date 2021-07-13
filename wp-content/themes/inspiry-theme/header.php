@@ -37,6 +37,14 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     <section class="header" >
        
         <div class="top-banner">
+        <div class="wishlist">
+               <a href="<?php echo get_home_url().'/wishlist' ?>"   class="text-decoration-none dark-grey">
+               <i class="fas fa-shipping-fast"></i>
+                    <span>Free Shipping</span>
+               </a> 
+              
+            </div>
+              
            <!-- wishlist -->
             <div class="wishlist">
                <a href="<?php echo get_home_url().'/wishlist' ?>"   class="text-decoration-none dark-grey">
