@@ -113,9 +113,19 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 
                 while($banner->have_posts()){ 
                     $banner->the_post(); 
-                ?>
-                <a href="<?php echo get_field('banner_link');?>" class="white roboto-font center-align paragraph-font-size thin"> <?php echo get_the_title(); ?> LEARN <i class="fal fa-chevron-right white"></i></a>
-                <?php
+                    if(get_field('banner_link')){
+                        ?>
+                                        <a href="<?php echo get_field('banner_link');?>" class="white roboto-font center-align paragraph-font-size thin"> <?php echo get_the_title(); ?> LEARN <i class="fal fa-chevron-right white"></i></a>
+
+                        <?php
+                    }
+                    else{
+                        ?>
+                        <a href="<?php echo get_field('banner_link');?>" class="white roboto-font center-align paragraph-font-size thin"> <?php echo get_the_title(); ?></a>
+                        <?php
+                    }
+                    
+             
                 } 
                 wp_reset_postdata();
                 ?>
