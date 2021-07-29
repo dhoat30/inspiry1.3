@@ -80,6 +80,9 @@
 
 /* enquire form css */
 @import "css/woocommerce/enquire-form.css";
+/* modal css  */
+@import "css/modal/modal.css";
+
 * {
   box-sizing: border-box;
   padding: 0;

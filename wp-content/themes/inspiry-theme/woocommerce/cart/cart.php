@@ -41,12 +41,20 @@ do_action( 'woocommerce_before_cart' ); ?>
 			<?php do_action( 'woocommerce_before_cart_contents' ); ?>
 
 			<?php
+			$showLeForgeModal = false; 
 			foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
 				$_product   = apply_filters( 'woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key );
 				$product_id = apply_filters( 'woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key );
+				$skuCode = $_product->get_sku();
 
+				// check if the sku code include Le Forge
+				if(substr($skuCode, 0, 3) === 'LEF'){
+					$showLeForgeModal = true;
+				}
+				
 				if ( $_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters( 'woocommerce_cart_item_visible', true, $cart_item, $cart_item_key ) ) {
 					$product_permalink = apply_filters( 'woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink( $cart_item ) : '', $cart_item, $cart_item_key );
+
 					?>
 					<tr class="woocommerce-cart-form__cart-item <?php echo esc_attr( apply_filters( 'woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key ) ); ?>">
 
@@ -184,15 +192,27 @@ do_action( 'woocommerce_before_cart' ); ?>
 </div>
 
 <?php do_action( 'woocommerce_after_cart' ); ?>
+<?php 
+// show a modal if the cart item includes le forge products 
+if($showLeForgeModal){ 
+	 do_action( 'cart_modal' );
+	 ?> 
+	 <section class="modal-section"> 
 
+		<div class="flex"> 
+</div> 
+	 </section> 
+	 <?php
+}
+
+?>
 
 <script type="text/javascript">
 
 	var products = {};
-
 			<?php 
 					foreach ( WC()->cart->get_cart() as $cart_item_key => $cart_item ) {
-
+						
 						$product = wc_get_product( $cart_item['data']->get_id()); 
 						$term_list = get_the_terms( $product->get_id(), 'product_cat' );
 	    				$term = $term_list[0];
@@ -232,13 +252,11 @@ do_action( 'woocommerce_before_cart' ); ?>
 
 							products['<?php echo $product -> get_id()?>'] = thisProduct;
 
-
+							
 						<?php
 						
 					}
 			 ?>
-
-
 
 	var removeBtns = document.getElementsByClassName("remove");
 

@@ -38,7 +38,7 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
        
         <div class="top-banner">
         <div class="wishlist">
-               <a href="<?php echo get_home_url().'/wishlist' ?>"   class="text-decoration-none dark-grey">
+               <a href="<?php echo get_home_url().'/products' ?>"   class="text-decoration-none dark-grey">
                <i class="fas fa-shipping-fast"></i>
                     <span>Free Shipping</span>
                </a> 
@@ -225,15 +225,21 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
                         if($product->name == "Free Sample"){
                                     // pulling information of an original product in a form of an objec†
                         $originalProduct = wc_get_product( $cart_item["free_sample"] );
-                        
+                        	
+						if(!empty($originalProduct)){
+							$permalink = get_the_permalink($originalProduct->get_id()); 
+						$imageID = $originalProduct->image_id; 
+							$name = $originalProduct->get_name();
+						}
                         ?>
-                        <a href="<?php echo get_the_permalink($originalProduct->get_id()); ?>" class="rm-txt-dec">
+					
+                        <a href="<?php echo $permalink; ?>" class="rm-txt-dec">
                             
                             <div class="img-container">
-                                <img src="<?php echo wp_get_attachment_image_url( $originalProduct->image_id, 'woocommerce_thumbnail' );?>" alt="<?php echo $originalProduct->get_name()?>">
+                                <img src="<?php echo wp_get_attachment_image_url( $imageID , 'woocommerce_thumbnail' );?>" alt="<?php echo $name;?>">
                             </div>
                             <div class="title-container">
-                                    <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $originalProduct->get_name(); 
+                                    <h5 class="paragraph-font-size regular"> <?php echo $quantity;?> X  Free Sample (<?php echo $name; 
                                     ?> )
                                     </h5>
                             </div>
@@ -351,5 +357,3 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
     });
        
 </script>	
-
-    

@@ -43,6 +43,9 @@ import { data } from 'jquery';
 // Enquire Modal 
 import EnquiryModal from './modules/EnquiryModal/EnquiryModal'
 
+// cart modal 
+import CartModal from './modules/CartModal/CartModal'
+
 window.onload = function () {
   //send request to 
   //create board function 
@@ -50,6 +53,8 @@ window.onload = function () {
 
   // enquiry modal 
   const enquiryModal = new EnquiryModal();
+  // cart modal 
+  const cartModal = new CartModal();
   // form data processing 
   const form = new Form();
   //get product data and show in the quick view

@@ -10,8 +10,25 @@ add_post_type_support( "loving", "thumbnail" );
 add_post_type_support( "blogs", "thumbnail" );
 add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
+add_post_type_support( "modal", "thumbnail" );
 add_post_type_support( "shop_by_brand", "trending-now" );  
 function register_custom_type2(){ 
+   //Covid 19 updates 
+   register_post_type("modal", array(
+      "supports" => array("title", "editor"), 
+      "public" => true, 
+      "show_ui" => true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Modal", 
+         "add_new_item" => "Add New Modal", 
+         "edit_item" => "Edit Modal", 
+         "all_items" => "All Modals", 
+         "singular_name" => "Modal"
+      ), 
+      "menu_icon" => "dashicons-warning"
+   )
+   ); 
    //Banner
    register_post_type("banners", array(
       "supports" => array("title"), 
@@ -208,6 +225,16 @@ add_action("init", "register_custom_type2");
 
 //custom taxonomy
 function wpdocs_register_private_taxonomy() {
+   // covid taxonomy 
+   $argsModal = array(
+      'label'        => __( 'Modal Categories', 'textdomain' ),
+      'public'       => true,
+      'rewrite'      => true,
+      'hierarchical' => true
+  );
+   
+  register_taxonomy( 'modal-categories', 'modal', $argsModal );
+
    $args = array(
        'label'        => __( 'favorite', 'textdomain' ),
        'public'       => true,

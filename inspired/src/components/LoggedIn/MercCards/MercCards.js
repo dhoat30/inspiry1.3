@@ -36,12 +36,9 @@ const MercCards = () => {
   // const secondData = useStaticQuery(querySecond)
   return (
     <React.Fragment>
-
-
       <div className={`${styles.mercCardsContainer}`}>
         <Card queryData={data.firstQuery} />
       </div>
-
     </React.Fragment>
   )
 }
