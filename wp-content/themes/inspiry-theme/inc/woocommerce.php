@@ -638,3 +638,10 @@ add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 40;' ), 20 )
 //         }
 //     }
 // }
+
+// checkout page 
+add_action('woocommerce_after_checkout_billing_form', 'windcave_iframe'); 
+
+function windcave_iframe(){ 
+  echo '<div id="payment-iframe-container">  </div> ';
+}

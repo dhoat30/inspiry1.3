@@ -72,3 +72,58 @@ defined( 'ABSPATH' ) || exit;
 		<?php do_action( 'woocommerce_after_checkout_registration_form', $checkout ); ?>
 	</div>
 <?php endif; ?>
+<?php
+// https request to windcave to create a session 
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, "https://uat.windcave.com/api/v1/sessions");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+curl_setopt($ch, CURLOPT_HEADER, FALSE);
+
+curl_setopt($ch, CURLOPT_POST, TRUE);
+
+curl_setopt($ch, CURLOPT_POSTFIELDS, "{
+  \"type\": \"purchase\",
+  \"methods\": [
+    \"card\"
+  ],
+  \"amount\": \"1.03\",
+  \"currency\": \"NZD\",
+  \"callbackUrls\": {
+    \"approved\": \"https://localhost/success\",
+    \"declined\": \"https://localhost/failure\"
+  }
+}");
+
+curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+  "Content-Type: application/json",
+  "Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk="
+));
+
+$response = curl_exec($ch);
+$obj = json_decode($response);
+
+curl_close($ch);
+$seamlessHppUrl = ""; 
+// for each loop to get seamless_hpp url 
+foreach ($obj->links as $obj) {
+	if($obj->rel=== "seamless_hpp"){
+		$seamlessHppUrl =  $obj->href;
+	}
+
+ }
+
+?>
+
+<script>
+	console.log('<?php  echo $seamlessHppUrl ?>');
+
+WindcavePayments.Seamless.prepareIframe({
+    url: "<?php  echo $seamlessHppUrl ?>",
+    containerId: "payment-iframe-container",
+    loadTimeout: 30,
+    width: 400,
+    height: 500,
+    onProcessed: function() {  },
+    onError: function(error) {}
+});
+</script>

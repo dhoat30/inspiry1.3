@@ -6,4 +6,32 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  z-index: 3000;
+  background: white;
+  display: none;
+}
+@media (max-width: 500px) {
+  .modal-section {
+    padding: 20px 10px;
+  }
+}
+.modal-section .flex img {
+  display: block;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.modal-section .content {
+  margin: 20px 0;
+}
+.modal-section .fa-times {
+  display: absolute;
+  right: 10px;
+  top: 10px;
+  cursor: pointer;
+}
+.modal-section .fa-times:hover {
+  transform: translate(0, 0);
+  top: 10px;
+  right: 10px;
 }

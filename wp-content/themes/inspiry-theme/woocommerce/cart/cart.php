@@ -196,13 +196,6 @@ do_action( 'woocommerce_before_cart' ); ?>
 // show a modal if the cart item includes le forge products 
 if($showLeForgeModal){ 
 	 do_action( 'cart_modal' );
-	 ?> 
-	 <section class="modal-section"> 
-
-		<div class="flex"> 
-</div> 
-	 </section> 
-	 <?php
 }
 
 ?>
@@ -219,26 +212,7 @@ if($showLeForgeModal){
 	    				$variation_id = "No Variation";
 	    				$qty = $cart_item['quantity'];
 
-	    				if( $product->is_type('variable') ) {
-
-	    							foreach($product->get_available_variations() as $variation_values ){
-	    								foreach($variation_values['attributes'] as $key => $attribute_value ){
-	    									$attribute_name = str_replace( 'attribute_', '', $key );
-	    									$default_value = $product->get_variation_default_attribute($attribute_name);
-	    									if( $default_value == $attribute_value ){
-	    										$is_default_variation = true;
-	    									} else {
-	    										$is_default_variation = false;
-	                 				  		 	break; // Stop this loop to start next main lopp
-						               		}
-						           		 }
-						            	if( $is_default_variation ){
-						            		$variation_id = $variation_values['variation_id'];
-						                break; // Stop the main loop
-						            	}
-						        }
-						} //end of variable product type condition
-
+	    				
 						?>	var thisProduct = {
 								'name': '<?php echo $product -> get_name()?>',   
 	       						'id': '<?php echo $product -> get_id()?>',
@@ -314,28 +288,10 @@ if($showLeForgeModal){
 					    				$variation_id = "No Variation";
 					    				$qty = $cart_item['quantity'];
 
-					    				if( $product->is_type('variable') ) {
-
-					    							foreach($product->get_available_variations() as $variation_values ){
-					    								foreach($variation_values['attributes'] as $key => $attribute_value ){
-					    									$attribute_name = str_replace( 'attribute_', '', $key );
-					    									$default_value = $product->get_variation_default_attribute($attribute_name);
-					    									if( $default_value == $attribute_value ){
-					    										$is_default_variation = true;
-					    									} else {
-					    										$is_default_variation = false;
-					                 				  		 	break; // Stop this loop to start next main lopp
-										               		}
-										           		 }
-										            	if( $is_default_variation ){
-										            		$variation_id = $variation_values['variation_id'];
-										                break; // Stop the main loop
-										            	}
-										        }
-									} //end of variable product type condition
+					    			
 
 							?>
-
+,
 					        {
 					          'name': '<?php echo $product -> get_name()?>',                  
 					          'id': '<?php echo $product -> get_id()?>',

@@ -3,27 +3,47 @@
 add_action('cart_modal', 'modal_html'); 
 
 function modal_html(){
-   
-        
-    echo '<div class="enquiry-form-section ">
-    <div class="enquiry-modal-container">
-        
-        <div class="form-container">
-            <i class="fal fa-times"></i>
-            <div class="large-font-size regular center-align upper-case">
-                Interested to know more? 
-            </div>
-            <div class="paragraph-font-size thin center-align roboto-font margin-elements">
-                Please fill in the form and one of our design consultants will respond to your enquiry as quickly as possible.
-            </div>
-         
-        </div>
+    $argsModal = array(
+        'post_type' => 'modal',
+        'posts_per_page'=> 1,
+        'tax_query' => array(
+            array(
+                'taxonomy' => 'modal-categories',
+                'field'    => 'slug',
+                'terms'    => array( 'cart-page')
+            )
+            )
 
-        <div class="product-container beige-color-bc flex-center flex-column align-center">
-           
-        </div>
-      
-    </div>
-   
-</div>';
+    );
+    $modal = new WP_Query( $argsModal );
+
+    while($modal->have_posts()){
+        $modal->the_post();
+                    
+              echo   '<section class="modal-section" data-overlay="true" > 
+             
+                <i class="fal fa-times"></i>
+                <div class="flex"> 
+                            
+
+
+                            <div>
+                        <img src="'; 
+                        echo get_the_post_thumbnail_url(null,"medium_large"); 
+                        echo '"/>'; 
+                    echo '</div>
+                    <div class="content">
+                        <div class="section-font-size  center-align">'; 
+                    echo get_the_title();
+                    echo ' </div>
+                        <div class="center-align medium-font-size roboto-font">'; 
+               echo get_the_content(); 
+               echo ' </div>
+                    </div>
+                        
+                    
+                </div> 
+                </section> ';
+        } 
+        wp_reset_postdata();
 }

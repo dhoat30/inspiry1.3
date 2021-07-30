@@ -7,18 +7,23 @@ class CartModal {
     }
 
     events() {
-        $('#enquire-button').on('click', this.showEnquiryModal);
+        this.showModal();
         // hide modal 
-        $('.enquiry-form-section .fa-times').on('click', this.hideEnquiryModal);
+        $('.modal-section .fa-times').on('click', this.hideModal);
     }
 
-    showEnquiryModal(e) {
-        e.preventDefault();
-        $('.enquiry-form-section').show(200)
-        $('.overlay').show();
+    showModal(e) {
+        setTimeout(() => {
+            $('.modal-section').show(200)
+            if ($('.modal-section').data('overlay') === true) {
+                $('.overlay').show();
+            }
+
+        }, 3000)
+
     }
-    hideEnquiryModal() {
-        $('.enquiry-form-section').hide(200)
+    hideModal() {
+        $('.modal-section').hide(200)
         $('.overlay').hide();
     }
 }
