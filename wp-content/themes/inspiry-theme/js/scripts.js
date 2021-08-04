@@ -199,4 +199,52 @@ var myScrollFunc = function () {
 
 window.addEventListener("scroll", myScrollFunc);
 
-// windcave session request 
+// windcave
+let onChangeValue
+let windcavePaymentSelected = $("input[type='radio'][name='payment_method']:checked").val();
+console.log(windcavePaymentSelected)
+$(document).on('change', '.wc_payment_methods .input-radio', () => {
+  onChangeValue = $("input[type='radio'][name='payment_method']:checked").val()
+  windcavePaymentSelected = $("input[type='radio'][name='payment_method']:checked").val();
+  console.log(onChangeValue)
+})
+
+// hide iframe 
+
+const showWindcaveiframe = () => {
+  $('.payment-gateway-container').show();
+  $('.overlay').show();
+}
+
+const hideOverlay = () => {
+
+  $('#payment-iframe-container .cancel-payment').on('click', () => {
+    $('.payment-gateway-container').hide();
+    $('.overlay').hide();
+  })
+}
+hideOverlay();
+
+// show windcave iframe conditionaly 
+$(document).on('click', '#place_order', (e) => {
+  if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
+    e.preventDefault();
+    console.log("place order button click")
+    showWindcaveiframe();
+  }
+
+  else {
+    $('#place_order').unbind('click');
+  }
+})
+
+
+
+$(document).on('click', '.windcave-submit-button', () => {
+  console.log('windcave submit button');
+  WindcavePayments.Seamless.validate({
+    onProcessed: function (isValid) { console.log(isValid) },
+    onError: function (error) { console.log("this is an error") }
+  });
+
+})

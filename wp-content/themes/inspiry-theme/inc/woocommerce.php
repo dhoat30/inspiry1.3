@@ -581,7 +581,6 @@ function add_on_hover_shop_loop_image() {
 
 
 // remove pagination- show all product on archive page
-add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 40;' ), 20 );
 
 // only show free shipping 
 // /**
@@ -639,9 +638,3 @@ add_filter( 'loop_shop_per_page', create_function( '$cols', 'return 40;' ), 20 )
 //     }
 // }
 
-// checkout page 
-add_action('woocommerce_after_checkout_billing_form', 'windcave_iframe'); 
-
-function windcave_iframe(){ 
-  echo '<div id="payment-iframe-container">  </div> ';
-}

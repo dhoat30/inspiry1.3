@@ -9,7 +9,11 @@ class EnquiryModal {
         $('#enquire-button').on('click', this.showEnquiryModal);
         // hide modal 
         $('.enquiry-form-section .fa-times').on('click', this.hideEnquiryModal);
+
+
+
     }
+
 
     showEnquiryModal(e) {
         e.preventDefault();
