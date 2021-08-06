@@ -87,7 +87,7 @@ window.onload = function () {
 
   //price 
   let pricevalue = document.getElementsByClassName('bc-show-current-price');
-  console.log($('.bc-show-current-price').text);
+  // console.log($('.bc-show-current-price').text);
   //slogan 
 
   $('.logo-container .slogan').css('opacity', '1');
@@ -217,8 +217,8 @@ const showWindcaveiframe = () => {
 }
 
 const hideOverlay = () => {
-
-  $('#payment-iframe-container .cancel-payment').on('click', () => {
+  $(document).on('click', '#payment-iframe-container .cancel-payment', () => {
+    console.log('cancel payment')
     $('.payment-gateway-container').hide();
     $('.overlay').hide();
   })
@@ -227,8 +227,10 @@ hideOverlay();
 
 // show windcave iframe conditionaly 
 $(document).on('click', '#place_order', (e) => {
+  e.preventDefault();
+  console.log("prevented default")
   if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
-    e.preventDefault();
+    // e.preventDefault();
     console.log("place order button click")
     showWindcaveiframe();
   }
@@ -240,11 +242,28 @@ $(document).on('click', '#place_order', (e) => {
 
 
 
-$(document).on('click', '.windcave-submit-button', () => {
+// validate iframe 
+$(document).on('click', '.windcave-submit-button', (e) => {
+  e.preventDefault();
   console.log('windcave submit button');
   WindcavePayments.Seamless.validate({
-    onProcessed: function (isValid) { console.log(isValid) },
-    onError: function (error) { console.log("this is an error") }
+    onProcessed: function (isValid) {
+      console.log(isValid)
+      console.log('Card is valid')
+      if (isValid) {
+        WindcavePayments.Seamless.submit({
+          showSpinner: true,
+          onProcessed: function () { console.log('submitted') },
+          onError: function (error) { console.log('submission error') }
+        });
+      }
+    },
+    onError: function (error) {
+      console.log('this is an error')
+      console.log(error)
+    }
   });
 
 })
+
+

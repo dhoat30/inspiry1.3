@@ -186,25 +186,7 @@ WindcavePayments.Seamless.prepareIframe({
                 }
             }
             public function windcave_iFrame(){
-                    // checkout page - add windcave iframe
-                    add_action('woocommerce_after_checkout_billing_form', 'windcave_iframe'); 
-
-                    function windcave_iframe(){ 
-                    echo '
-                    <div class="payment-gateway-container" >
-                    <img src="'; 
-                    echo  plugins_url('/assets/download.svg', __FILE__ ); 
-                    echo'" />
-                    <div id="payment-iframe-container"> 
-                    <div class="button-container" >
-                    <button class="windcave-submit-button" >Submit</button> 
-                    <div class="cancel-payment" >Cancel Payment</div> 
-                    </div>
-                   
-                    </div> 
-                    </div> 
-                    ';
-                    }
+                  
             }
          
 
