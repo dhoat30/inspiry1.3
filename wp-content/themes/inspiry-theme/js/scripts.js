@@ -253,7 +253,10 @@ $(document).on('click', '.windcave-submit-button', (e) => {
       if (isValid) {
         WindcavePayments.Seamless.submit({
           showSpinner: true,
-          onProcessed: function () { console.log('submitted') },
+          onProcessed: function () {
+            console.log('submitted')
+            sendDataToBackend();
+          },
           onError: function (error) { console.log('submission error') }
         });
       }
@@ -267,3 +270,35 @@ $(document).on('click', '.windcave-submit-button', (e) => {
 })
 
 
+// fetching data
+setTimeout($(document).on('click', '.wishlist', (e) => {
+  e.preventDefault();
+  sendDataToBackend();
+
+}), 5000)
+
+// send data to backend for query session 
+const sendDataToBackend = () => {
+
+  var myHeaders = new Headers();
+  myHeaders.append("X-WP-NONCE", inspiryData.nonce);
+
+  var raw = {
+    "id": 15033
+  };
+
+  var requestOptions = {
+    method: 'POST',
+    headers: myHeaders,
+    body: raw,
+    redirect: 'follow'
+  };
+
+  fetch(`${inspiryData.root_url}/wp-json/inspiry/v1/querySession`, requestOptions)
+    .then(response => response.text())
+    .then(result => {
+      console.log(result)
+      console.log('this is a result ')
+    })
+    .catch(error => console.log('error', error));
+}

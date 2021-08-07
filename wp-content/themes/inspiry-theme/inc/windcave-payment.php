@@ -24,6 +24,7 @@
 
                 $this->init_form_fields();
                 $this->init_settings();
+                $this->process_payments();
                 // $this->place_order_button(); 
 
                 add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -68,52 +69,58 @@
             // getting seamlessHpp url from windcave
             public function payment_scripts(){
        
-                // get order details
-                $totalAmount = WC()->cart->total; 
-               
-                   // https request to windcave to create a session 
-              $ch = curl_init();
-              curl_setopt($ch, CURLOPT_URL, "https://uat.windcave.com/api/v1/sessions");
-              curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-              curl_setopt($ch, CURLOPT_HEADER, FALSE);
+              
 
-              curl_setopt($ch, CURLOPT_POST, TRUE);
-
-              curl_setopt($ch, CURLOPT_POSTFIELDS, "{
-              \"type\": \"purchase\",
-              \"methods\": [
-                  \"card\"
-              ],
-              \"amount\": \"$totalAmount\",
-              \"currency\": \"NZD\",
-              \"callbackUrls\": {
-                  \"approved\": \"https://localhost/success\",
-                  \"declined\": \"https://localhost/failure\"
-              }
-              }");
-
-              curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-              "Content-Type: application/json",
-              "Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk="
-              ));
-
-              $response = curl_exec($ch);
-              $obj = json_decode($response);
-
-              curl_close($ch);
-              print_r($response); 
-            // for each loop to get seamless_hpp url 
-            foreach ($obj->links as $obj) {
-                if($obj->rel=== "seamless_hpp"){
-                  $this->seamlessHpp =  $obj->href;
-                }
-            }
-            echo $this->seamlessHpp;
+            
             }
 
             // loading iFrame
             public function windcave_iFrame(){
+                  // get order details
+                  $totalAmount = WC()->cart->total; 
+                  echo $totalAmount;
+                 
+                     // https request to windcave to create a session 
+                $ch = curl_init();
+                curl_setopt($ch, CURLOPT_URL, "https://uat.windcave.com/api/v1/sessions");
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
+                curl_setopt($ch, CURLOPT_HEADER, FALSE);
+  
+                curl_setopt($ch, CURLOPT_POST, TRUE);
+  
+                curl_setopt($ch, CURLOPT_POSTFIELDS, "{
+                \"type\": \"purchase\",
+                \"methods\": [
+                    \"card\"
+                ],
+                \"amount\": \"$totalAmount\",
+                \"currency\": \"NZD\",
+                \"callbackUrls\": {
+                    \"approved\": \"https://localhost/success\",
+                    \"declined\": \"https://localhost/failure\"
+                }
+                }");
+  
+                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+                "Content-Type: application/json",
+                "Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk="
+                ));
+  
+                $response = curl_exec($ch);
+                $obj = json_decode($response);
+  
+                curl_close($ch);
+                print_r($response); 
+              // for each loop to get seamless_hpp url 
+              foreach ($obj->links as $obj) {
+                  if($obj->rel=== "seamless_hpp"){
+                    $this->seamlessHpp =  $obj->href;
+                  }
+              }
+              echo $this->seamlessHpp;
                 ?>
+
+                
                 <script>
                     
                 WindcavePayments.Seamless.prepareIframe({
@@ -150,28 +157,47 @@
                 
             }
 
-                // // process payments 
-                // public function process_payments($order_id){ 
+                // process payments 
+                public function process_payments(){ 
+
+                    // // rest route action
+                    // add_action("rest_api_init", "woocommerce_transaction");
+
+                    // // register rest route
+                    // function woocommerce_transaction(){ 
                     
-                //     global $woocommerce;
-                //     $order = wc_get_order($order_id); 
-                //     $order->update_status('on-hold', __('Awaiting Inspiry Payment', 'inspiry-pay-woo') );
-                //     $order->reduce_order_stock(); 
+                    // //update board 
+                    // register_rest_route("inspiry/v1/", "transaction", array(
+                    // "methods" => "POST",
+                    // "callback" => "query_session"
+                    // ));
+                    // }
 
-                //     WC()->cart->empty_cart();
+                    function query_session($data){
+                    $submitted = sanitize_text_field($data["submitted"] ); 
+                    return "this is from a query session"; 
+                    }
+                    
+                    
+                    // global $woocommerce;
+                    // $order = wc_get_order($order_id); 
+                    // $order->update_status('on-hold', __('Awaiting Inspiry Payment', 'inspiry-pay-woo') );
+                    // $order->reduce_order_stock(); 
 
-                //     return array(
-                //         'result'=>'success', 
-                //         'redirect' => $this->get_return_url($order)
-                //     );
-                // } 
+                    // WC()->cart->empty_cart();
+
+                    // return array(
+                    //     'result'=>'success', 
+                    //     'redirect' => $this->get_return_url($order)
+                    // );
+                } 
 
                 
-                // public function thank_you_page(){
-                //     if( $this->instructions ){
-                //         echo wpautop( $this->instructions );
-                //     }
-                // }
+                public function thank_you_page(){
+                    if( $this->instructions ){
+                        echo wpautop( $this->instructions );
+                    }
+                }
           
 
         }

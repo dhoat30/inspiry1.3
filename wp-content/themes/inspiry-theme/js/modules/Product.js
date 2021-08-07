@@ -13,9 +13,6 @@ class Product {
     }
     //get product datea
     getProduct() {
-        console.log('hello')
-
-
 
         //show loader icon
         $.ajax({
@@ -31,7 +28,6 @@ class Product {
             complete: () => {
             },
             success: (response) => {
-                console.log('this is a success area')
                 if (response) {
                     console.log(response);
 
