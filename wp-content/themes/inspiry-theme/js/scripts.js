@@ -255,7 +255,25 @@ $(document).on('click', '.windcave-submit-button', (e) => {
           showSpinner: true,
           onProcessed: function () {
             console.log('submitted')
-            sendDataToBackend();
+
+            // validate transaction by sending a query session reques to the backend
+            let valueOfTransaction = validateTransaction();
+            valueOfTransaction.then(res => {
+              console.log(`Transaction is validated ${res}`)
+
+              // successful transaction 
+              if (res) {
+                // append response text in iframe container 
+                $('#payment-iframe-container .button-container').append(`<p class="success">Successful</p>`)
+                WindcavePayments.Seamless.cleanup()
+              }
+
+              // failed transaction 
+              else {
+                // append response text in iframe container 
+                $('#payment-iframe-container .button-container').append(`<p class="error">${res}</p>`)
+              }
+            })
           },
           onError: function (error) { console.log('submission error') }
         });
@@ -270,15 +288,10 @@ $(document).on('click', '.windcave-submit-button', (e) => {
 })
 
 
-// fetching data
-setTimeout($(document).on('click', '.wishlist', (e) => {
-  e.preventDefault();
-  sendDataToBackend();
 
-}), 5000)
 
 // send data to backend for query session 
-const sendDataToBackend = () => {
+async function validateTransaction() {
 
   var myHeaders = new Headers();
   myHeaders.append("X-WP-NONCE", inspiryData.nonce);
@@ -294,11 +307,30 @@ const sendDataToBackend = () => {
     redirect: 'follow'
   };
 
-  fetch(`${inspiryData.root_url}/wp-json/inspiry/v1/querySession`, requestOptions)
-    .then(response => response.text())
-    .then(result => {
-      console.log(result)
-      console.log('this is a result ')
+  const response = await fetch(`${inspiryData.root_url}/wp-json/inspiry/v1/query-session`, requestOptions)
+    .then(response => {
+      return response.text()
     })
-    .catch(error => console.log('error', error));
+    .then(result => {
+      // return result;
+      console.log('this is result ')
+      console.log(result)
+      return result
+    })
+    .catch(error => {
+      console.log('error', error)
+      return error
+    })
+  console.log("function return " + response)
+  return response
 }
+
+const functionValue = validateTransaction();
+functionValue.then(res => {
+  if (!res) {
+    console.log('function value is ' + res)
+  }
+  else {
+    console.log('function is false ' + res)
+  }
+})

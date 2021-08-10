@@ -8,7 +8,8 @@
   justify-content: flex-end;
   align-items: center;
   flex-wrap: wrap;
-  position: fixed;
+  /* add fixed later  */
+  position: static;
   z-index: 1500;
   top: 0;
   background: white;

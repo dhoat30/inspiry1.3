@@ -10,22 +10,8 @@ function woocommerce_product(){
    "methods" => "POST",
    "callback" => "getProduct"
 ));
- //update board 
- register_rest_route("inspiry/v1/", "querySession", array(
-   "methods" => "POST",
-   "callback" => "querySession"
-   ));
+   
 }
-   
-   
-function querySession($data){
-   $submitted = $data["submitted"]; 
-   $obj = array(
-      'price'=> 10
-   );
-   return true; 
-   }
-   
 
 function getProduct($data){
    $postID = sanitize_text_field($data["id"] ); 
@@ -50,4 +36,5 @@ function getProduct($data){
    
   
 }
-?>
+
+

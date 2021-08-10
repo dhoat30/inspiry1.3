@@ -1,4 +1,8 @@
 <?php
+
+
+
+
     if(class_exists('WC_Payment_Gateway')){
         class Inspiry_Payment_Gateway extends WC_Payment_Gateway {
 
@@ -20,7 +24,9 @@
                 $this->payment_scripts();
 
                 // preparing windcave iFram
-                $this->windcave_iFrame(); 
+                // $this->windcave_iFrame(); 
+
+                $this->payment_fields();
 
                 $this->init_form_fields();
                 $this->init_settings();
@@ -76,84 +82,12 @@
 
             // loading iFrame
             public function windcave_iFrame(){
-                  // get order details
-                  $totalAmount = WC()->cart->total; 
-                  echo $totalAmount;
-                 
-                     // https request to windcave to create a session 
-                $ch = curl_init();
-                curl_setopt($ch, CURLOPT_URL, "https://uat.windcave.com/api/v1/sessions");
-                curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
-                curl_setopt($ch, CURLOPT_HEADER, FALSE);
-  
-                curl_setopt($ch, CURLOPT_POST, TRUE);
-  
-                curl_setopt($ch, CURLOPT_POSTFIELDS, "{
-                \"type\": \"purchase\",
-                \"methods\": [
-                    \"card\"
-                ],
-                \"amount\": \"$totalAmount\",
-                \"currency\": \"NZD\",
-                \"callbackUrls\": {
-                    \"approved\": \"https://localhost/success\",
-                    \"declined\": \"https://localhost/failure\"
-                }
-                }");
-  
-                curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-                "Content-Type: application/json",
-                "Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk="
-                ));
-  
-                $response = curl_exec($ch);
-                $obj = json_decode($response);
-  
-                curl_close($ch);
-                print_r($response); 
-              // for each loop to get seamless_hpp url 
-              foreach ($obj->links as $obj) {
-                  if($obj->rel=== "seamless_hpp"){
-                    $this->seamlessHpp =  $obj->href;
-                  }
-              }
-              echo $this->seamlessHpp;
-                ?>
-
-                
-                <script>
-                    
-                WindcavePayments.Seamless.prepareIframe({
-                    url: "<?php echo $this->seamlessHpp; ?>",
-                    containerId: "payment-iframe-container",
-                    loadTimeout: 30,
-                    width: 400,
-                    height: 500,
-                    onProcessed: function () { console.log('iframes is loaded properly ') },
-                    onError: function (error) {
-                        console.log(error)
-                        console.log('this is and error event after loading ')
-                    }
-                });
-                </script> 
-                <?php 
+              
             }
           
             //    payment fields - add iframe here
             public function payment_fields() {
-                echo '<div class="payment-gateway-container" data-seamlessHpp="'; 
-                echo $this->seamlessHpp ; 
-                echo '">';
-                echo'
-                <div id="payment-iframe-container"> 
-                <div class="button-container" >
-                <button class="windcave-submit-button" >Submit</button> 
-                <div class="cancel-payment" >Cancel Payment</div> 
-                </div>
-               
-                </div> 
-                </div> 
-                ';
+                
                 
             }
 

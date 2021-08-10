@@ -497,12 +497,25 @@ textarea::placeholder {
   font-size: 16px;
   letter-spacing: 0.02em;
 }
+.error {
+  color: #ba0505;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
 
 .success-bg {
   background: #d7fad0;
   color: #00d331;
 }
-
+.success {
+  color: #00d331;
+  margin: 10px 0;
+  padding: 10px;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+}
 .invisible {
   display: none;
 }
