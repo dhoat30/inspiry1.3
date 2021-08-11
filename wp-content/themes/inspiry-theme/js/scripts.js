@@ -38,7 +38,6 @@ import TradeDirectory from './modules/TradeDirectory';
 
 // get product date
 import Product from './modules/Product';
-import { data } from 'jquery';
 
 // Enquire Modal 
 import EnquiryModal from './modules/EnquiryModal/EnquiryModal'
@@ -202,7 +201,7 @@ window.addEventListener("scroll", myScrollFunc);
 // windcave
 let onChangeValue
 let windcavePaymentSelected = $("input[type='radio'][name='payment_method']:checked").val();
-console.log(windcavePaymentSelected)
+
 $(document).on('change', '.wc_payment_methods .input-radio', () => {
   onChangeValue = $("input[type='radio'][name='payment_method']:checked").val()
   windcavePaymentSelected = $("input[type='radio'][name='payment_method']:checked").val();
@@ -245,6 +244,7 @@ $(document).on('click', '#place_order', (e) => {
 // validate iframe 
 $(document).on('click', '.windcave-submit-button', (e) => {
   e.preventDefault();
+
   console.log('windcave submit button');
   WindcavePayments.Seamless.validate({
     onProcessed: function (isValid) {
@@ -325,12 +325,24 @@ async function validateTransaction() {
   return response
 }
 
-const functionValue = validateTransaction();
-functionValue.then(res => {
-  if (!res) {
-    console.log('function value is ' + res)
-  }
-  else {
-    console.log('function is false ' + res)
-  }
-})
+// const functionValue = validateTransaction();
+// functionValue.then(res => {
+//   if (res) {
+//     console.log('function value is ' + res)
+//   }
+//   else {
+//     console.log('function is false ' + res)
+//   }
+// })
+
+
+// let sessionID = $('.windcave-session-id').attr('data-sessionid')
+// console.log(`${sessionID} is a value`)
+var dataString = {
+  sessionID: "00001200057675160c83f9d90eeea057"
+}
+let jsonData = JSON.stringify(dataString)
+$.ajax({
+  type: "POST", url: "http://localhost/inspiry/windcave/", data: jsonData,
+  success: function (data) { console.log(data) }
+});

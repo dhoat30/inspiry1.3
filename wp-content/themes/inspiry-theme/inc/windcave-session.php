@@ -4,19 +4,22 @@
 class Windcave_Sessions{
     var $sessionURL = "";
 
-
     public function __construct()
     {
+        $this->authorizedPayment = '';
+        $this->responseText= '';
+        $this->sessionID = '';
         add_action('woocommerce_before_checkout_billing_form', array( $this, 'iFrame_container' )); 
         add_action('woocommerce_before_checkout_billing_form', array($this, 'windcave_session') ); 
-        add_action('woocommerce_before_checkout_billing_form', array( $this, 'test_container' ));
-        add_action("rest_api_init", array($this, "windcave_query_session"));
+
+        // add_action('woocommerce_before_checkout_billing_form', array($this, 'test_container') ); 
+        // add_action("rest_api_init", array($this, "windcave_query_session"));
     }
 
     public function iFrame_container(){
-
-        echo '<div class="payment-gateway-container" data-seamlessHpp="'; 
-        echo "customer data"; 
+       
+        echo '<div class="payment-gateway-container" data-seamless="asfddsaf'; 
+        echo $this->sessionID; 
         echo '">';
         echo'
         <div id="payment-iframe-container"> 
@@ -63,10 +66,7 @@ class Windcave_Sessions{
   
      $response = curl_exec($ch);
      $obj = json_decode($response);
-     var_dump($obj); 
-     curl_close($ch);
-  
-     echo '<br><br>';
+     print_r($obj);
      $seamlessValue = ''; 
      // for each loop to get seamless_hpp url 
      foreach ($obj->links as $obj) {
@@ -77,11 +77,9 @@ class Windcave_Sessions{
         $this->sessionID = basename($obj->href);
         }
      }
-
-    //  $this->sessionURL = "https://uat.windcave.com/api/v1/sessions/".$this->sessionID;
-    $this->sessionURL = "https://uat.windcave.com/api/v1/sessions/00001200057642070c56cd51cccd7b03"; 
-     echo '<br><br>';
-       
+     echo '<div class="windcave-session-id" data-sessionid="'; 
+        echo $this->sessionID; 
+        echo '"> </div>';
      ?>
           <script>
                       WindcavePayments.Seamless.prepareIframe({
@@ -132,36 +130,19 @@ class Windcave_Sessions{
         ));
         
         $response = curl_exec($curl);
-        
+       
         curl_close($curl);
-        $sessionObj = json_decode($response); 
-        print_r($response);
-        return $response;
-        // foreach ($sessionObj->transactions as $obj) {
-        //     //    check authorization 
-        //         if($obj->authorised){ 
-        //             $GLOBALS['authorisedPayment'] = "true"; 
-        //         }
-        //         else { 
-        //             $GLOBALS['authorisedPayment'] = "false"; 
-        //         }
-
-        //         $GLOBALS ['responseText'] = $obj->responseText;
-        // }
-        //         $returnValue = array(
-        //             "authorize"=> $GLOBALS['authorisedPayment'], 
-        //             "responseText"=> $GLOBALS['responseText']
-        //         ); 
-            // if($GLOBALS['authorisedPayment'] === "true"){
-            //     return true;
-            // }
-            // else if($GLOBALS['authorisedPayment'] === "false") { 
-            //     return $returnValue['responseText'];
-            // }
-
+        $sessionObj = json_decode($response);
+     
+        $newValue = $sessionObj->transactions[0]->authorised; 
+        if($newValue){
+            echo "true";
+        }
+        else{ 
+             echo $sessionObj->transactions[0]->responseText; ; 
+        }
+       
     }
-
-
 }
 
 $windcaveSession = new Windcave_Sessions();

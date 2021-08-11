@@ -4,6 +4,7 @@ get_header();
 
 ?>
 
+
 <section class="home-page">
     <div class="video-container">
         <?php 
