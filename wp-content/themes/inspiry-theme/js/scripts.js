@@ -297,7 +297,7 @@ async function validateTransaction() {
   myHeaders.append("X-WP-NONCE", inspiryData.nonce);
 
   var raw = {
-    "id": 15033
+    "url": 'https://uat.windcave.com/api/v1/sessions/00001200057642070c56cd51cccd7b03'
   };
 
   var requestOptions = {
