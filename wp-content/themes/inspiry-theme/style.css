@@ -499,27 +499,28 @@ textarea::placeholder {
 }
 .error {
   color: #ba0505;
-  margin: 10px 0;
-  padding: 10px;
+  margin: 10px 0 0 0;
   font-size: 16px;
   letter-spacing: 0.02em;
+  font-weight: 500;
 }
 
 .success-bg {
   background: #d7fad0;
   color: #00d331;
 }
+
 .success {
   color: #00d331;
-  margin: 10px 0;
-  padding: 10px;
+  margin: 10px 0 0 0;
   font-size: 16px;
   letter-spacing: 0.02em;
+  font-weight: 500;
 }
+
 .invisible {
   display: none;
 }
-
 /*close icons */
 
 .fa-times {

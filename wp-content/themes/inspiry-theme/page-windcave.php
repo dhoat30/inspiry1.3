@@ -34,5 +34,4 @@
        else{ 
             echo $sessionObj->transactions[0]->responseText; ; 
        }
-
   ?>

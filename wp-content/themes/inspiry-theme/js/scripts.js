@@ -225,19 +225,19 @@ const hideOverlay = () => {
 hideOverlay();
 
 // show windcave iframe conditionaly 
-$(document).on('click', '#place_order', (e) => {
-  e.preventDefault();
-  console.log("prevented default")
-  if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
-    // e.preventDefault();
-    console.log("place order button click")
-    showWindcaveiframe();
-  }
+// $(document).on('click', '#place_order', (e) => {
 
-  else {
-    $('#place_order').unbind('click');
-  }
-})
+//   console.log("prevented default")
+//   if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
+//     e.preventDefault();
+//     console.log("place order button click")
+//     showWindcaveiframe();
+//   }
+
+//   else {
+//     $('#place_order').unbind('click');
+//   }
+// })
 
 
 
@@ -262,16 +262,16 @@ $(document).on('click', '.windcave-submit-button', (e) => {
               console.log(`Transaction is validated ${res}`)
 
               // successful transaction 
-              if (res) {
+              if (res === "true") {
                 // append response text in iframe container 
-                $('#payment-iframe-container .button-container').append(`<p class="success">Successful</p>`)
+                $('#payment-iframe-container .button-container').append(`<p class="success center-align">Successful</p>`)
                 WindcavePayments.Seamless.cleanup()
               }
 
               // failed transaction 
               else {
                 // append response text in iframe container 
-                $('#payment-iframe-container .button-container').append(`<p class="error">${res}</p>`)
+                $('#payment-iframe-container .button-container').append(`<p class="error center-align">${res}</p>`)
               }
             })
           },
@@ -287,62 +287,31 @@ $(document).on('click', '.windcave-submit-button', (e) => {
 
 })
 
-
-
-
 // send data to backend for query session 
 async function validateTransaction() {
+  let sessionID = $('.windcave-session-id').attr('data-sessionid')
 
-  var myHeaders = new Headers();
-  myHeaders.append("X-WP-NONCE", inspiryData.nonce);
+  var dataString = {
+    sessionID: sessionID
+  }
 
-  var raw = {
-    "url": 'https://uat.windcave.com/api/v1/sessions/00001200057642070c56cd51cccd7b03'
-  };
+  let jsonData = JSON.stringify(dataString)
 
-  var requestOptions = {
-    method: 'POST',
-    headers: myHeaders,
-    body: raw,
-    redirect: 'follow'
-  };
+  // dynamic url 
+  let url = window.location.hostname;
+  let filePath;
 
-  const response = await fetch(`${inspiryData.root_url}/wp-json/inspiry/v1/query-session`, requestOptions)
-    .then(response => {
-      return response.text()
-    })
-    .then(result => {
-      // return result;
-      console.log('this is result ')
-      console.log(result)
-      return result
-    })
-    .catch(error => {
-      console.log('error', error)
-      return error
-    })
+  if (url === 'localhost') {
+    filePath = `/inspiry/windcave`
+  }
+  else {
+    filePath = `https://services.inspiry.co.nz/windcave`
+  }
+
+  const response = await $.ajax({
+    type: "POST", url: filePath, data: jsonData,
+    success: function (data) { console.log(data) }
+  });
   console.log("function return " + response)
   return response
 }
-
-// const functionValue = validateTransaction();
-// functionValue.then(res => {
-//   if (res) {
-//     console.log('function value is ' + res)
-//   }
-//   else {
-//     console.log('function is false ' + res)
-//   }
-// })
-
-
-// let sessionID = $('.windcave-session-id').attr('data-sessionid')
-// console.log(`${sessionID} is a value`)
-var dataString = {
-  sessionID: "00001200057675160c83f9d90eeea057"
-}
-let jsonData = JSON.stringify(dataString)
-$.ajax({
-  type: "POST", url: "http://localhost/inspiry/windcave/", data: jsonData,
-  success: function (data) { console.log(data) }
-});

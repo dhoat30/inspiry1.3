@@ -20,17 +20,11 @@
                 $this->description = $this->get_option( 'description' );
                 $this->instructions = $this->get_option( 'instructions', $this->description );
 
-                // getting seamlessHpp url 
-                $this->payment_scripts();
-
-                // preparing windcave iFram
-                // $this->windcave_iFrame(); 
-
-                $this->payment_fields();
+             
 
                 $this->init_form_fields();
                 $this->init_settings();
-                $this->process_payments();
+                // $this->process_payments();
                 // $this->place_order_button(); 
 
                 add_action( 'woocommerce_update_options_payment_gateways_' . $this->id, array( $this, 'process_admin_options' ) );
@@ -72,58 +66,24 @@
                
             }
 
-            // getting seamlessHpp url from windcave
-            public function payment_scripts(){
-       
-              
-
-            
-            }
-
-            // loading iFrame
-            public function windcave_iFrame(){
-              
-            }
           
-            //    payment fields - add iframe here
-            public function payment_fields() {
-                
-                
-            }
+
+           
 
                 // process payments 
-                public function process_payments(){ 
+                public function process_payments($order_id){ 
+                  
+                    global $woocommerce;
+                    $order = wc_get_order($order_id); 
+                    $order->update_status('on-hold', __('Awaiting Inspiry Payment', 'inspiry-pay-woo') );
+                    $order->reduce_order_stock(); 
 
-                    // // rest route action
-                    // add_action("rest_api_init", "woocommerce_transaction");
+                    WC()->cart->empty_cart();
 
-                    // // register rest route
-                    // function woocommerce_transaction(){ 
-                    
-                    // //update board 
-                    // register_rest_route("inspiry/v1/", "transaction", array(
-                    // "methods" => "POST",
-                    // "callback" => "query_session"
-                    // ));
-                    // }
-
-                    function query_session($data){
-                    $submitted = sanitize_text_field($data["submitted"] ); 
-                    return "this is from a query session"; 
-                    }
-                    
-                    
-                    // global $woocommerce;
-                    // $order = wc_get_order($order_id); 
-                    // $order->update_status('on-hold', __('Awaiting Inspiry Payment', 'inspiry-pay-woo') );
-                    // $order->reduce_order_stock(); 
-
-                    // WC()->cart->empty_cart();
-
-                    // return array(
-                    //     'result'=>'success', 
-                    //     'redirect' => $this->get_return_url($order)
-                    // );
+                    return array(
+                        'result'=>'success', 
+                        'redirect' => $this->get_return_url($order)
+                    );
                 } 
 
                 
