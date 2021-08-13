@@ -224,20 +224,20 @@ const hideOverlay = () => {
 }
 hideOverlay();
 
-// show windcave iframe conditionaly 
-// $(document).on('click', '#place_order', (e) => {
+// show windcave iframe conditionaly
+$(document).on('click', '#place_order', (e) => {
 
-//   console.log("prevented default")
-//   if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
-//     e.preventDefault();
-//     console.log("place order button click")
-//     showWindcaveiframe();
-//   }
+  console.log("prevented default")
+  if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
+    e.preventDefault();
+    console.log("place order button click")
+    showWindcaveiframe();
+  }
 
-//   else {
-//     $('#place_order').unbind('click');
-//   }
-// })
+  else {
+    $('#place_order').unbind('click');
+  }
+})
 
 
 
@@ -264,8 +264,10 @@ $(document).on('click', '.windcave-submit-button', (e) => {
               // successful transaction 
               if (res === "true") {
                 // append response text in iframe container 
+                $(".woocommerce-checkout").submit();
                 $('#payment-iframe-container .button-container').append(`<p class="success center-align">Successful</p>`)
                 WindcavePayments.Seamless.cleanup()
+
               }
 
               // failed transaction 
@@ -315,3 +317,8 @@ async function validateTransaction() {
   console.log("function return " + response)
   return response
 }
+
+// order status change 
+$(document).on('click', ".order-status", (e) => {
+  console.log("hello this is order status ")
+})

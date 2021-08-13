@@ -38,9 +38,9 @@ require get_theme_file_path('/inc/windcave-session.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.fa583623385eedc86539.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.73833d3f2dd20e5108f0.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.73833d3f2dd20e5108f0.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.73833d3f2dd20e5108f0.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.ece114ee6da98ae08c22.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.ece114ee6da98ae08c22.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.ece114ee6da98ae08c22.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),

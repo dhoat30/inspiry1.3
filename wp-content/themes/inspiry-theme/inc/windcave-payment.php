@@ -67,24 +67,24 @@
             }
 
           
-
-           
-
+                
                 // process payments 
-                public function process_payments($order_id){ 
-                  
+                function process_payment( $order_id ) {
                     global $woocommerce;
-                    $order = wc_get_order($order_id); 
-                    $order->update_status('on-hold', __('Awaiting Inspiry Payment', 'inspiry-pay-woo') );
-                    $order->reduce_order_stock(); 
+                    $order = new WC_Order( $order_id );
+                
+                    // mark as completed
+                    $order->payment_complete();    
 
-                    WC()->cart->empty_cart();
-
+                    // Remove cart
+                    $woocommerce->cart->empty_cart();
+                
+                    // Return thankyou redirect
                     return array(
-                        'result'=>'success', 
-                        'redirect' => $this->get_return_url($order)
+                        'result' => 'success',
+                        'redirect' => $this->get_return_url( $order )
                     );
-                } 
+                }
 
                 
                 public function thank_you_page(){
