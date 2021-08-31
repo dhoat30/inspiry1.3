@@ -27,6 +27,8 @@ require get_theme_file_path('/inc/cart-modal.php');
 require get_theme_file_path('/inc/windcave-payment.php');
 require get_theme_file_path('/inc/windcave-session.php');
 
+require get_theme_file_path('/inc/rest-acf.php');
+
  //enqueue scripts
 
  function inspiry_scripts(){ 
@@ -38,9 +40,9 @@ require get_theme_file_path('/inc/windcave-session.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.fa583623385eedc86539.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.ece114ee6da98ae08c22.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.ece114ee6da98ae08c22.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.ece114ee6da98ae08c22.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.565cde9dcbf88d461c9f.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.565cde9dcbf88d461c9f.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.565cde9dcbf88d461c9f.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),
@@ -49,11 +51,7 @@ require get_theme_file_path('/inc/windcave-session.php');
 }
 add_action( "wp_enqueue_scripts", "inspiry_scripts" ); 
 
-
-
 //sidebar
-
-
 add_action( "widgets_init", "mat_widget_areas" );
 function mat_widget_areas() {
     register_sidebar( array(
@@ -485,3 +483,64 @@ function ps_redirect_after_logout(){
          wp_redirect( 'https://inspiry.co.nz' );
          exit();
 }
+
+
+
+
+/**
+ * Register field for storing Profile Image URL
+ */
+function ppa_register_rest_fields() {
+	register_rest_field( 'projects', 'profile_image', array(
+		'get_callback' => 'ppa_get_user_profile_image',
+		'update_callback' => 'ppa_update_user_profile_image',
+	));
+}
+add_action( 'rest_api_init', 'ppa_register_rest_fields' );
+
+/**
+ * Retrieve 'Profile Image' URL
+ */
+function ppa_get_user_profile_image( $object ) {
+	//get user id
+	$userid = $object['id'];
+	
+	if ( ! $userid ) {
+		return new WP_Error( 'invalid_user', __( 'Invalid User ID.' ), array( 'status' => 400 ) );
+	}
+
+	//return user 'profile_image' meta
+	return get_user_meta( $userid, 'profile_image', true );
+}
+
+/**
+ * Update 'Profile Image' URL
+ */
+function ppa_update_user_profile_image( $value, $object, $field ) {
+	// //get user id
+	$userid = $object->ID;
+	if ( ! $userid ) {
+		return new WP_Error( 'invalid_user', __( 'Invalid User ID.' ), array( 'status' => 400 ) );
+	}
+
+	//return user 'profile_image' meta
+	return update_user_meta( $userid, $field, esc_url( $value ) );
+}
+
+// adding extra information of user in rest api 
+if(is_user_logged_in()) {
+	register_rest_field( 'user', 'user_email',
+  array(
+    'get_callback'    => function ( $user ) {
+		if(get_current_user_id() === $user['id']){
+        return array(
+			get_userdata($user['id'])->user_email, 
+			get_userdata($user['id'])->first_name
+		); 
+		}
+    },
+    'update_callback' => null,
+    'schema'          => null,
+  )
+);
+	}

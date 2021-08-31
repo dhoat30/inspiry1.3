@@ -11,7 +11,7 @@
             {   
                 $this->seamlessHpp = ''; 
                 $this->id = "inspiry_payment"; 
-                // $this->icon = apply_filters( 'woocommerce_inspiry_icon', "http://localhost/inspiry/wp-content/uploads/2021/05/Inspiry_Logo-transparent-1-300x55-1.png" );
+                $this->icon = apply_filters( 'woocommerce_inspiry_icon', "https://inspiry.co.nz/wp-content/uploads/2021/08/windcave-icons.png" );
                 $this->has_fields = false; 
                 $this->method_title = __('Windcave Payment', 'inspiry-pay-woo'); 
                 $this->method_description =  __('Pay with your Credit or Debit Card via Windcave.', 'inspiry-pay-woo'); 

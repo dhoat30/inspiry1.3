@@ -1,6 +1,5 @@
 <?php
 
-
 // add product custom field
 // Display Fields
 add_action('woocommerce_product_options_general_product_data', 'woocommerce_product_custom_fields');
@@ -8,7 +7,7 @@ add_action('woocommerce_product_options_general_product_data', 'woocommerce_prod
 add_action('woocommerce_process_product_meta', 'woocommerce_product_custom_fields_save');
 function woocommerce_product_custom_fields()
 {
-    global $woocommerce, $post;
+  
     echo '<div class="product_custom_field">';
     // Custom Product Text Field
     woocommerce_wp_text_input(

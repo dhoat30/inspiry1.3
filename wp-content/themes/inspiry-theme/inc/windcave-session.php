@@ -12,15 +12,13 @@ class Windcave_Sessions{
         add_action('woocommerce_before_checkout_billing_form', array( $this, 'iFrame_container' )); 
         add_action('woocommerce_before_checkout_billing_form', array($this, 'windcave_session') ); 
 
-        // add_action('woocommerce_before_checkout_billing_form', array($this, 'test_container') ); 
-        // add_action("rest_api_init", array($this, "windcave_query_session"));
     }
 
     public function iFrame_container(){
         echo '<div class="payment-gateway-container" data-seamless="asfddsaf'; 
         echo $this->sessionID; 
         echo '">';
-        echo'
+        echo' <img src="https://inspiry.co.nz/wp-content/uploads/2021/08/windcave-logo.png" width="95%">
         <div id="payment-iframe-container"> 
         <div class="button-container" >
         <button class="windcave-submit-button" >Submit</button> 
@@ -39,7 +37,7 @@ class Windcave_Sessions{
      
      // https request to windcave to create a session 
      $ch = curl_init();
-     curl_setopt($ch, CURLOPT_URL, "https://uat.windcave.com/api/v1/sessions");
+     curl_setopt($ch, CURLOPT_URL, "https://sec.windcave.com/api/v1/sessions");
      curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
      curl_setopt($ch, CURLOPT_HEADER, FALSE);
   
@@ -60,12 +58,11 @@ class Windcave_Sessions{
   
      curl_setopt($ch, CURLOPT_HTTPHEADER, array(
      "Content-Type: application/json",
-     "Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk="
+     "Authorization: Basic SW5zcGlyeUxQOmRkYzdhZDg2ZDQ0NDA3NDk3OTNkZWM1OWU5YTk1MmI4ODU3ODlkM2Q0OGE2MzliODMwZWI0OTJhNjAyYmNhNjM="
      ));
   
      $response = curl_exec($ch);
      $obj = json_decode($response);
-     print_r($obj);
      $seamlessValue = ''; 
      // for each loop to get seamless_hpp url 
      foreach ($obj->links as $obj) {
@@ -97,24 +94,9 @@ class Windcave_Sessions{
      <?php
   }
 
-    public function setSessionURL($sessionID){
-            // return "https://uat.windcave.com/api/v1/sessions/".$sessionID;
-            return "https://uat.windcave.com/api/v1/sessions/00001200057642070c56cd51cccd7b03"; 
-    }
 
-  public function windcave_query_session(){ 
- 
-    //update board 
-    register_rest_route("inspiry/v1/", "query-session", array(
-      "methods" => "POST",
-      "callback" => array($this, 'test_container')
-      ));
-  }
-    public function test_container(){
-       
-        echo "hello";
-       
-    }
+  
+  
 }
 
 $windcaveSession = new Windcave_Sessions();

@@ -12,7 +12,7 @@ function inspiry_board_route(){
     register_rest_route("inspiry/v1/", "addToBoard", array(
       "methods" => "POST",
       "callback" => "addProjectToBoard"
-  ));
+      ));
 
     register_rest_route("inspiry/v1/", "manageBoard", array(
         "methods" => "DELETE",
@@ -30,38 +30,54 @@ function inspiry_board_route(){
       "callback" => "updateBoard"
   ));
 
-  //update board 
-  register_rest_route("inspiry/v1/", "board", array(
+  //update board - new
+  register_rest_route("inspiry/v1/", "get-boards", array(
    "methods" => "POST",
    "callback" => "getBoard"
 ));
 }
 
+// get board - new
 function getBoard($data){
    $postID = sanitize_text_field($data["id"] ); 
-
    if(is_user_logged_in()){
    $boards = new WP_Query(array(
       'post_type' => 'boards',
       'post_parent' => 0, 
-      'p' => $postID
+      'posts_per_page' => -1, 
+      'p' => $postID,
+      'author' => get_current_user_id()
    )); 
 
    $boardsResult = array(); 
 
    while($boards->have_posts()){
       $boards->the_post(); 
+                            //GET THE CHILD ID
+                            //Instead of calling and passing query parameter differently, we're doing it exclusively
+                            $all_locations = get_pages( array(
+                              'post_type'         => 'boards', //here's my CPT
+                              'post_status'       => array( 'private', 'pending', 'publish') //my custom choice
+                          ) );
 
+                          //Using the function
+                          $parent_id = get_the_id();
+                          $inherited_locations = get_page_children( $parent_id, $all_locations );
+
+                          // echo what we get back from WP to the browser (@bhlarsen's part :) )
+                          $child_id = $inherited_locations[0]->ID;
+                        //   $childThumbnailImageID =  get_field('saved_image_id', $child_id); 
+                          $childThumbnail = get_field('saved_project_id', $child_id); 
+                           $productID= (int)$childThumbnail;
       array_push($boardsResult, array(
          'title' => get_the_title(),
          'description' => get_the_content(), 
          'id' => get_the_id(), 
-         'status' => get_post_status()
-
-      )); 
-
-      
+         'status' => get_post_status(), 
+         "product_id" => $productID
+      ));       
    }
+
    return $boardsResult; 
 }
 else{
@@ -173,7 +189,8 @@ function addProjectToBoard($data){
             "post_title" => $postTitle,
             "post_parent" => $boardID, 
             "meta_input" => array(
-               "saved_project_id" => $projectID
+               "saved_project_id" => $projectID,
+               "saved_image_id" => "this is url"
             )
      )); 
       }

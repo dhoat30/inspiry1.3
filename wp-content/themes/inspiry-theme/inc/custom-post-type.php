@@ -12,6 +12,7 @@ add_post_type_support( "shop-my-fav", "thumbnail" );
 add_post_type_support( "shop_by_brand", "thumbnail" );
 add_post_type_support( "modal", "thumbnail" );
 add_post_type_support( "shop_by_brand", "trending-now" );  
+
 function register_custom_type2(){ 
    //Covid 19 updates 
    register_post_type("modal", array(
@@ -215,6 +216,60 @@ register_post_type("tri-images", array(
    "menu_icon" => "dashicons-images-alt"
 )
 );
+
+//projects
+register_post_type("projects", array(
+   "supports" => array("title"), 
+   "public" => true, 
+   "show_ui" => true, 
+   "hierarchical" => true,
+   "show_in_rest"=> true, 
+   "labels" => array(
+      "name" => "Project", 
+      "add_new_item" => "Add New Project", 
+      "edit_item" => "Edit Project", 
+      "all_items" => "All Projects", 
+      "singular_name" => "Project"
+   ), 
+   "menu_icon" => "dashicons-text"
+)
+); 
+
+//projects
+register_post_type("trade-professionals", array(
+   "supports" => array("title"), 
+   "public" => true, 
+   "show_ui" => true, 
+   "hierarchical" => true,
+   "show_in_rest"=> true, 
+   "labels" => array(
+      "name" => "Trade Professional", 
+      "add_new_item" => "Add New Trade Professional", 
+      "edit_item" => "Edit Trade Professional", 
+      "all_items" => "All Trade Professionals", 
+      "singular_name" => "Trade Professional"
+   ), 
+   "menu_icon" => "dashicons-store"
+)
+); 
+
+   //select options
+   register_post_type("select-options", array(
+      "supports" => array("title"), 
+      "public" => true, 
+      "show_ui" => true, 
+      "show_in_rest"=>true, 
+      "hierarchical" => true,
+      "labels" => array(
+         "name" => "Select Option", 
+         "add_new_item" => "Add New Select Option", 
+         "edit_item" => "Edit Select Option", 
+         "all_items" => "All Select Options", 
+         "singular_name" => "Select Option"
+      ), 
+      "menu_icon" => "dashicons-table-row-after"
+   )
+   ); 
   
 }
 
@@ -225,6 +280,39 @@ add_action("init", "register_custom_type2");
 
 //custom taxonomy
 function wpdocs_register_private_taxonomy() {
+
+   // project taxonomy 
+   $argsProject = array(
+      'label'        => __( 'Project Categories', 'textdomain' ),
+      'public'       => true,
+      'rewrite'      => true,
+      'hierarchical' => true,
+      'show_in_rest' => true
+  );
+   
+  register_taxonomy( 'project-categories', 'projects', $argsProject );
+
+ // trade professional taxonomy 
+ $ardsTradeProfessional = array(
+   'label'        => __( 'Trade Categories', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'hierarchical' => true,
+   'show_in_rest' => true
+);
+
+register_taxonomy( 'trade-professional-categories', 'trade-professionals', $ardsTradeProfessional );
+
+ // trade professional taxonomy  Tag
+ $ardsTradeProfessional = array(
+   'label'        => __( 'Trade Regions', 'textdomain' ),
+   'public'       => true,
+   'rewrite'      => true,
+   'show_in_rest' => true
+);
+
+register_taxonomy( 'trade-professional-tags', 'trade-professionals', $ardsTradeProfessional );
+
    // covid taxonomy 
    $argsModal = array(
       'label'        => __( 'Modal Categories', 'textdomain' ),

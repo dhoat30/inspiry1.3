@@ -198,7 +198,7 @@ var myScrollFunc = function () {
 
 window.addEventListener("scroll", myScrollFunc);
 
-// windcave
+// windcave-------------------------------------------------------------------
 let onChangeValue
 let windcavePaymentSelected = $("input[type='radio'][name='payment_method']:checked").val();
 
@@ -217,7 +217,6 @@ const showWindcaveiframe = () => {
 
 const hideOverlay = () => {
   $(document).on('click', '#payment-iframe-container .cancel-payment', () => {
-    console.log('cancel payment')
     $('.payment-gateway-container').hide();
     $('.overlay').hide();
   })
@@ -230,7 +229,6 @@ $(document).on('click', '#place_order', (e) => {
   console.log("prevented default")
   if (onChangeValue === 'inspiry_payment' || windcavePaymentSelected === 'inspiry_payment') {
     e.preventDefault();
-    console.log("place order button click")
     showWindcaveiframe();
   }
 
@@ -254,15 +252,12 @@ $(document).on('click', '.windcave-submit-button', (e) => {
         WindcavePayments.Seamless.submit({
           showSpinner: true,
           onProcessed: function () {
-            console.log('submitted')
-
             // validate transaction by sending a query session reques to the backend
             let valueOfTransaction = validateTransaction();
             valueOfTransaction.then(res => {
-              console.log(`Transaction is validated ${res}`)
-
               // successful transaction 
               if (res === "true") {
+                console.log("transaction Successful")
                 // append response text in iframe container 
                 $(".woocommerce-checkout").submit();
                 $('#payment-iframe-container .button-container').append(`<p class="success center-align">Successful</p>`)
@@ -274,6 +269,9 @@ $(document).on('click', '.windcave-submit-button', (e) => {
               else {
                 // append response text in iframe container 
                 $('#payment-iframe-container .button-container').append(`<p class="error center-align">${res}</p>`)
+                setTimeout(() => {
+                  location.reload();
+                }, 5000)
               }
             })
           },
@@ -307,7 +305,7 @@ async function validateTransaction() {
     filePath = `/inspiry/windcave`
   }
   else {
-    filePath = `https://services.inspiry.co.nz/windcave`
+    filePath = `https://inspiry.co.nz/windcave`
   }
 
   const response = await $.ajax({
@@ -318,7 +316,3 @@ async function validateTransaction() {
   return response
 }
 
-// order status change 
-$(document).on('click', ".order-status", (e) => {
-  console.log("hello this is order status ")
-})

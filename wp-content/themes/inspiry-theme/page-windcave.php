@@ -7,7 +7,7 @@
    $curl = curl_init();
    
    curl_setopt_array($curl, array(
-       CURLOPT_URL => "https://uat.windcave.com/api/v1/sessions/".$sessionID,
+       CURLOPT_URL => "https://sec.windcave.com/api/v1/sessions/".$sessionID,
        CURLOPT_RETURNTRANSFER => true,
        CURLOPT_ENCODING => '',
        CURLOPT_MAXREDIRS => 10,
@@ -17,7 +17,7 @@
        CURLOPT_CUSTOMREQUEST => 'GET',
        CURLOPT_HTTPHEADER => array(
        'Content-Type: application/json',
-       'Authorization: Basic SW5zcGlyeV9SZXN0OmI0NGFiMjZmOWFkNzIwNDQ4OTc0MGQ1YWM3NmE5YzE2ZDgzNDJmODUwYTRlYjQ1NTc1NmRiNDgyYjFiYWVjMjk='
+       'Authorization: Basic SW5zcGlyeUxQOmRkYzdhZDg2ZDQ0NDA3NDk3OTNkZWM1OWU5YTk1MmI4ODU3ODlkM2Q0OGE2MzliODMwZWI0OTJhNjAyYmNhNjM='
        ),
    ));
    

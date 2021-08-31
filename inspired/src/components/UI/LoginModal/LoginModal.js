@@ -8,11 +8,8 @@ import Paragraph from '../Content/Paragraph/Paragraph';
 import RegisterForm from './LoginForm/LoginForm';
 
 function RegisterModal(props) {
-
-
     return (
         <React.Fragment>
-
             <div className={`${styles.loginModalContainer} card-border-radius `}>
                 <div id="registeration-form" className={`${styles.logInModal} card-border-radius flex-column align-center justify-center`}>
                     <ILogo classes="margin-element-v" />

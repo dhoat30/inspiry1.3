@@ -58,7 +58,7 @@
 }
 .payment-gateway-container img {
   width: 300px;
-  margin: 0 auto;
+  margin: 10px auto;
   display: block;
 }
 #payment-iframe-container {
@@ -99,3 +99,4 @@ input.DpsField {
   display: flex;
   flex-direction: column-reverse;
 }
+/* windcave logo */
