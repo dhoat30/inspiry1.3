@@ -155,7 +155,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/updateBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/update-board',
             type: 'POST',
             data: {
                 'board-id': postID,
@@ -220,7 +220,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/manageBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/manage-board',
             type: 'POST',
             data: {
                 'board-name': boardName,
@@ -353,7 +353,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/addToBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/add-to-board',
             type: 'POST',
             data: {
                 'board-id': boardID,
@@ -397,7 +397,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/deleteBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/delete-board',
             data: {
                 'board-id': boardID,
             },
@@ -433,7 +433,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/manageBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/manage-board',
             data: {
                 'pin-id': pinID,
             },
@@ -484,7 +484,7 @@ class DesignBoardSaveBtn {
             beforeSend: (xhr) => {
                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
             },
-            url: inspiryData.root_url + '/wp-json/inspiry/v1/manageBoard',
+            url: inspiryData.root_url + '/wp-json/inspiry/v1/manage-board',
             type: 'POST',
             data: {
                 'board-name': boardName,
@@ -516,7 +516,7 @@ class DesignBoardSaveBtn {
                             beforeSend: (xhr) => {
                                 xhr.setRequestHeader('X-WP-NONCE', inspiryData.nonce)
                             },
-                            url: inspiryData.root_url + '/wp-json/inspiry/v1/addToBoard',
+                            url: inspiryData.root_url + '/wp-json/inspiry/v1/add-to-board',
                             type: 'POST',
                             data: {
                                 'board-id': response,

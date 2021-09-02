@@ -134,7 +134,7 @@
                                             while($boardLoop->have_posts()){ 
                                                 $boardLoop->the_post(); 
                                                 global $product;
-                                                $productImage = wp_get_attachment_url( $product->get_image_id() );
+                                                // $productImage = wp_get_attachment_url( $product->get_image_id() );
                                                 ?>
       <li class="board-list-item" data-boardID='<?php echo get_the_id(); ?>' 
       data-boardID='<?php echo $productImage; ?>'

@@ -4,12 +4,13 @@
 add_action("rest_api_init", "inspiry_board_route");
 
 function inspiry_board_route(){ 
-    register_rest_route("inspiry/v1/", "manageBoard", array(
-        "methods" => "POST",
-        "callback" => "createBoard"
-    ));
+      //get boards
+   register_rest_route("inspiry/v1/", "get-boards", array(
+      "methods" => "POST",
+      "callback" => "getBoard"
+   ));
 
-    register_rest_route("inspiry/v1/", "addToBoard", array(
+    register_rest_route("inspiry/v1/", "add-to-board", array(
       "methods" => "POST",
       "callback" => "addProjectToBoard"
       ));
@@ -30,11 +31,12 @@ function inspiry_board_route(){
       "callback" => "updateBoard"
   ));
 
-  //update board - new
-  register_rest_route("inspiry/v1/", "get-boards", array(
+
+register_rest_route("inspiry/v1/", "manageBoard", array(
    "methods" => "POST",
-   "callback" => "getBoard"
+   "callback" => "createBoard"
 ));
+
 }
 
 // get board - new
@@ -69,20 +71,75 @@ function getBoard($data){
                         //   $childThumbnailImageID =  get_field('saved_image_id', $child_id); 
                           $childThumbnail = get_field('saved_project_id', $child_id); 
                            $productID= (int)$childThumbnail;
+                           $imageURL='';
+                           if (!$productID) { 
+                              $imageURL = "https://inspiry.co.nz/wp-content/uploads/2020/12/icon-card@2x.jpg";
+                           }
       array_push($boardsResult, array(
          'title' => get_the_title(),
          'description' => get_the_content(), 
          'id' => get_the_id(), 
          'status' => get_post_status(), 
-         "product_id" => $productID
+         "product_id" => $productID,
+         "image_url"=> $imageURL
       ));       
    }
 
    return $boardsResult; 
-}
-else{
+   }  
+   else{
    return 'you do not have permission' ;
+   }
 }
+// add project to board 
+function addProjectToBoard($data){ 
+   if(is_user_logged_in()){
+      $boardID = sanitize_text_field($data["boardID"]);
+      $postTitle = sanitize_text_field($data["postTitle"]);
+      $publishStatus = sanitize_text_field($data['status']);
+      $projectID = sanitize_text_field($data['projectID']);
+      $tradeID = sanitize_text_field($data['tradeID']);
+      $productID = sanitize_text_field($data['productID']);
+      
+      if($projectID){
+         return wp_insert_post(array(
+            "post_type" => "boards", 
+            "post_status" => $publishStatus, 
+            "post_parent" => $boardID, 
+            "post_title" => get_the_title($projectID),
+            "meta_input" => array(
+               "saved_project_id" => $projectID
+            )
+         )); 
+      }
+      elseif ($tradeID){
+         return wp_insert_post(array(
+            "post_type" => "boards", 
+            "post_status" => $publishStatus, 
+            "post_title" => $postTitle,
+            "post_parent" => $boardID, 
+            "meta_input" => array(
+               "trade_id"=> $tradeID
+            )
+     )); 
+      }
+      else{
+         return wp_insert_post(array(
+            "post_type" => "boards", 
+            "post_status" => $publishStatus, 
+            "post_title" => $postTitle,
+            "post_parent" => $boardID, 
+            "meta_input" => array(
+               "product_id"=> $productID
+            )
+     )); 
+
+      }
+   }
+   else{
+      die("Only logged in users can create a board");
+   }
+   
 }
 
 function updateBoard($data){
@@ -130,8 +187,8 @@ function updateBoard($data){
         die("You do not have permission to update a board");
      }
 }
-function createBoard($data){ 
 
+function createBoard($data){ 
    if(is_user_logged_in()){
       $boardName = sanitize_text_field($data["board-name"]);
       $boardDescription = sanitize_text_field($data['board-description']); 
@@ -159,51 +216,7 @@ function createBoard($data){
    }
 }
 
-function addProjectToBoard($data){ 
-   
-   if(is_user_logged_in()){
-     
-      $projectID = sanitize_text_field($data["post-id"]);
-      $boardID = sanitize_text_field($data["board-id"]);
-      $postTitle = sanitize_text_field($data["post-title"]);
-      $publishStatus = sanitize_text_field($data['status']);
-      $postImageID = sanitize_text_field($data['post-image-id']);
 
-      
-      if($postImageID){
-         return wp_insert_post(array(
-            "post_type" => "boards", 
-            "post_status" => $publishStatus, 
-            "post_parent" => $boardID, 
-            "post_title" => get_the_title($postImageID),
-            "meta_input" => array(
-               "saved_image_id" => $postImageID
-            )
-         )); 
-
-      }
-      else{
-         return wp_insert_post(array(
-            "post_type" => "boards", 
-            "post_status" => $publishStatus, 
-            "post_title" => $postTitle,
-            "post_parent" => $boardID, 
-            "meta_input" => array(
-               "saved_project_id" => $projectID,
-               "saved_image_id" => "this is url"
-            )
-     )); 
-      }
-        
-     
-
-
-   }
-   else{
-      die("Only logged in users can create a board");
-   }
-   
-}
 
 function deletePin($data){ 
    $pinID = sanitize_text_field($data["pin-id"] ); 

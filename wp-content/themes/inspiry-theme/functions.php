@@ -40,9 +40,9 @@ require get_theme_file_path('/inc/rest-acf.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.fa583623385eedc86539.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.565cde9dcbf88d461c9f.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.565cde9dcbf88d461c9f.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.565cde9dcbf88d461c9f.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.933a5b57aef7844d0eff.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.933a5b57aef7844d0eff.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.fa583623385eedc86539.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),
@@ -544,3 +544,11 @@ if(is_user_logged_in()) {
   )
 );
 	}
+    
+    // disable admin bar for regular users 
+add_action('after_setup_theme', 'remove_admin_bar');
+function remove_admin_bar() {
+if (!current_user_can('administrator') && !is_admin()) {
+  show_admin_bar(false);
+}
+}

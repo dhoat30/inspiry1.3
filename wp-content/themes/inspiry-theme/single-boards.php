@@ -82,7 +82,6 @@ get_header();
                 $parentID =  wp_get_post_parent_id(get_the_id()); 
                 ?>
 
-
             <div class="board-card design-board-single-card">
 
                 <i class="fas fa-ellipsis-h option-icon"></i>
@@ -156,8 +155,7 @@ get_header();
                                 </div>
                                 <div class="title paragraph-font-size rm-txt-dec">
                                     <?php echo get_the_title(get_field('saved_project_id')); ?>
-                                </div>
-
+                            </div>
                             </a>
                            <?php 
                         }
