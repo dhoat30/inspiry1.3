@@ -1,5 +1,14 @@
 <?php 
 get_header(); 
+
+$customer_orders = get_posts( array(
+    'numberposts' => -1,
+    'meta_key'    => '_customer_user',
+    'meta_value'  => 12,
+    'post_type'   => wc_get_order_types(),
+    'post_status' => array_keys( wc_get_order_statuses() ),
+) );
+print_r($customer_orders);
 ?>
 <div class="body-container archive">
 
