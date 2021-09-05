@@ -40,9 +40,9 @@ require get_theme_file_path('/inc/rest-acf.php');
       wp_enqueue_script('main', 'http://localhost:3000/bundled.js',  array( 'jquery' ), '1.0', true);
     } else {
       wp_enqueue_script('our-vendors-js', get_theme_file_uri('/bundled-assets/vendors~scripts.fa583623385eedc86539.js'),  array( 'jquery' ), '1.0', true);
-      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.933a5b57aef7844d0eff.js'), NULL, '1.0', true);
-      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.933a5b57aef7844d0eff.css'));      
-      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.fa583623385eedc86539.css'));
+      wp_enqueue_script('main', get_theme_file_uri('/bundled-assets/scripts.ae02c2f8baf723d59efb.js'), NULL, '1.0', true);
+      wp_enqueue_style('our-main-styles', get_theme_file_uri('/bundled-assets/styles.ae02c2f8baf723d59efb.css'));      
+      wp_enqueue_style('our-vendor-styles', get_theme_file_uri('/bundled-assets/styles.ae02c2f8baf723d59efb.css'));
     }
     wp_localize_script("main", "inspiryData", array(
       "root_url" => get_site_url(),

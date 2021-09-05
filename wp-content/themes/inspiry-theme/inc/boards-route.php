@@ -9,12 +9,26 @@ function inspiry_board_route(){
       "methods" => "POST",
       "callback" => "getBoard"
    ));
-
+	
+	// 	add to board
     register_rest_route("inspiry/v1/", "add-to-board", array(
       "methods" => "POST",
       "callback" => "addProjectToBoard"
       ));
-
+	
+// 	create board 
+		register_rest_route("inspiry/v1/", "manage-board", array(
+		   "methods" => "POST",
+		   "callback" => "createBoard"
+		));
+	
+	// 	get pins related to the single board 
+		register_rest_route("inspiry/v1/", "get-pins", array(
+		   "methods" => "POST",
+		   "callback" => "getPins"
+		));
+	
+	
     register_rest_route("inspiry/v1/", "manageBoard", array(
         "methods" => "DELETE",
         "callback" => "deletePin"
@@ -32,10 +46,7 @@ function inspiry_board_route(){
   ));
 
 
-register_rest_route("inspiry/v1/", "manageBoard", array(
-   "methods" => "POST",
-   "callback" => "createBoard"
-));
+
 
 }
 
@@ -81,7 +92,8 @@ function getBoard($data){
          'id' => get_the_id(), 
          'status' => get_post_status(), 
          "product_id" => $productID,
-         "image_url"=> $imageURL
+         "image_url"=> $imageURL, 
+		  "slug"=> get_post_field( 'post_name', get_the_ID() )
       ));       
    }
 
@@ -91,6 +103,7 @@ function getBoard($data){
    return 'you do not have permission' ;
    }
 }
+
 // add project to board 
 function addProjectToBoard($data){ 
    if(is_user_logged_in()){
@@ -142,6 +155,100 @@ function addProjectToBoard($data){
    
 }
 
+	// create board 
+	function createBoard($data){ 
+	   if(is_user_logged_in()){
+		  $boardName = sanitize_text_field($data["boardName"]);
+		  $boardDescription = sanitize_text_field($data['board-description']); 
+		  $publishStatus = sanitize_text_field($data['status']);
+
+		  $existQuery = new WP_Query(array(
+			'author' => get_current_user_id(), 
+			'post_type' => 'boards', 
+			's' => $boardName
+		)); 
+		 if($existQuery->found_posts == 0){ 
+			return wp_insert_post(array(
+				"post_type" => "boards", 
+				"post_status" => $publishStatus, 
+				"post_title" => $boardName,
+				'post_content' => $boardDescription
+		 )); 
+		 }
+		 else{ 
+			 die('Board already exists');
+		 }
+	   }
+	   else{
+		  die("Only logged in users can create a board");
+	   }
+	}
+
+
+		// get pins - new
+		function getPins($data){
+		   $slug = sanitize_text_field($data["slug"] ); 
+			// check if the user is logged in 
+		   if(is_user_logged_in()){
+		   $boardsResult = array(); 
+			   $parentID = 0; 
+					if ( $post = get_page_by_path( $slug, OBJECT, 'boards' ) ){
+						$parentID = $post->ID;
+					}
+			   	$parentStatus = get_post_status($parentID);
+				$boardLoop = new WP_Query(array(
+                'post_type' => 'boards', 
+                'post_parent' => $parentID,
+                'posts_per_page' => -1
+            	));
+			   	
+				
+			     while($boardLoop->have_posts()){
+                $boardLoop->the_post(); 
+                $parentID =  wp_get_post_parent_id($parentID); 
+					 
+				// get the ids for images 
+			   	$projectID = 0; 
+			   $tradeID=0; 
+			   $productID = 0; 
+				$projectImage=''; 
+				$tradeImage = ''; 
+					 $productImage = ''; 
+			   if(get_field("saved_project_id")){ 
+			   	$projectID = get_field("saved_project_id"); 
+				 $projectImage = get_field('gallery', $projectID);
+			   }
+			   elseif(get_field("trade_id")){ 
+			   	$tradeID = get_field("trade_id"); 
+				   $tradeImage = get_field('gallery', $tradeID);
+			   }
+			    elseif(get_field("product_id")){ 
+			   	$productID = get_field("product_id"); 
+					$productImage = get_the_post_thumbnail($productID);
+			   }
+					 
+					 array_push($boardsResult, array(
+							'id' => get_the_id(), 
+						 	'title'=> get_the_title(),
+						 	'status'=> $parentStatus, 
+						 	'project-image'=> $projectImage, 
+						 	'trade-image'=> $tradeImage, 
+						 	'product-image'=> $productImage
+// 						 	'project-id'=> $projectID, 
+// 						 	'trade-id'=> $tradeID,
+// 						 	'product-id'=> $productID, 
+						 	
+						));   
+				 }
+					 
+		   return $boardsResult; 
+		   }  
+		   else{
+		   return 'you do not have permission' ;
+		   }
+		}
+
+
 function updateBoard($data){
    $parentID = sanitize_text_field($data["board-id"] ); 
    $boardName = sanitize_text_field($data["board-name"] ); 
@@ -187,35 +294,6 @@ function updateBoard($data){
         die("You do not have permission to update a board");
      }
 }
-
-function createBoard($data){ 
-   if(is_user_logged_in()){
-      $boardName = sanitize_text_field($data["board-name"]);
-      $boardDescription = sanitize_text_field($data['board-description']); 
-      $publishStatus = sanitize_text_field($data['status']);
-
-      $existQuery = new WP_Query(array(
-        'author' => get_current_user_id(), 
-        'post_type' => 'boards', 
-        's' => $boardName
-    )); 
-     if($existQuery->found_posts == 0){ 
-        return wp_insert_post(array(
-            "post_type" => "boards", 
-            "post_status" => $publishStatus, 
-            "post_title" => $boardName,
-            'post_content' => $boardDescription
-     )); 
-     }
-     else{ 
-         die('Board already exists');
-     }
-   }
-   else{
-      die("Only logged in users can create a board");
-   }
-}
-
 
 
 function deletePin($data){ 

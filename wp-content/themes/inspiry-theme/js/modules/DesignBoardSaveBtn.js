@@ -356,9 +356,9 @@ class DesignBoardSaveBtn {
             url: inspiryData.root_url + '/wp-json/inspiry/v1/add-to-board',
             type: 'POST',
             data: {
-                'board-id': boardID,
-                'post-id': postID,
-                'post-title': postTitle,
+                'boardID': boardID,
+                'productID': postID,
+                'postTitle': postTitle,
                 'status': boardPostStatus
             },
             complete: () => {
