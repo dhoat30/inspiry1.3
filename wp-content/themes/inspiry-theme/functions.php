@@ -29,9 +29,10 @@ require get_theme_file_path('/inc/windcave-session.php');
 
 require get_theme_file_path('/inc/rest-acf.php');
 require get_theme_file_path('/inc/users.php');
+require get_theme_file_path('/inc/order-routes.php');
+require get_theme_file_path('/inc/api-routes/email-routes.php');
 
  //enqueue scripts
-
  function inspiry_scripts(){ 
    wp_enqueue_script("jQuery");
    wp_enqueue_script('font-awesome', 'https://kit.fontawesome.com/f3cb7ab01f.js', NULL, '1.0', false);
@@ -66,10 +67,7 @@ function mat_widget_areas() {
     ));
 }
 
-
-
 //custom post register
-
 add_theme_support("post-thumbnails");
 function register_custom_type(){ 
    register_post_type("boards", array(

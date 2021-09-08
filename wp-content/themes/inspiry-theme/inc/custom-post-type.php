@@ -237,7 +237,7 @@ register_post_type("projects", array(
 
 //projects
 register_post_type("trade-professionals", array(
-   "supports" => array("title"), 
+   "supports" => array("title", "editor"), 
    "public" => true, 
    "show_ui" => true, 
    "hierarchical" => true,
@@ -290,7 +290,7 @@ function wpdocs_register_private_taxonomy() {
       'show_in_rest' => true
   );
    
-  register_taxonomy( 'project-categories', 'projects', $argsProject );
+  register_taxonomy( 'project_categories', 'projects', $argsProject );
 
  // trade professional taxonomy 
  $ardsTradeProfessional = array(
@@ -301,7 +301,7 @@ function wpdocs_register_private_taxonomy() {
    'show_in_rest' => true
 );
 
-register_taxonomy( 'trade-professional-categories', 'trade-professionals', $ardsTradeProfessional );
+register_taxonomy( 'trade_professional_categories', 'trade-professionals', $ardsTradeProfessional );
 
  // trade professional taxonomy  Tag
  $ardsTradeProfessional = array(
@@ -311,7 +311,7 @@ register_taxonomy( 'trade-professional-categories', 'trade-professionals', $ards
    'show_in_rest' => true
 );
 
-register_taxonomy( 'trade-professional-tags', 'trade-professionals', $ardsTradeProfessional );
+register_taxonomy( 'trade_professional_tags', 'trade-professionals', $ardsTradeProfessional );
 
    // covid taxonomy 
    $argsModal = array(

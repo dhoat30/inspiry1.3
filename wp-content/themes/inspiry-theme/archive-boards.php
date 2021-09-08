@@ -8,7 +8,19 @@ $customer_orders = get_posts( array(
     'post_type'   => wc_get_order_types(),
     'post_status' => array_keys( wc_get_order_statuses() ),
 ) );
-print_r($customer_orders);
+print_r($customer_orders[0]->ID);
+
+$order = wc_get_order($customer_orders[0]->ID );
+echo "<br>";
+echo $order->get_total();
+echo "<br>";
+echo $order->get_shipping_method();
+echo "<br>";
+echo $order->get_shipping_methods();
+echo "<br>";
+echo $order->get_shipping_to_display();
+echo "<br>";
+echo $order->get_date_created();
 ?>
 <div class="body-container archive">
 

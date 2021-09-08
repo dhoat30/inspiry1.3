@@ -111,6 +111,7 @@ add_action('add_availability_share', function(){
 
 },120);
 remove_action('woocommerce_single_product_summary', 'woocommerce_template_single_excerpt', 20);
+
 //wrapping container for gallery and product summary 
 $class= 'img-summary-container'; 
 
@@ -579,62 +580,4 @@ function add_on_hover_shop_loop_image() {
 
 }
 
-
-// remove pagination- show all product on archive page
-
-// only show free shipping 
-// /**
-//  * Hide shipping rates when free shipping is available.
-//  * Updated to support WooCommerce 2.6 Shipping Zones.
-//  *
-//  * @param array $rates Array of rates found for the package.
-//  * @return array
-//  */
-// function my_hide_shipping_when_free_is_available( $rates ) {
-// 	$free = array();
-// 	foreach ( $rates as $rate_id => $rate ) {
-// 		if ( 'free-shipping' === $rate->method_id ) {
-// 			$free[ $rate_id ] = $rate;
-// 			break;
-// 		}
-// 	}
-// 	return ! empty( $free ) ? $free : $rates;
-// }
-// add_filter( 'woocommerce_package_rates', 'my_hide_shipping_when_free_is_available', 100 );
-
-// minimum order
-
-/**
- * Set a minimum order amount for checkout
- */
-// add_action( 'woocommerce_checkout_process', 'wc_minimum_order_amount' );
-// add_action( 'woocommerce_before_cart' , 'wc_minimum_order_amount' );
- 
-// function wc_minimum_order_amount() {
-//     // Set this variable to specify a minimum order value
-//     $minimum = 35;
-
-//     if ( WC()->cart->subtotal < $minimum ) {
-
-//         if( is_cart() ) {
-
-//             wc_print_notice( 
-//                 sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order ' , 
-//                     wc_price( WC()->cart->subtotal ), 
-//                     wc_price( $minimum )
-//                 ), 'error' 
-//             );
-
-//         } else {
-
-//             wc_add_notice( 
-//                 sprintf( 'Your current order subtotal is %s — you must have an order with a minimum of %s to place your order' , 
-//                     wc_price( WC()->cart->subtotal ), 
-//                     wc_price( $minimum )
-//                 ), 'error' 
-//             );
-
-//         }
-//     }
-// }
 
